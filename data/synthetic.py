@@ -8,6 +8,7 @@ for use in the simulation pipeline. This provides the ground-truth (x_clean).
 import torch
 import numpy as np
 import cv2
+from typing import Tuple
 
 
 class SyntheticFabricGenerator:

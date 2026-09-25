@@ -16,6 +16,8 @@ References:
     - Goodman, J.W. (2005). "Introduction to Fourier Optics." 3rd ed.
 """
 
+import math
+
 import torch
 import torch.nn.functional as F
 import numpy as np
@@ -35,10 +37,10 @@ def _zernike_radial(n: int, m: int, rho: torch.Tensor) -> torch.Tensor:
 
     result = torch.zeros_like(rho)
     for s in range((n - m_abs) // 2 + 1):
-        coeff = ((-1) ** s * np.math.factorial(n - s)) / (
-            np.math.factorial(s)
-            * np.math.factorial((n + m_abs) // 2 - s)
-            * np.math.factorial((n - m_abs) // 2 - s)
+        coeff = ((-1) ** s * math.factorial(n - s)) / (
+            math.factorial(s)
+            * math.factorial((n + m_abs) // 2 - s)
+            * math.factorial((n - m_abs) // 2 - s)
         )
         result = result + coeff * rho ** (n - 2 * s)
     return result
