@@ -63,25 +63,44 @@ def run_experiment(config_override: dict, exp_name: str):
     
     train_loader = DataLoader(TensorDataset(train_images, train_labels), batch_size=cfg.train.batch_size)
     
-    # Run a few epochs
-    for epoch in range(5):
+    # Training loop with Early Stopping (patience = 30)
+    best_psnr = -1.0
+    patience_counter = 0
+    best_metrics = None
+    
+    val_zernike = torch.zeros(val_images.shape[0], cfg.physics.num_zernike).to(device)
+    val_zernike[:, 3] = 1.0
+    
+    for epoch in range(cfg.train.max_epochs):
+        model.train()
         for images, labels in train_loader:
             zernike_coeffs = torch.zeros(images.shape[0], cfg.physics.num_zernike)
             zernike_coeffs[:, 3] = 1.0 # 1 wave defocus
             train_step(model, forward_model, criterion, optimizer, images, labels, zernike_coeffs, device)
             
-    # Final Validation
-    model.eval()
-    val_zernike = torch.zeros(val_images.shape[0], cfg.physics.num_zernike).to(device)
-    val_zernike[:, 3] = 1.0
-    
-    with torch.no_grad():
-        noisy_measurements, _ = forward_model.forward_sample(val_images.to(device), val_zernike)
-        recon_img, logits = model(noisy_measurements, val_zernike)
-        metrics = evaluate_batch(recon_img, val_images.to(device), logits, val_labels.to(device))
+        # Validation per epoch
+        model.eval()
+        with torch.no_grad():
+            noisy_measurements, _ = forward_model.forward_sample(val_images.to(device), val_zernike)
+            recon_img, logits = model(noisy_measurements, val_zernike)
+            metrics = evaluate_batch(recon_img, val_images.to(device), logits, val_labels.to(device))
+            
+        current_psnr = metrics['psnr']
         
-    print(f"Results for {exp_name}: PSNR={metrics['psnr']:.2f}, F1={metrics['f1_score']:.4f}")
-    return metrics
+        # Check early stopping
+        if current_psnr > best_psnr + 0.05:  # meaningful improvement
+            best_psnr = current_psnr
+            best_metrics = metrics
+            patience_counter = 0
+        else:
+            patience_counter += 1
+            
+        if patience_counter >= 30:
+            print(f"  -> Early stopping triggered at epoch {epoch+1}")
+            break
+        
+    print(f"Results for {exp_name}: PSNR={best_metrics['psnr']:.2f}, F1={best_metrics['f1_score']:.4f}")
+    return best_metrics
 
 
 def main():
