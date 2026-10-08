@@ -61,11 +61,10 @@ class Decoder2D(nn.Module):
         super().__init__()
         self.img_size = img_size
         
-        # Initial projection from sequence to small 2D feature map
-        # Assume we project to an 8x8 feature map
         self.init_h = 8
         self.init_w = 8
-        self.seq_to_img = nn.Linear(embed_dim, embed_dim * self.init_h * self.init_w)
+        
+        # Stage 1: 8x8 -> 16x16
         
         # Stage 1: 8x8 -> 16x16
         self.stage1_swin = SwinTransformerBlock(embed_dim, num_heads=8, window_size=4)
@@ -83,12 +82,11 @@ class Decoder2D(nn.Module):
         self.out_conv = nn.Conv2d(embed_dim // 8, out_channels, kernel_size=3, padding=1)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x is the attended sequence: (B, 1, embed_dim)
+        # x is the attended sequence: (B, 64, embed_dim)
         B = x.shape[0]
         
-        # Project to 2D
-        x = self.seq_to_img(x.squeeze(1))  # (B, embed_dim * 8 * 8)
-        x = x.view(B, self.init_h * self.init_w, -1)  # (B, 64, embed_dim)
+        # x is already properly shaped as (B, 64, embed_dim) from the 64 query tokens
+
         
         # Stage 1
         x = self.stage1_swin(x, (self.init_h, self.init_w))
@@ -143,8 +141,8 @@ class PIGhostFormer(nn.Module):
             physics_dim=physics_dim
         )
         
-        # A learned query token for the decoder to attend to the encoded sequence
-        self.decoder_query = nn.Parameter(torch.randn(1, 1, embed_dim))
+        # A learned query grid (8x8 = 64 tokens) for the decoder to attend to the encoded sequence
+        self.decoder_query = nn.Parameter(torch.randn(1, 64, embed_dim))
         
         self.decoder = Decoder2D(
             embed_dim=embed_dim,
@@ -178,11 +176,11 @@ class PIGhostFormer(nn.Module):
         enc_feats = self.encoder(bucket_measurements)  # (B, M, embed_dim)
         
         # 2. Physics-Conditioned Attention
-        # The query is a learned token, expanded to batch size
-        query = self.decoder_query.expand(B, -1, -1)  # (B, 1, embed_dim)
+        # The query is a learned 8x8 spatial grid, expanded to batch size
+        query = self.decoder_query.expand(B, -1, -1)  # (B, 64, embed_dim)
         
-        # The cross attention allows the query to pull info from the sequence AND the physics token
-        attended_feats = self.pcca(query, enc_feats, zernike_coeffs)  # (B, 1, embed_dim)
+        # The cross attention allows the query grid to pull info from the sequence AND the physics token
+        attended_feats = self.pcca(query, enc_feats, zernike_coeffs)  # (B, 64, embed_dim)
         
         # 3. Decode to 2D image and get pre-output features
         recon_img, features = self.decoder(attended_feats)  # recon_img: (B, 1, H, W), features: (B, C, H, W)

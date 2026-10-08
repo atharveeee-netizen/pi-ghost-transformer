@@ -87,7 +87,9 @@ def run_experiment(config_override: dict, exp_name: str):
 def main():
     ablations = [
         {"name": "Baseline (Full PI-GhostFormer)", "overrides": {}},
+        {"name": "A1: Remove PCCA (Standard Cross-Attention)", "overrides": {"use_pcca": False}},
         {"name": "A2: Remove Poisson NLL (MSE only)", "overrides": {"lambda_physics": 0.0}},
+        {"name": "A3: Single-Token Decoder Bottleneck", "overrides": {"use_64_tokens": False}},
         {"name": "A4: Fixed Hadamard patterns", "overrides": {"pattern_type": "hadamard"}},
         {"name": "A4: Fixed Random patterns", "overrides": {"pattern_type": "random"}},
     ]

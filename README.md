@@ -15,9 +15,10 @@ Single-photon computational imaging (ghost imaging) offers immense potential for
 ### Key Contributions
 1. **Differentiable Zernike Wavefront Layer**: Full end-to-end physics forward model inside PyTorch.
 2. **Physics-Conditioned Cross-Attention (PCCA)**: Attention keys/values are modulated by the physical state of the optical system.
-3. **Poisson NLL Loss**: Replaces physically incorrect MSE for single-photon SPAD data.
-4. **Learned Measurement Matrix**: Co-optimizes the physical illumination patterns alongside the reconstruction network.
-5. **Self-Supervised Physics-Only Mode**: Reconstructs defects without needing ground-truth paired datasets.
+3. **64-Token Spatial Decoder**: Eliminates the 1D-to-2D bottleneck by using a learned spatial query grid, preserving high-frequency edge details for micro-defects.
+4. **Poisson NLL Loss**: Replaces physically incorrect MSE for single-photon SPAD data.
+5. **Learned Measurement Matrix**: Co-optimizes the physical illumination patterns alongside the reconstruction network.
+6. **Self-Supervised Physics-Only Mode**: Reconstructs defects without needing ground-truth paired datasets.
 
 ## 🚀 Architecture
 
@@ -65,7 +66,7 @@ python train.py
 ```bash
 python ablations.py
 ```
-*This systematically disables physics-conditioning, Poisson NLL, and learned patterns to prove individual component contributions.*
+*This systematically disables PCCA, Poisson NLL, spatial decoding, and learned patterns to mathematically prove individual component contributions.*
 
 ## 🔬 Experimental Evaluation
 
