@@ -6,15 +6,27 @@ import numpy as np
 from torch.utils.data import Dataset
 
 class AITEXDataset(Dataset):
-    def __init__(self, root_dir, image_size=64):
+    def __init__(self, root_dir, image_size=64, split="train"):
         self.root_dir = root_dir
         self.image_size = image_size
+        self.split = split
         
         # All image files (excluding masks)
-        self.image_paths = []
+        all_paths = []
         for file in glob.glob(os.path.join(root_dir, "**", "*.png"), recursive=True):
             if "_mask" not in file and "Mask_images" not in file:
-                self.image_paths.append(file)
+                all_paths.append(file)
+                
+        # Get unique fabrics (directories inside Defect_images or NODefect_images)
+        fabrics = sorted(list(set([os.path.basename(os.path.dirname(p)) for p in all_paths])))
+        
+        # Split: Leave the last 2 fabrics for testing (Out of Distribution testing)
+        if split == "train":
+            allowed_fabrics = fabrics[:-2]
+        else:
+            allowed_fabrics = fabrics[-2:]
+            
+        self.image_paths = [p for p in all_paths if os.path.basename(os.path.dirname(p)) in allowed_fabrics]
                 
     def __len__(self):
         return len(self.image_paths)

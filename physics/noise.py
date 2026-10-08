@@ -40,11 +40,17 @@ class PhotonNoiseModel(nn.Module):
         mean_photon_count: float = 10.0,
         dark_count_rate: float = 0.5,
         readout_noise_std: float = 0.1,
+        dead_time_fraction: float = 0.05,
+        afterpulsing_prob: float = 0.02,
+        crosstalk_prob: float = 0.01
     ):
         super().__init__()
         self.mean_photon_count = mean_photon_count
         self.dark_count_rate = dark_count_rate
         self.readout_noise_std = readout_noise_std
+        self.dead_time_fraction = dead_time_fraction
+        self.afterpulsing_prob = afterpulsing_prob
+        self.crosstalk_prob = crosstalk_prob
 
     def forward(self, clean_signal: torch.Tensor) -> torch.Tensor:
         """
@@ -59,13 +65,13 @@ class PhotonNoiseModel(nn.Module):
         # Scale to photon counts
         lam = self.mean_photon_count * clean_signal.clamp(min=0.0)
 
-        # Add dark current
+        # 1. Pile-up / Dead-time`n        if self.dead_time_fraction > 0:`n            lam = lam * torch.exp(-lam * self.dead_time_fraction)`n`n        # 2. Add dark current
         lam_total = lam + self.dark_count_rate
 
         # Poisson sampling (not differentiable — used for data generation)
         poisson_counts = torch.poisson(lam_total)
 
-        # Readout noise
+        # 4. Afterpulsing and Crosstalk`n        if self.afterpulsing_prob > 0 or self.crosstalk_prob > 0:`n            total_extra_prob = self.afterpulsing_prob + self.crosstalk_prob`n            extra_counts = torch.poisson(poisson_counts * total_extra_prob)`n            poisson_counts = poisson_counts + extra_counts`n`n        # 5. Readout noise
         if self.readout_noise_std > 0:
             readout = torch.randn_like(poisson_counts) * self.readout_noise_std
             noisy_counts = poisson_counts + readout
@@ -126,3 +132,4 @@ class ScatteringModel(nn.Module):
         transmission = np.exp(-self.scattering_coeff)
         scattered = image * transmission + self.airlight * (1.0 - transmission)
         return scattered.clamp(0.0, 1.0)
+

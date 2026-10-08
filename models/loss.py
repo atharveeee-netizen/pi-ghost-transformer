@@ -66,6 +66,25 @@ class TotalVariationLoss(nn.Module):
         return (h_tv + w_tv) / (B * C * H * W)
 
 
+class AnscombeMSELoss(nn.Module):
+    """
+    Anscombe Transform + MSE Loss (Baseline for Poisson noise).
+    Transforms Poisson noise into approximate Gaussian noise before MSE.
+    Anscombe: A(x) = 2 * sqrt(x + 3/8)
+    """
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+        # Prevent negative values inside sqrt
+        pred_safe = F.relu(pred)
+        target_safe = F.relu(target)
+        
+        pred_anscombe = 2.0 * torch.sqrt(pred_safe + 3.0/8.0)
+        target_anscombe = 2.0 * torch.sqrt(target_safe + 3.0/8.0)
+        
+        return F.mse_loss(pred_anscombe, target_anscombe)
+
 class PIGhostFormerLoss(nn.Module):
     """
     Combined loss function for the PI-GhostFormer.

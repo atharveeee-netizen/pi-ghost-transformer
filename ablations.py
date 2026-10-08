@@ -59,10 +59,8 @@ def run_experiment(config_override: dict, exp_name: str):
     # Load Real AITEX Dataset for Ablations
     if cfg.data.aitex_path and os.path.exists(cfg.data.aitex_path):
         from data.aitex_loader import AITEXDataset
-        full_dataset = AITEXDataset(cfg.data.aitex_path, image_size=cfg.physics.image_size)
-        train_size = int(0.8 * len(full_dataset))
-        val_size = len(full_dataset) - train_size
-        train_dataset, val_dataset = torch.utils.data.random_split(full_dataset, [train_size, val_size])
+        train_dataset = AITEXDataset(cfg.data.aitex_path, image_size=cfg.physics.image_size, split="train")
+        val_dataset = AITEXDataset(cfg.data.aitex_path, image_size=cfg.physics.image_size, split="test")
         train_loader = DataLoader(train_dataset, batch_size=cfg.train.batch_size, shuffle=True)
         val_images, val_labels = [], []
         for i in range(min(100, len(val_dataset))):
@@ -156,3 +154,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
