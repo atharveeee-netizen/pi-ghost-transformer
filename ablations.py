@@ -63,9 +63,8 @@ def run_experiment(config_override: dict, exp_name: str):
     
     train_loader = DataLoader(TensorDataset(train_images, train_labels), batch_size=cfg.train.batch_size)
     
-    # Training loop with Early Stopping (patience = 30)
+    # Training loop runs for full max_epochs without early stopping
     best_psnr = -1.0
-    patience_counter = 0
     best_metrics = None
     
     val_zernike = torch.zeros(val_images.shape[0], cfg.physics.num_zernike).to(device)
@@ -87,17 +86,10 @@ def run_experiment(config_override: dict, exp_name: str):
             
         current_psnr = metrics['psnr']
         
-        # Check early stopping
-        if current_psnr > best_psnr + 0.05:  # meaningful improvement
+        # Track the best PSNR achieved during the full training run
+        if current_psnr > best_psnr:
             best_psnr = current_psnr
             best_metrics = metrics
-            patience_counter = 0
-        else:
-            patience_counter += 1
-            
-        if patience_counter >= 30:
-            print(f"  -> Early stopping triggered at epoch {epoch+1}")
-            break
         
     print(f"Results for {exp_name}: PSNR={best_metrics['psnr']:.2f}, F1={best_metrics['f1_score']:.4f}")
     return best_metrics
