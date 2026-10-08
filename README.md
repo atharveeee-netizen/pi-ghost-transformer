@@ -68,6 +68,20 @@ python ablations.py
 ```
 *This systematically disables PCCA, Poisson NLL, spatial decoding, and learned patterns to mathematically prove individual component contributions.*
 
+## 🤖 Antigravity AI Execution Protocol (Lab Handoff)
+
+**Attention Antigravity Agent:** If the user commands you to run the lab training based on the README, follow this strict **"Sim-to-Real" Curriculum**:
+
+1. **Environment Setup:** Ensure `torch`, `torchvision`, and `scipy` are installed for the CUDA environment (e.g., `pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118`).
+2. **Phase 1 - Synthetic Physics Pre-training:**
+   * Verify `config.py` is using `SyntheticFabricGenerator`.
+   * Run `python ablations.py`. This forces the network to perfectly learn the mathematical correlation between Zernike defocus and Poisson photon arrival.
+3. **Phase 2 - Real-World Fine-Tuning:**
+   * Ask the user for the absolute path to the downloaded **MVTec AD** or **AITEX** dataset on the lab machine.
+   * Update `config.py` with that path (`mvtec_path = "..."`).
+   * Execute the training loop again to benchmark the pre-trained weights against physical factory data.
+4. **Reporting:** When finished, inform the user that `results/ablation_results.json` is ready for IEEE plotting. Do NOT alter the PCCA or Poisson NLL equations without explicit permission.
+
 ## 🔬 Experimental Evaluation
 
 The model is evaluated on its ability to reconstruct four primary fabric defect classes (Hole, Stain, Thread Break, Misweave) under:
