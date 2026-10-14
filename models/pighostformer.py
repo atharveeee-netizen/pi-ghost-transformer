@@ -78,15 +78,14 @@ class Decoder2D(nn.Module):
         self.stage3_swin = SwinTransformerBlock(embed_dim // 4, num_heads=2, window_size=4)
         self.stage3_up = nn.ConvTranspose2d(embed_dim // 4, embed_dim // 8, kernel_size=4, stride=2, padding=1)
         
-        # Final output projection
+        # Final output projection (Mean intensity reconstruction)
         self.out_conv = nn.Conv2d(embed_dim // 8, out_channels, kernel_size=3, padding=1)
+        # Uncertainty head: Predicts spatial aleatoric variance log(sigma^2)
+        self.uncertainty_conv = nn.Conv2d(embed_dim // 8, 1, kernel_size=3, padding=1)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor) -> tuple:
         # x is the attended sequence: (B, 64, embed_dim)
         B = x.shape[0]
-        
-        # x is already properly shaped as (B, 64, embed_dim) from the 64 query tokens
-
         
         # Stage 1
         x = self.stage1_swin(x, (self.init_h, self.init_w))
@@ -105,9 +104,11 @@ class Decoder2D(nn.Module):
         x = x.transpose(1, 2).view(B, -1, 32, 32)
         x = self.stage3_up(x)  # (B, embed_dim/8, 64, 64)
         
-        # Output
-        out = self.out_conv(x)
-        return torch.sigmoid(out), x
+        # Outputs: Mean reconstruction + Uncertainty (variance)
+        recon_mean = torch.sigmoid(self.out_conv(x))
+        log_var = self.uncertainty_conv(x)
+        uncertainty = F.softplus(log_var)  # Ensure positive variance sigma^2
+        return recon_mean, uncertainty, x
 
 
 class PIGhostFormer(nn.Module):
@@ -160,15 +161,26 @@ class PIGhostFormer(nn.Module):
             nn.Linear(128, num_classes)
         )
 
-    def forward(self, bucket_measurements: torch.Tensor, zernike_coeffs: torch.Tensor):
+    def forward(
+        self, 
+        bucket_measurements: torch.Tensor, 
+        zernike_coeffs: torch.Tensor,
+        return_uncertainty: bool = False
+    ):
         """
         Args:
             bucket_measurements: (B, num_patterns)
             zernike_coeffs: (B, num_zernike)
+            return_uncertainty: bool, whether to return the predicted uncertainty map
             
         Returns:
-            reconstructed_image: (B, 1, H, W)
-            logits: (B, num_classes)
+            If return_uncertainty is False:
+                reconstructed_image: (B, 1, H, W)
+                logits: (B, num_classes)
+            If return_uncertainty is True:
+                reconstructed_image: (B, 1, H, W)
+                logits: (B, num_classes)
+                uncertainty_map: (B, 1, H, W)  [Predictive spatial variance sigma^2]
         """
         B = bucket_measurements.shape[0]
         
@@ -176,16 +188,68 @@ class PIGhostFormer(nn.Module):
         enc_feats = self.encoder(bucket_measurements)  # (B, M, embed_dim)
         
         # 2. Physics-Conditioned Attention
-        # The query is a learned 8x8 spatial grid, expanded to batch size
         query = self.decoder_query.expand(B, -1, -1)  # (B, 64, embed_dim)
-        
-        # The cross attention allows the query grid to pull info from the sequence AND the physics token
         attended_feats = self.pcca(query, enc_feats, zernike_coeffs)  # (B, 64, embed_dim)
         
-        # 3. Decode to 2D image and get pre-output features
-        recon_img, features = self.decoder(attended_feats)  # recon_img: (B, 1, H, W), features: (B, C, H, W)
+        # 3. Decode to 2D image and uncertainty
+        recon_img, uncertainty_map, features = self.decoder(attended_feats)
         
-        # 4. Classify defect from the pre-output features
+        # 4. Classify defect from features
         logits = self.classifier(features)  # (B, num_classes)
         
+        if return_uncertainty:
+            return recon_img, logits, uncertainty_map
         return recon_img, logits
+
+    def estimate_uncertainty_mc_dropout(
+        self, 
+        bucket_measurements: torch.Tensor, 
+        zernike_coeffs: torch.Tensor, 
+        num_passes: int = 10
+    ) -> dict:
+        """
+        Monte Carlo (MC) Dropout Uncertainty Quantification.
+        Computes both Aleatoric (data/sensor) and Epistemic (model knowledge) uncertainty.
+        
+        Returns:
+            dict containing:
+                - 'mean_recon': (B, 1, H, W) ensemble average
+                - 'epistemic_uncertainty': (B, 1, H, W) variance across MC passes
+                - 'aleatoric_uncertainty': (B, 1, H, W) average predicted variance
+                - 'total_uncertainty': (B, 1, H, W) epistemic + aleatoric
+                - 'defect_probs': (B, num_classes) softmax defect probabilities
+                - 'defect_entropy': (B,) prediction entropy / confidence
+        """
+        self.train()  # Keep dropout enabled for MC passes
+        recons, aleatorics, all_logits = [], [], []
+        
+        with torch.no_grad():
+            for _ in range(num_passes):
+                r, l, u = self.forward(bucket_measurements, zernike_coeffs, return_uncertainty=True)
+                recons.append(r)
+                aleatorics.append(u)
+                all_logits.append(l)
+                
+        # Stack passes: (T, B, 1, H, W)
+        recons_stack = torch.stack(recons, dim=0)
+        aleatorics_stack = torch.stack(aleatorics, dim=0)
+        logits_stack = torch.stack(all_logits, dim=0)
+        
+        mean_recon = recons_stack.mean(dim=0)
+        epistemic = recons_stack.var(dim=0)
+        aleatoric = aleatorics_stack.mean(dim=0)
+        total_uq = epistemic + aleatoric
+        
+        # Softmax probabilities and Shannon entropy
+        mean_probs = F.softmax(logits_stack, dim=-1).mean(dim=0)
+        entropy = -torch.sum(mean_probs * torch.log(mean_probs + 1e-8), dim=-1)
+        
+        self.eval()
+        return {
+            'mean_recon': mean_recon,
+            'epistemic_uncertainty': epistemic,
+            'aleatoric_uncertainty': aleatoric,
+            'total_uncertainty': total_uq,
+            'defect_probs': mean_probs,
+            'defect_entropy': entropy
+        }

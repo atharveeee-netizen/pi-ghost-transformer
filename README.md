@@ -19,33 +19,26 @@ Single-photon computational ghost imaging offers significant advantages for indu
 
 ---
 
-## 2. System Architecture
+## 2. System Architecture: IC-PINOT
 
 ```text
-                                        +-----------------------------------------------------+
-                                        |             PHYSICAL FORWARD MODEL                  |
-Clean Fabric Image x                    | 1. Differentiable Zernike PSF Defocus Blur          |  Bucket Vector
-(AITEX Dataset)      =================> | 2. Illumination Pattern Modulation (H: 512 patterns)| ============> y in R^512
-                                        | 3. SPAD Noise: Poisson + Dark Current + Pile-Up     |
-                                        +-----------------------------------------------------+
-                                                                                                        |
-                                                                                                        v
-+---------------------------------------------------------------------------------------------------------------------+
-|                                              PI-GHOSTFORMER NEURAL PIPELINE                                         |
-|                                                                                                                     |
-|  [1D Signal Encoder]                                                                                                |
-|  Bucket Vector y ---> Conv1D Stem ---> Multi-Head Self-Attention Blocks ---> Latent Token Embeddings                |
-|                                                                                             |                       |
-|  [Physics-Conditioned Cross-Attention (PCCA)]                                               |                       |
-|  Optical Wavefront State (Zernike Defocus Coeffs a_4) ---> Modulation MLP ---> Q, K, V Projections                  |
-|                                                                                             |                       |
-|  [Multi-Scale Spatial Decoder]                                                                                      |
-|  64 Learned Spatial Query Tokens ---> Cross-Attention Decoding ---> Swin Transformer Blocks ---> UNet Upsampling     |
-|                                                                                             |                       |
-|  ====================================== OUTPUT HEADS =====================================                          |
-|  Head 1: Reconstructed Fabric Micro-Structure (64x64, PSNR / SSIM)                                                   |
-|  Head 2: Multi-Class Fabric Defect Classification (Cross-Entropy, Macro F1, AUROC)                                   |
-+---------------------------------------------------------------------------------------------------------------------+
+[K Context Pairs: (y_k, x_k)] ──┐
+                                ├──> [In-Context Prompt Encoder] ──> [Prompt Tokens]
+[Query Bucket Vector y_q] ──────┘                                          │
+                                                                           ▼
+[Optical State theta] ──> [Differentiable Wavefront / FNO] ──> [Operator Tokens]
+                                                                           │
+                                                                           ▼
+                                                [Physics-Conditioned Cross-Attention (PCCA)]
+                                                                           │
+                                                                           ▼
+                                                [Multi-Scale Hybrid Swin-UNet Decoder]
+                                                                           │
+                                                                           ▼
+                                                [Evidential Normal-Inverse-Gamma Head]
+                                                                           │
+                                                                           ▼
+                                   [Mean Reconstruction gamma + Calibrated Aleatoric/Epistemic UQ]
 ```
 
 ---
@@ -71,6 +64,22 @@ has gradient $\frac{\partial \mathcal{L}_{\text{Poisson}}}{\partial \lambda_m} =
 - **Phase 1 (Structural Warmup, Epochs 1–50)**: Optimized under bounded MSE loss to establish coarse spatial topology and stabilize intensity magnitudes.
 - **Phase 2 (Quantum Physics Fine-Tuning, Epochs 51+)**: Dynamically switches to calibrated Poisson NLL ($\lambda_{\text{physics}} = 10^{-4}$) with Total Variation (TV) regularization to align high-frequency features with the true photon Poisson statistics.
 - **Control Baseline (`AnscombeMSELoss`)**: Includes variance-stabilizing Anscombe transformation $A(x) = 2\sqrt{x + 3/8}$ for empirical benchmarking.
+
+### D. Native Evidential Deep Learning (Normal-Inverse-Gamma UQ) (`models/evidential.py`)
+Rather than relying on computationally prohibitive Monte Carlo dropout ($T = 30$ passes), the evidential decoder places a continuous **Normal-Inverse-Gamma (NIG)** prior over the reconstruction:
+$$\mu \sim \mathcal{N}\left(\gamma, \frac{\sigma^2}{v}\right), \quad \sigma^2 \sim \Gamma^{-1}(\alpha, \beta)$$
+In a **single deterministic pass ($O(1)$ latency)**, it predicts:
+- **Mean Reconstruction**: $\hat{x} = \gamma \in [0, 1]$
+- **Aleatoric (Sensor) Uncertainty**: $\text{Var}_{\text{aleatoric}} = \frac{\beta}{\alpha - 1}$
+- **Epistemic (Model) Uncertainty**: $\text{Var}_{\text{epistemic}} = \frac{\beta}{v(\alpha - 1)}$
+
+### E. In-Context Zero-Gradient Adaptation Engine (`models/in_context.py`)
+Industrial deployment cannot afford slow test-time backpropagation (PnP-ADMM or Deep Image Prior). The in-context engine accepts $K$ target-domain reference pairs $(y_k, x_k)$ and distills them into condition prompt tokens via cross-attention. The model adapts to new fabric weaves or physical lens grease instantly at inference time **without updating a single model weight**.
+
+### F. Differentiable Optical Fourier Neural Operator (`physics/fno.py`)
+Extends beyond analytical Zernike polynomials by parameterizing continuous wave propagation in frequency space:
+$$\mathcal{K}(v)(x) = \mathcal{F}^{-1}\left( R_\phi \cdot \mathcal{F}(v) \right)(x)$$
+Spectral convolutions learn arbitrary physical lens degradations and vibration-induced wavefront shifts directly across the optical spectrum.
 
 ---
 
@@ -163,10 +172,15 @@ cd pi-ghost-transformer
 pip install -r requirements.txt
 ```
 
-### Verification Smoke Test
-Run the end-to-end pipeline validation check (runs in under 5 seconds):
+### Verification Smoke Tests
+1. **PI-GhostFormer Baseline Pipeline:**
 ```bash
 python smoke_test.py
+```
+
+2. **Flagship IC-PINOT Pipeline (Evidential NIG + In-Context + FNO):**
+```bash
+python smoke_test_ic_pinot.py
 ```
 
 ### Full Model Training (AITEX Curriculum)

@@ -1,0 +1,74 @@
+{
+    "shots_5": {
+        "scratch": {
+            "psnr": 5.829741209745407,
+            "ssim": 0.020127544179558754,
+            "accuracy": 1.0,
+            "f1_score": 1.0,
+            "auroc": NaN
+        },
+        "sim_to_real": {
+            "psnr": 6.710799932479858,
+            "ssim": 0.07890806905925274,
+            "accuracy": 1.0,
+            "f1_score": 1.0,
+            "auroc": NaN
+        },
+        "psnr_gain": 0.8810587227344513,
+        "f1_gain": 0.0
+    },
+    "shots_15": {
+        "scratch": {
+            "psnr": 5.934915095567703,
+            "ssim": 0.027095061261206865,
+            "accuracy": 1.0,
+            "f1_score": 1.0,
+            "auroc": NaN
+        },
+        "sim_to_real": {
+            "psnr": 6.700479686260223,
+            "ssim": 0.07812166586518288,
+            "accuracy": 1.0,
+            "f1_score": 1.0,
+            "auroc": NaN
+        },
+        "psnr_gain": 0.7655645906925201,
+        "f1_gain": 0.0
+    },
+    "shots_30": {
+        "scratch": {
+            "psnr": 6.390483528375626,
+            "ssim": 0.06137173343449831,
+            "accuracy": 1.0,
+            "f1_score": 1.0,
+            "auroc": NaN
+        },
+        "sim_to_real": {
+            "psnr": 6.657846570014954,
+            "ssim": 0.06918797828257084,
+            "accuracy": 1.0,
+            "f1_score": 1.0,
+            "auroc": NaN
+        },
+        "psnr_gain": 0.267363041639328,
+        "f1_gain": 0.0
+    },
+    "shots_60": {
+        "scratch": {
+            "psnr": 6.81480199098587,
+            "ssim": 0.08540004678070545,
+            "accuracy": 1.0,
+            "f1_score": 1.0,
+            "auroc": NaN
+        },
+        "sim_to_real": {
+            "psnr": 6.8680740892887115,
+            "ssim": 0.0817978959530592,
+            "accuracy": 1.0,
+            "f1_score": 1.0,
+            "auroc": NaN
+        },
+        "psnr_gain": 0.053272098302841187,
+        "f1_gain": 0.0
+    }
+}

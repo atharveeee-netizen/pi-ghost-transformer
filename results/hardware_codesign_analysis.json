@@ -1,0 +1,32 @@
+{
+    "Learned_Differentiable": {
+        "name": "Learned Co-Designed",
+        "num_patterns": 512,
+        "compression_ratio": 0.125,
+        "condition_number": 700.8005619727455,
+        "effective_rank": 512,
+        "high_freq_energy_ratio": 0.0020005031511686334,
+        "mean_intensity": 0.49996235966682434,
+        "std_intensity": 0.024947570636868477
+    },
+    "Deterministic_Hadamard": {
+        "name": "Deterministic Hadamard",
+        "num_patterns": 512,
+        "compression_ratio": 0.125,
+        "condition_number": 257.996129572981,
+        "effective_rank": 512,
+        "high_freq_energy_ratio": 0.41228070175438597,
+        "mean_intensity": 0.5009765625,
+        "std_intensity": 0.4999983310699463
+    },
+    "Random_Binary": {
+        "name": "Random Binary",
+        "num_patterns": 512,
+        "compression_ratio": 0.125,
+        "condition_number": 34.68951830868187,
+        "effective_rank": 512,
+        "high_freq_energy_ratio": 0.4025235670934609,
+        "mean_intensity": 0.5000672340393066,
+        "std_intensity": 0.4999999701976776
+    }
+}
