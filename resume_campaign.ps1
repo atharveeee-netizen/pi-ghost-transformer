@@ -15,7 +15,7 @@ while ($true) {
     $Now = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     Write-Host "[$Now] Running / Resuming Master Campaign..." -ForegroundColor Cyan
 
-    & $PythonExe -u run_master_campaign.py --all --epochs 150 --seeds 42
+    & $PythonExe -u run_master_campaign.py --all --epochs 300 --seeds 42 1337 2026
 
     if ($LASTEXITCODE -eq 0) {
         Write-Host "`n===============================================================================" -ForegroundColor Green
