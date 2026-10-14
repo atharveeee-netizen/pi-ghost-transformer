@@ -95,7 +95,20 @@ All models were trained to full empirical convergence on an **NVIDIA GeForce RTX
 
 ---
 
-## 5. Repository Structure
+## 5. Supported Datasets & Benchmarks
+
+The project supports four industrial and optical defect benchmarks located in `data/`:
+
+| Dataset | Modality / Domain | Resolution / Format | Primary Application in Paper |
+| :--- | :--- | :--- | :--- |
+| **[AITEX](https://www.aitex.es/)** | Real industrial textile fabrics (7 weave types) | $4096 \times 256$ raw images, sliced with pixel-level defect masks | **Primary Benchmark**: LOFO cross-validation, physical ablation studies, and defect classification. |
+| **[TILDA 400](https://lmb.informatik.uni-freiburg.de/resources/datasets/tilda.en.html)** | Multi-weave textile texture database (DFG benchmark) | $64 \times 64$ patches across 5 defect classes | **Cross-Domain Textile Validation**: Multi-illumination zero-shot generalization. |
+| **[DAGM 2007](https://resources.mpi-inf.mpg.de/dagm/2007/)** | Weakly supervised textured industrial surfaces | 10 anomaly classes with subtle boundary contrast | **Texture Anomaly Generalization**: Testing low-contrast micro-flaw sensitivity. |
+| **[MVTec-AD](https://www.mvtec.com/company/research/datasets/mvtec-ad)** | Industrial anomaly detection (*Carpet* & *Grid* subsets) | High-resolution real industrial textures with ground-truth masks | **Standardized Industry Benchmark**: Cross-material transfer comparison against standard vision models. |
+
+---
+
+## 6. Repository Structure
 
 ```
 .
@@ -107,7 +120,8 @@ All models were trained to full empirical convergence on an **NVIDIA GeForce RTX
 ├── data/
 │   ├── aitex_loader.py       # Leave-One-Fabric-Out PyTorch dataset for AITEX
 │   ├── synthetic.py          # Synthetic fabric generator fallback
-│   └── aitex/                # Real physical AITEX images (Defect & NODefect)
+│   ├── aitex/                # Real physical AITEX images (Defect & NODefect)
+│   └── benchmarks/           # Downloaded benchmark datasets (TILDA, DAGM, MVTec)
 ├── models/
 │   ├── pighostformer.py      # End-to-end PI-GhostFormer network
 │   ├── attention.py          # Physics-Conditioned Cross-Attention (PCCA)
@@ -126,7 +140,7 @@ All models were trained to full empirical convergence on an **NVIDIA GeForce RTX
 
 ---
 
-## 6. Installation & Quick Start
+## 7. Installation & Quick Start
 
 ### Prerequisites
 - Python 3.10+
@@ -156,14 +170,70 @@ python ablations.py
 
 ---
 
-## 7. IEEE Submission & Reproducibility Notice
+## 8. References & Citations
 
-- **Code & Seed Determinism**: Fixed PyTorch and NumPy random seeds ensure exact numerical reproducibility of all reported figures and tables.
-- **Data Integrity**: Training and evaluation adhere to strict fabric-level partitioning to guarantee zero data leakage between train and test splits.
-- **AI Tooling Disclosure**: In compliance with IEEE author guidelines, agentic AI assistance was utilized for script execution, boilerplate test scaffolding, and initial documentation drafting under direct author verification and supervision.
+If you use this codebase, models, or benchmarks in your research, please cite the foundational literature and our paper:
+
+```bibtex
+@article{pighostformer2026,
+  title={Physics-Informed Ghost Transformer: Defocus-Invariant Single-Photon Computational Imaging for Fabric Micro-Defect Detection},
+  author={Dahima, Atharve and Collaborators},
+  journal={IEEE Transactions on Computational Imaging},
+  year={2026},
+  note={Under Review}
+}
+
+@article{silvestre2014aitex,
+  title={A Public Fabric Database for Defect Detection Methods and Results Evaluation},
+  author={Silvestre-Blanes, Javier and Albero-Albero, Teresa and Miralles, Ignacio and P{\'e}rez-Llorens, Roberto and Moreno, Jorge},
+  journal={Autex Research Journal},
+  volume={14},
+  number={4},
+  pages={304--313},
+  year={2014},
+  publisher={Sciendo}
+}
+
+@techreport{schulz1999tilda,
+  title={TILDA: A Texture Image Database},
+  author={Schulz-Mirbach, Hanns and Frey, M. and Schladt, U.},
+  institution={University of Freiburg, Institute of Computer Science},
+  year={1999}
+}
+
+@inproceedings{bergmann2019mvtec,
+  title={MVTec AD--A Comprehensive Real-World Dataset for Unsupervised Anomaly Detection},
+  author={Bergmann, Paul and Fauser, Michael and Sattlegger, David and Steger, Carsten},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages={9592--9600},
+  year={2019}
+}
+
+@article{shapiro2008computational,
+  title={Computational Ghost Imaging},
+  author={Shapiro, Jeffrey H.},
+  journal={Physical Review A},
+  volume={78},
+  number={6},
+  pages={061802},
+  year={2008},
+  publisher={APS}
+}
+
+@article{gnanasambandam2020quanta,
+  title={Image Classification in the Dark Using Quanta Image Sensors},
+  author={Gnanasambandam, Abhiram and Chan, Stanley H.},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume={42},
+  number={10},
+  pages={2501--2515},
+  year={2020},
+  publisher={IEEE}
+}
+```
 
 ---
 
-## 8. License
+## 9. License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

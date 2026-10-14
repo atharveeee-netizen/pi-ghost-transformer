@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyTorch checkpoints and models
+*.pt
+*.pth
+*.ckpt
+
+# Datasets and benchmark directories
+data/aitex/
+data/benchmarks/
+*.zip
+*.tar.gz
+*.tar.xz
+
+# Training logs
+*.log
+training_log*.txt
+train_real_log.txt
+
+# OS and Editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
