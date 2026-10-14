@@ -95,16 +95,27 @@ All models were trained to full empirical convergence on an **NVIDIA GeForce RTX
 
 ---
 
-## 5. Supported Datasets & Benchmarks
+## 5. Supported Datasets & Multi-Benchmark Evaluation Suite
 
-The project supports four industrial and optical defect benchmarks located in `data/`:
+The project includes a comprehensive cross-domain benchmark suite evaluating the model across **four industrial and optical defect databases** located in `data/`:
 
-| Dataset | Modality / Domain | Resolution / Format | Primary Application in Paper |
+| Dataset | Modality / Domain | Resolution / Scale | Evaluation Protocol |
 | :--- | :--- | :--- | :--- |
-| **[AITEX](https://www.aitex.es/)** | Real industrial textile fabrics (7 weave types) | $4096 \times 256$ raw images, sliced with pixel-level defect masks | **Primary Benchmark**: LOFO cross-validation, physical ablation studies, and defect classification. |
-| **[TILDA 400](https://lmb.informatik.uni-freiburg.de/resources/datasets/tilda.en.html)** | Multi-weave textile texture database (DFG benchmark) | $64 \times 64$ patches across 5 defect classes | **Cross-Domain Textile Validation**: Multi-illumination zero-shot generalization. |
-| **[DAGM 2007](https://resources.mpi-inf.mpg.de/dagm/2007/)** | Weakly supervised textured industrial surfaces | 10 anomaly classes with subtle boundary contrast | **Texture Anomaly Generalization**: Testing low-contrast micro-flaw sensitivity. |
-| **[MVTec-AD](https://www.mvtec.com/company/research/datasets/mvtec-ad)** | Industrial anomaly detection (*Carpet* & *Grid* subsets) | High-resolution real industrial textures with ground-truth masks | **Standardized Industry Benchmark**: Cross-material transfer comparison against standard vision models. |
+| **[AITEX](https://www.aitex.es/)** | Real industrial textile fabrics (7 weave types) | $4096 \times 256$ raw images, pixel defect masks | **Primary Core Benchmark**: Strict Leave-One-Fabric-Out (LOFO) split across 150 epochs. |
+| **[TILDA 400](https://lmb.informatik.uni-freiburg.de/resources/datasets/tilda.en.html)** | Multi-weave textile texture database (DFG benchmark) | $64 \times 64$ patches, 20,480 samples, 5 classes | **Cross-Domain Textile Validation**: Multi-illumination zero-shot generalization across 150–200 epochs. |
+| **[DAGM 2007](https://resources.mpi-inf.mpg.de/dagm/2007/)** | Weakly supervised textured industrial surfaces | 10 anomaly classes (2,300 high-res images) | **Texture Micro-Flaw Generalization**: Testing weak-contrast anomaly sensitivity across 150–200 epochs. |
+| **[MVTec-AD](https://www.mvtec.com/company/research/datasets/mvtec-ad)** | Full Industrial Anomaly Detection (**All 15 Categories**) | 5,354 high-resolution images with ground-truth masks | **Comprehensive Industrial Benchmark**: Evaluated across both textures and manufactured parts across 150–200 epochs. |
+
+### All 15 MVTec-AD Categories Evaluated:
+1. **Woven & Surface Textures (Primary)**: `carpet`, `grid`, `leather`, `tile`, `wood`
+2. **Manufactured Objects & Components**: `bottle`, `cable`, `capsule`, `hazelnut`, `metal_nut`, `pill`, `screw`, `toothbrush`, `transistor`, `zipper`
+
+### Deep Multi-Hour Training Protocol (150–200 Epochs):
+To provide complete convergence statistics for Q1 publication:
+- **Optimization Budget**: 150 to 200 epochs per dataset / category.
+- **Learning Rate Schedule**: Initial $\eta_0 = 10^{-4}$ with **Cosine Annealing Decay** terminating at $\eta_{\min} = 10^{-6}$.
+- **Two-Phase Physics Curriculum**: Phase 1 (15–30 epochs MSE structural warmup) $\rightarrow$ Phase 2 (calibrated Poisson NLL $\lambda_{\text{physics}} = 10^{-4}$).
+- **Optics Perturbation**: Random Zernike defocus ($a_4 \in [0.0, 3.0]$ waves) during training; fixed midpoint defocus ($a_4 = 1.5$) during zero-shot validation.
 
 ---
 
