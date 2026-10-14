@@ -234,15 +234,50 @@ def train_single_benchmark_ic_pinot(
                 f"Acc: {clf_metrics['accuracy']:.1%} | Epistemic: {avg_epistemic:.4f}"
             )
             
+        # Continuous heartbeat update for power-cut tracking
+        try:
+            import datetime
+            heartbeat = {
+                "active_dataset": name,
+                "seed": seed,
+                "epoch": epoch,
+                "total_epochs": epochs,
+                "current_best_psnr": best_psnr,
+                "timestamp": datetime.datetime.now().isoformat()
+            }
+            atomic_save_json(heartbeat, "results/heartbeat.json")
+        except Exception:
+            pass
+            
     print(f"--> [DONE {name} S{seed}] Best: PSNR={best_metrics.get('psnr', 0):.2f} dB, SSIM={best_metrics.get('ssim', 0):.3f}, Acc={best_metrics.get('accuracy', 0):.1%}")
     return best_metrics
 
 
+def atomic_save_json(data: dict, file_path: str):
+    """Atomically writes JSON to disk using temporary file replacement to survive power cuts."""
+    os.makedirs(os.path.dirname(os.path.abspath(file_path)), exist_ok=True)
+    tmp_path = file_path + ".tmp"
+    with open(tmp_path, "w") as f:
+        json.dump(data, f, indent=4)
+    os.replace(tmp_path, file_path)
+
+
 def run_full_suite(epochs: int = 150, seeds: list = [42], categories: list = None):
     os.makedirs("results", exist_ok=True)
-    all_results = {}
-    target_cats = categories if categories is not None else MVTEC_CATEGORIES
+    results_path = "results/ic_pinot_master_benchmarks.json"
     
+    # Load previous results for seamless power-cut resume
+    if os.path.exists(results_path):
+        try:
+            with open(results_path, "r") as f:
+                all_results = json.load(f)
+            print(f"[POWER-CUT RESUME] Loaded existing progress from {results_path}")
+        except Exception:
+            all_results = {}
+    else:
+        all_results = {}
+        
+    target_cats = categories if categories is not None else MVTEC_CATEGORIES
     datasets_to_run = []
     
     # 1. TILDA 400
@@ -273,12 +308,23 @@ def run_full_suite(epochs: int = 150, seeds: list = [42], categories: list = Non
         except Exception as e:
             print(f"Skipping MVTec-{cat}: {e}")
             
-    # Run multi-seed iterations
+    # Run multi-seed iterations with power-cut resume
     for ds_name, ds_train, ds_test in datasets_to_run:
-        all_results[ds_name] = {"seed_runs": []}
-        psnr_list, ssim_list, acc_list = [], [], []
+        if ds_name not in all_results:
+            all_results[ds_name] = {"seed_runs": []}
+            
+        completed_seeds = {r.get("seed") for r in all_results[ds_name].get("seed_runs", [])}
         
+        # Check if all requested seeds are already completed
+        if set(seeds).issubset(completed_seeds):
+            print(f"[POWER-CUT RESUME] {ds_name} already completed across seeds {seeds}. Skipping...")
+            continue
+            
         for seed in seeds:
+            if seed in completed_seeds:
+                print(f"[POWER-CUT RESUME] {ds_name} (Seed {seed}) already completed. Skipping...")
+                continue
+                
             res = train_single_benchmark_ic_pinot(
                 ds_name,
                 ds_train,
@@ -287,30 +333,35 @@ def run_full_suite(epochs: int = 150, seeds: list = [42], categories: list = Non
                 seed=seed
             )
             all_results[ds_name]["seed_runs"].append(res)
-            psnr_list.append(res.get("psnr", 0.0))
-            ssim_list.append(res.get("ssim", 0.0))
-            acc_list.append(res.get("accuracy", 0.0))
             
-        all_results[ds_name]["summary"] = {
-            "psnr_mean": float(np.mean(psnr_list)),
-            "psnr_std": float(np.std(psnr_list)),
-            "ssim_mean": float(np.mean(ssim_list)),
-            "ssim_std": float(np.std(ssim_list)),
-            "accuracy_mean": float(np.mean(acc_list)),
-            "accuracy_std": float(np.std(acc_list)),
-        }
-        print(
-            f"\n>>> [SUMMARY {ds_name}]: PSNR={all_results[ds_name]['summary']['psnr_mean']:.2f} +/- {all_results[ds_name]['summary']['psnr_std']:.2f} dB | "
-            f"SSIM={all_results[ds_name]['summary']['ssim_mean']:.3f} +/- {all_results[ds_name]['summary']['ssim_std']:.3f} | "
-            f"Acc={all_results[ds_name]['summary']['accuracy_mean']:.1%} +/- {all_results[ds_name]['summary']['accuracy_std']:.1%}\n"
-        )
-        
-        # Save intermediate updates
-        with open("results/ic_pinot_master_benchmarks.json", "w") as f:
-            json.dump(all_results, f, indent=4)
+            # Atomic save immediately after every seed finishes
+            atomic_save_json(all_results, results_path)
+            
+        # Recompute summary across all seed runs
+        seed_runs = all_results[ds_name].get("seed_runs", [])
+        if seed_runs:
+            psnr_list = [r.get("psnr", 0.0) for r in seed_runs]
+            ssim_list = [r.get("ssim", 0.0) for r in seed_runs]
+            acc_list = [r.get("accuracy", 0.0) for r in seed_runs]
+            
+            all_results[ds_name]["summary"] = {
+                "psnr_mean": float(np.mean(psnr_list)),
+                "psnr_std": float(np.std(psnr_list)),
+                "ssim_mean": float(np.mean(ssim_list)),
+                "ssim_std": float(np.std(ssim_list)),
+                "accuracy_mean": float(np.mean(acc_list)),
+                "accuracy_std": float(np.std(acc_list)),
+            }
+            print(
+                f"\n>>> [SUMMARY {ds_name}]: PSNR={all_results[ds_name]['summary']['psnr_mean']:.2f} +/- {all_results[ds_name]['summary']['psnr_std']:.2f} dB | "
+                f"SSIM={all_results[ds_name]['summary']['ssim_mean']:.3f} +/- {all_results[ds_name]['summary']['ssim_std']:.3f} | "
+                f"Acc={all_results[ds_name]['summary']['accuracy_mean']:.1%} +/- {all_results[ds_name]['summary']['accuracy_std']:.1%}\n"
+            )
+            # Atomic save summary
+            atomic_save_json(all_results, results_path)
             
     print("\n=======================================================")
-    print("ALL BENCHMARK RUNS COMPLETE! Results saved to results/ic_pinot_master_benchmarks.json")
+    print(f"ALL BENCHMARK RUNS COMPLETE! Results saved to {results_path}")
     print("=======================================================")
 
 
