@@ -62,7 +62,7 @@ class EvidentialNIGLoss(nn.Module):
         super().__init__()
         self.coeff_reg = coeff_reg
 
-    def forward(self, nig_dict: dict, target: torch.Tensor) -> dict:
+    def forward(self, nig_dict: dict, target: torch.Tensor, coeff_reg: float = None) -> dict:
         gamma = nig_dict["gamma"]
         v = nig_dict["v"]
         alpha = nig_dict["alpha"]
@@ -90,7 +90,8 @@ class EvidentialNIGLoss(nn.Module):
         
         loss_nll = nll.mean()
         loss_reg = reg.mean()
-        total_loss = loss_nll + self.coeff_reg * loss_reg
+        coeff = self.coeff_reg if coeff_reg is None else coeff_reg
+        total_loss = loss_nll + coeff * loss_reg
         
         return {
             "loss_evidential": total_loss,

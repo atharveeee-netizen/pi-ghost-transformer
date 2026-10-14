@@ -55,15 +55,15 @@ class InContextPromptEncoder(nn.Module):
             return None  # No in-context conditioning supplied (fallback to static)
             
         B, K, M = context_meas.shape
-        # Flatten batch and K
-        meas_flat = context_meas.view(B * K, M)
-        imgs_flat = context_imgs.view(B * K, 1, context_imgs.shape[-2], context_imgs.shape[-1])
+        # Flatten batch and K safely using reshape
+        meas_flat = context_meas.reshape(B * K, M)
+        imgs_flat = context_imgs.reshape(B * K, 1, context_imgs.shape[-2], context_imgs.shape[-1])
         
         meas_tokens = self.meas_proj(meas_flat) # (B*K, embed_dim)
         img_tokens = self.img_proj(imgs_flat)   # (B*K, embed_dim)
         
         # Fused pair representation
-        pair_tokens = (meas_tokens + img_tokens).view(B, K, self.embed_dim)
+        pair_tokens = (meas_tokens + img_tokens).reshape(B, K, self.embed_dim)
         
         # Distill K pairs into fixed length prompt tokens using learned queries
         prompt_q = self.learned_prompt_queries.expand(B, -1, -1)

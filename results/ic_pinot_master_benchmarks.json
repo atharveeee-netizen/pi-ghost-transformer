@@ -1,0 +1,68 @@
+{
+    "TILDA 400": {
+        "seed_runs": [
+            {
+                "psnr": 19.02398992329836,
+                "ssim": 0.6706092972308397,
+                "accuracy": 0.908,
+                "f1_score": 0.4758909853249476,
+                "aleatoric_uncertainty": 0.015035959106171504,
+                "epistemic_uncertainty": 0.006595641651074402,
+                "best_epoch": 0,
+                "seed": 42
+            }
+        ],
+        "summary": {
+            "psnr_mean": 19.02398992329836,
+            "psnr_std": 0.0,
+            "ssim_mean": 0.6706092972308397,
+            "ssim_std": 0.0,
+            "accuracy_mean": 0.908,
+            "accuracy_std": 0.0
+        }
+    },
+    "DAGM 2007": {
+        "seed_runs": [
+            {
+                "psnr": 21.44940699140231,
+                "ssim": 0.38348085019323563,
+                "accuracy": 0.8695652173913043,
+                "f1_score": 0.46511627906976744,
+                "aleatoric_uncertainty": 0.007861798726177463,
+                "epistemic_uncertainty": 0.003072573420164796,
+                "best_epoch": 0,
+                "seed": 42
+            }
+        ],
+        "summary": {
+            "psnr_mean": 21.44940699140231,
+            "psnr_std": 0.0,
+            "ssim_mean": 0.38348085019323563,
+            "ssim_std": 0.0,
+            "accuracy_mean": 0.8695652173913043,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Carpet": {
+        "seed_runs": [
+            {
+                "psnr": 15.873240679502487,
+                "ssim": 0.23304983973503113,
+                "accuracy": 0.23931623931623933,
+                "f1_score": 0.19310344827586207,
+                "aleatoric_uncertainty": 0.0879287701100111,
+                "epistemic_uncertainty": 0.06953209824860096,
+                "best_epoch": 0,
+                "seed": 42
+            }
+        ],
+        "summary": {
+            "psnr_mean": 15.873240679502487,
+            "psnr_std": 0.0,
+            "ssim_mean": 0.23304983973503113,
+            "ssim_std": 0.0,
+            "accuracy_mean": 0.23931623931623933,
+            "accuracy_std": 0.0
+        }
+    }
+}

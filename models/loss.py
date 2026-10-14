@@ -43,6 +43,25 @@ class PoissonNLLLoss(nn.Module):
         return torch.mean(nll)
 
 
+class NormalizedPoissonNLLLoss(nn.Module):
+    """
+    Flux-Normalized Log-Stabilized Poisson Negative Log-Likelihood Loss.
+    Scales measurements by mean photon count N0 to balance gradient norms
+    with spatial image reconstruction losses (MSE / Evidential NLL).
+    """
+    def __init__(self, eps: float = 1e-8, photon_scale: float = 10.0):
+        super().__init__()
+        self.eps = eps
+        self.photon_scale = photon_scale
+        
+    def forward(self, expected: torch.Tensor, measured: torch.Tensor) -> torch.Tensor:
+        exp_norm = torch.clamp(expected / self.photon_scale, min=self.eps)
+        meas_norm = torch.clamp(measured / self.photon_scale, min=0.0)
+        nll = exp_norm - meas_norm * torch.log(exp_norm)
+        return torch.mean(nll)
+
+
+
 class TotalVariationLoss(nn.Module):
     """
     Total Variation (TV) Regularization Loss.
