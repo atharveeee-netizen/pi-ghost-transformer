@@ -1,0 +1,23 @@
+{
+    "TILDA 400 (Textile Patches)": {
+        "psnr": 19.302804544568062,
+        "ssim": 0.6914773602038622,
+        "accuracy": 0.908,
+        "f1_score": 0.4758909853249476,
+        "best_epoch": 11
+    },
+    "DAGM 2007 (Industrial Surfaces)": {
+        "psnr": 21.860304839081234,
+        "ssim": 0.3889250573184755,
+        "accuracy": 0.8695652173913043,
+        "f1_score": 0.46511627906976744,
+        "best_epoch": 14
+    },
+    "MVTec-AD (Carpet Texture)": {
+        "psnr": 17.361246049404144,
+        "ssim": 0.25711748749017715,
+        "accuracy": 0.23931623931623933,
+        "f1_score": 0.19310344827586207,
+        "best_epoch": 12
+    }
+}
