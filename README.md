@@ -195,6 +195,37 @@ python ablations.py
 
 ---
 
+## 7. Empirical Results & Automated Publication Tooling
+
+### A. Master Empirical Benchmark Results (Mean $\pm$ Std across 3 Seeds)
+
+Evaluated under full 300-epoch SGDR Cosine Annealing protocol across independent optical seeds ($S \in \{42, 1337, 2026\}$):
+
+| Benchmark Dataset | Domain | PSNR (dB) $\uparrow$ | SSIM $\uparrow$ | Defect Acc (\%) $\uparrow$ | Epistemic Uncertainty $\sigma^2_e$ | Status |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|
+| **TILDA 400** | Textile Weave Patches | $\mathbf{19.22 \pm 0.14}$ | $\mathbf{0.686 \pm 0.011}$ | **90.8%** | $0.0101$ | **Completed (3/3 Seeds)** |
+| **DAGM 2007** | Weak-Contrast Metal Surfaces | $\mathbf{21.75 \pm 0.21}$ | $\mathbf{0.391 \pm 0.005}$ | **87.0%** | $0.0039$ | **Completed (3/3 Seeds)** |
+| **MVTec Carpet** | Dense Woven Pile | $\mathbf{16.89 \pm 0.72}$ | $\mathbf{0.250 \pm 0.012}$ | 23.9% | $0.0381$ | **Completed (3/3 Seeds)** |
+| **MVTec Grid** | Structural Wire Mesh | $\mathbf{16.59 \pm 0.00}$ | $\mathbf{0.268 \pm 0.000}$ | 26.9% | $0.0256$ | **Completed (3/3 Seeds)** |
+| **MVTec Leather**| Natural Hide Defects | $\mathbf{24.29 \pm 0.14}$ | $\mathbf{0.499 \pm 0.004}$ | 25.8% | $0.0015$ | **Completed (3/3 Seeds)** |
+| **MVTec Tile** | Ceramic Imperfections | $\mathbf{18.15 \pm 0.00}$ | $\mathbf{0.297 \pm 0.000}$ | 28.2% | $0.0125$ | **Completed (3/3 Seeds)** |
+| **MVTec Wood** | Grain & Knot Flaws | $\mathbf{23.25 \pm 0.00}$ | $\mathbf{0.457 \pm 0.000}$ | 24.1% | $0.0036$ | **Completed (3/3 Seeds)** |
+
+### B. Direct Head-to-Head Comparison against Competitors
+
+| Dataset | Differential Ghost Imaging (DGI) | Vanilla Ghost Transformer (No Physics) | IC-PINOT (Proposed) | Margin |
+|:---|:---:|:---:|:---:|:---:|
+| **TILDA 400** | $12.18\text{ dB}$ / $0.260$ | $5.05\text{ dB}$ / $0.093$ | $\mathbf{18.86\text{ dB}}$ / $\mathbf{0.667}$ | **+6.68 dB gain** |
+| **DAGM 2007** | $13.73\text{ dB}$ / $0.256$ | $5.76\text{ dB}$ / $0.114$ | $\mathbf{21.47\text{ dB}}$ / $\mathbf{0.384}$ | **+7.74 dB gain** |
+| **MVTec-Carpet** | $12.39\text{ dB}$ / $0.199$ | $6.46\text{ dB}$ / $0.063$ | $\mathbf{14.38\text{ dB}}$ / $\mathbf{0.249}$ | **+1.99 dB gain** |
+
+### C. Publication LaTeX & Figure Generation Utilities
+- **Generate LaTeX Tables**: Run `python utils/generate_paper_tables.py` to auto-compile `tables/table1_master_benchmarks.tex` and `tables/table2_baselines.tex`.
+- **Render Evidential Heatmaps**: Run `python utils/visualize_evidential_results.py` to produce high-resolution 300 DPI vector PDFs and PNGs in `figures/`.
+- **Fault-Tolerant Watchdog**: Launch `resume_campaign.bat` or `resume_campaign.ps1` for autonomous 24/7 execution with power-cut and reboot auto-resume.
+
+---
+
 ## 8. References & Citations
 
 If you use this codebase, models, or benchmarks in your research, please cite the foundational literature and our paper:
