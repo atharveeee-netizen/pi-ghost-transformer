@@ -292,5 +292,425 @@
             "accuracy_mean": 0.24050632911392408,
             "accuracy_std": 2.7755575615628914e-17
         }
+    },
+    "MVTec-Bottle": {
+        "seed_runs": [
+            {
+                "psnr": 23.846694231033325,
+                "ssim": 0.8537796636422476,
+                "accuracy": 0.24096385542168675,
+                "f1_score": 0.1941747572815534,
+                "aleatoric_uncertainty": 471.9156748453776,
+                "epistemic_uncertainty": 641.7632446289062,
+                "best_epoch": 270,
+                "seed": 42
+            },
+            {
+                "psnr": 24.030200242996216,
+                "ssim": 0.8630163172880808,
+                "accuracy": 0.24096385542168675,
+                "f1_score": 0.1941747572815534,
+                "aleatoric_uncertainty": 423.765380859375,
+                "epistemic_uncertainty": 602.1772054036459,
+                "best_epoch": 270,
+                "seed": 1337
+            },
+            {
+                "psnr": 23.692065080006916,
+                "ssim": 0.8507539729277293,
+                "accuracy": 0.24096385542168675,
+                "f1_score": 0.1941747572815534,
+                "aleatoric_uncertainty": 629.1223754882812,
+                "epistemic_uncertainty": 628.9780883789062,
+                "best_epoch": 299,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 23.856319851345486,
+            "psnr_std": 0.13821079682196918,
+            "ssim_mean": 0.8558499846193525,
+            "ssim_std": 0.00521574181455474,
+            "accuracy_mean": 0.24096385542168675,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Cable": {
+        "seed_runs": [
+            {
+                "psnr": 18.049899101257324,
+                "ssim": 0.6899726986885071,
+                "accuracy": 0.38666666666666666,
+                "f1_score": 0.27884615384615385,
+                "aleatoric_uncertainty": 0.0014123286702670157,
+                "epistemic_uncertainty": 0.016259835660457612,
+                "best_epoch": 260,
+                "seed": 42
+            },
+            {
+                "psnr": 18.055413126945496,
+                "ssim": 0.6884724617004394,
+                "accuracy": 0.38666666666666666,
+                "f1_score": 0.27884615384615385,
+                "aleatoric_uncertainty": 0.000947719212854281,
+                "epistemic_uncertainty": 0.01555219292640686,
+                "best_epoch": 250,
+                "seed": 1337
+            },
+            {
+                "psnr": 18.05877137184143,
+                "ssim": 0.689736419916153,
+                "accuracy": 0.38666666666666666,
+                "f1_score": 0.27884615384615385,
+                "aleatoric_uncertainty": 0.0011200503911823034,
+                "epistemic_uncertainty": 0.016166455671191217,
+                "best_epoch": 270,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 18.054694533348083,
+            "psnr_std": 0.003657556460997915,
+            "ssim_mean": 0.6893938601016999,
+            "ssim_std": 0.0006586289673507254,
+            "accuracy_mean": 0.38666666666666666,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Capsule": {
+        "seed_runs": [
+            {
+                "psnr": 30.783993403116863,
+                "ssim": 0.9612864454587301,
+                "accuracy": 0.17424242424242425,
+                "f1_score": 0.14838709677419354,
+                "aleatoric_uncertainty": 0.0006600864968883494,
+                "epistemic_uncertainty": 0.0006048171004901329,
+                "best_epoch": 290,
+                "seed": 42
+            },
+            {
+                "psnr": 30.88839186562432,
+                "ssim": 0.9618009130160013,
+                "accuracy": 0.17424242424242425,
+                "f1_score": 0.14838709677419354,
+                "aleatoric_uncertainty": 0.0006392769864760339,
+                "epistemic_uncertainty": 0.0005417745107681387,
+                "best_epoch": 290,
+                "seed": 1337
+            },
+            {
+                "psnr": 30.685417652130127,
+                "ssim": 0.9611716336674161,
+                "accuracy": 0.17424242424242425,
+                "f1_score": 0.14838709677419354,
+                "aleatoric_uncertainty": 0.0006257848710649543,
+                "epistemic_uncertainty": 0.0005897866212762892,
+                "best_epoch": 290,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 30.785934306957103,
+            "psnr_std": 0.08287524023769892,
+            "ssim_mean": 0.9614196640473825,
+            "ssim_std": 0.00027362811613681836,
+            "accuracy_mean": 0.17424242424242423,
+            "accuracy_std": 2.7755575615628914e-17
+        }
+    },
+    "MVTec-Hazelnut": {
+        "seed_runs": [
+            {
+                "psnr": 25.835961273738317,
+                "ssim": 0.8039574878556388,
+                "accuracy": 0.36363636363636365,
+                "f1_score": 0.26666666666666666,
+                "aleatoric_uncertainty": 0.0017156840102480991,
+                "epistemic_uncertainty": 0.0024850311289940563,
+                "best_epoch": 140,
+                "seed": 42
+            },
+            {
+                "psnr": 25.776748997824534,
+                "ssim": 0.8038084847586495,
+                "accuracy": 0.36363636363636365,
+                "f1_score": 0.26666666666666666,
+                "aleatoric_uncertainty": 0.0012190753228164145,
+                "epistemic_uncertainty": 0.002168091446427362,
+                "best_epoch": 140,
+                "seed": 1337
+            },
+            {
+                "psnr": 25.90890986578805,
+                "ssim": 0.8002754024096898,
+                "accuracy": 0.36363636363636365,
+                "f1_score": 0.26666666666666666,
+                "aleatoric_uncertainty": 0.0017117015585037215,
+                "epistemic_uncertainty": 0.0029071911371179988,
+                "best_epoch": 200,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 25.84054004578363,
+            "psnr_std": 0.05405150395872298,
+            "ssim_mean": 0.802680458341326,
+            "ssim_std": 0.0017017189361451018,
+            "accuracy_mean": 0.3636363636363636,
+            "accuracy_std": 5.551115123125783e-17
+        }
+    },
+    "MVTec-Metal_nut": {
+        "seed_runs": [
+            {
+                "psnr": 18.30316573381424,
+                "ssim": 0.5187497399747372,
+                "accuracy": 0.19130434782608696,
+                "f1_score": 0.16058394160583941,
+                "aleatoric_uncertainty": 0.08504889905452728,
+                "epistemic_uncertainty": 0.04340315982699394,
+                "best_epoch": 270,
+                "seed": 42
+            },
+            {
+                "psnr": 18.47271293401718,
+                "ssim": 0.5321793109178543,
+                "accuracy": 0.19130434782608696,
+                "f1_score": 0.16058394160583941,
+                "aleatoric_uncertainty": 0.07318191230297089,
+                "epistemic_uncertainty": 0.031225454062223434,
+                "best_epoch": 299,
+                "seed": 1337
+            },
+            {
+                "psnr": 18.33480939269066,
+                "ssim": 0.5168426558375359,
+                "accuracy": 0.19130434782608696,
+                "f1_score": 0.16058394160583941,
+                "aleatoric_uncertainty": 0.02645316394045949,
+                "epistemic_uncertainty": 0.02673539728857577,
+                "best_epoch": 299,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 18.37022935350736,
+            "psnr_std": 0.07360929964959864,
+            "ssim_mean": 0.5225905689100424,
+            "ssim_std": 0.00682481855416309,
+            "accuracy_mean": 0.19130434782608696,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Pill": {
+        "seed_runs": [
+            {
+                "psnr": 28.28750480305065,
+                "ssim": 0.7834394194863059,
+                "accuracy": 0.15568862275449102,
+                "f1_score": 0.13471502590673576,
+                "aleatoric_uncertainty": 0.00037696236342361027,
+                "epistemic_uncertainty": 0.0011736767112531445,
+                "best_epoch": 210,
+                "seed": 42
+            },
+            {
+                "psnr": 28.314530849456787,
+                "ssim": 0.7789635875008323,
+                "accuracy": 0.15568862275449102,
+                "f1_score": 0.13471502590673576,
+                "aleatoric_uncertainty": 0.0004180605809034949,
+                "epistemic_uncertainty": 0.0015840073200789366,
+                "best_epoch": 240,
+                "seed": 1337
+            },
+            {
+                "psnr": 28.193149783394553,
+                "ssim": 0.7748069383881309,
+                "accuracy": 0.15568862275449102,
+                "f1_score": 0.13471502590673576,
+                "aleatoric_uncertainty": 0.00042506785460070455,
+                "epistemic_uncertainty": 0.0016373563346199014,
+                "best_epoch": 290,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 28.265061811967332,
+            "psnr_std": 0.052032724870511846,
+            "ssim_mean": 0.7790699817917565,
+            "ssim_std": 0.0035249985613655032,
+            "accuracy_mean": 0.15568862275449102,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Screw": {
+        "seed_runs": [
+            {
+                "psnr": 18.671090722084045,
+                "ssim": 0.6906626224517822,
+                "accuracy": 0.25625,
+                "f1_score": 0.20398009950248755,
+                "aleatoric_uncertainty": 0.03253966718912125,
+                "epistemic_uncertainty": 0.18089761734008789,
+                "best_epoch": 210,
+                "seed": 42
+            },
+            {
+                "psnr": 18.562583804130554,
+                "ssim": 0.6922403275966644,
+                "accuracy": 0.25625,
+                "f1_score": 0.20398009950248755,
+                "aleatoric_uncertainty": 0.026310612633824348,
+                "epistemic_uncertainty": 0.11822443976998329,
+                "best_epoch": 140,
+                "seed": 1337
+            },
+            {
+                "psnr": 18.566356897354126,
+                "ssim": 0.6907527446746826,
+                "accuracy": 0.25625,
+                "f1_score": 0.20398009950248755,
+                "aleatoric_uncertainty": 0.03881256841123104,
+                "epistemic_uncertainty": 0.22703733891248704,
+                "best_epoch": 210,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 18.600010474522907,
+            "psnr_std": 0.05028492320853783,
+            "ssim_mean": 0.6912185649077097,
+            "ssim_std": 0.0007234315209103701,
+            "accuracy_mean": 0.25625,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Toothbrush": {
+        "seed_runs": [
+            {
+                "psnr": 23.20143461227417,
+                "ssim": 0.688331147034963,
+                "accuracy": 0.2857142857142857,
+                "f1_score": 0.2222222222222222,
+                "aleatoric_uncertainty": 0.002153160593782862,
+                "epistemic_uncertainty": 0.003340441035106778,
+                "best_epoch": 299,
+                "seed": 42
+            },
+            {
+                "psnr": 23.42612822850545,
+                "ssim": 0.6984221537907919,
+                "accuracy": 0.2857142857142857,
+                "f1_score": 0.2222222222222222,
+                "aleatoric_uncertainty": 0.0016943135997280478,
+                "epistemic_uncertainty": 0.0035038586550702653,
+                "best_epoch": 299,
+                "seed": 1337
+            },
+            {
+                "psnr": 22.537275155385334,
+                "ssim": 0.6692197521527609,
+                "accuracy": 0.2857142857142857,
+                "f1_score": 0.2222222222222222,
+                "aleatoric_uncertainty": 0.0024153844763835273,
+                "epistemic_uncertainty": 0.004080444263915221,
+                "best_epoch": 299,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 23.05494599872165,
+            "psnr_std": 0.37736731162460563,
+            "ssim_mean": 0.6853243509928385,
+            "ssim_std": 0.012109932072102918,
+            "accuracy_mean": 0.2857142857142857,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Transistor": {
+        "seed_runs": [
+            {
+                "psnr": 20.071000031062535,
+                "ssim": 0.7414195196969169,
+                "accuracy": 0.6,
+                "f1_score": 0.375,
+                "aleatoric_uncertainty": 0.003465826323788081,
+                "epistemic_uncertainty": 0.014205726927944593,
+                "best_epoch": 280,
+                "seed": 42
+            },
+            {
+                "psnr": 20.14324460710798,
+                "ssim": 0.7444013953208923,
+                "accuracy": 0.6,
+                "f1_score": 0.375,
+                "aleatoric_uncertainty": 0.0026977118104696274,
+                "epistemic_uncertainty": 0.012599375498081957,
+                "best_epoch": 260,
+                "seed": 1337
+            },
+            {
+                "psnr": 20.10203344481332,
+                "ssim": 0.742174003805433,
+                "accuracy": 0.6,
+                "f1_score": 0.375,
+                "aleatoric_uncertainty": 0.002841026522219181,
+                "epistemic_uncertainty": 0.015309776711676801,
+                "best_epoch": 240,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 20.105426027661277,
+            "psnr_std": 0.02959112373422974,
+            "ssim_mean": 0.7426649729410807,
+            "ssim_std": 0.001265881400009173,
+            "accuracy_mean": 0.6,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Zipper": {
+        "seed_runs": [
+            {
+                "psnr": 21.207107305526733,
+                "ssim": 0.6073236346244812,
+                "accuracy": 0.2119205298013245,
+                "f1_score": 0.17486338797814208,
+                "aleatoric_uncertainty": 0.04045626297593117,
+                "epistemic_uncertainty": 0.04326555766165256,
+                "best_epoch": 130,
+                "seed": 42
+            },
+            {
+                "psnr": 21.19785988330841,
+                "ssim": 0.6160079956054687,
+                "accuracy": 0.2119205298013245,
+                "f1_score": 0.17486338797814208,
+                "aleatoric_uncertainty": 0.0033067326294258237,
+                "epistemic_uncertainty": 0.0014163599349558353,
+                "best_epoch": 70,
+                "seed": 1337
+            },
+            {
+                "psnr": 21.148562788963318,
+                "ssim": 0.6132010400295258,
+                "accuracy": 0.2119205298013245,
+                "f1_score": 0.17486338797814208,
+                "aleatoric_uncertainty": 0.14338236600160598,
+                "epistemic_uncertainty": 0.09715812504291535,
+                "best_epoch": 130,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 21.184509992599487,
+            "psnr_std": 0.025697338271581837,
+            "ssim_mean": 0.6121775567531585,
+            "ssim_std": 0.0036184867854557566,
+            "accuracy_mean": 0.2119205298013245,
+            "accuracy_std": 0.0
+        }
     }
 }

@@ -210,6 +210,16 @@ Evaluated under full 300-epoch SGDR Cosine Annealing protocol across independent
 | **MVTec Leather**| Natural Hide Defects | $\mathbf{24.29 \pm 0.14}$ | $\mathbf{0.499 \pm 0.004}$ | 25.8% | $0.0015$ | **Completed (3/3 Seeds)** |
 | **MVTec Tile** | Ceramic Imperfections | $\mathbf{18.15 \pm 0.00}$ | $\mathbf{0.297 \pm 0.000}$ | 28.2% | $0.0125$ | **Completed (3/3 Seeds)** |
 | **MVTec Wood** | Grain & Knot Flaws | $\mathbf{23.25 \pm 0.00}$ | $\mathbf{0.457 \pm 0.000}$ | 24.1% | $0.0036$ | **Completed (3/3 Seeds)** |
+| **MVTec Bottle** | Translucent Glass/Plastic | $\mathbf{23.86 \pm 0.14}$ | $\mathbf{0.856 \pm 0.005}$ | 24.1% | $624.30$ | **Completed (3/3 Seeds)** |
+| **MVTec Cable** | Insulated Multi-wire Core | $\mathbf{18.05 \pm 0.00}$ | $\mathbf{0.689 \pm 0.001}$ | 38.7% | $0.0160$ | **Completed (3/3 Seeds)** |
+| **MVTec Capsule** | High-Gloss Gel Shell | $\mathbf{30.79 \pm 0.08}$ | $\mathbf{0.961 \pm 0.000}$ | 17.4% | $0.0006$ | **Completed (3/3 Seeds)** |
+| **MVTec Hazelnut**| Organic Specimen Surface | $\mathbf{25.84 \pm 0.05}$ | $\mathbf{0.803 \pm 0.002}$ | 36.4% | $0.0025$ | **Completed (3/3 Seeds)** |
+| **MVTec Metal Nut**| Threaded Hex Hardware | $\mathbf{18.37 \pm 0.07}$ | $\mathbf{0.523 \pm 0.007}$ | 19.1% | $0.0338$ | **Completed (3/3 Seeds)** |
+| **MVTec Pill** | Imprinted Solid Dosage Form | $\mathbf{28.27 \pm 0.05}$ | $\mathbf{0.779 \pm 0.004}$ | 15.6% | $0.0015$ | **Completed (3/3 Seeds)** |
+| **MVTec Screw** | Precision Thread Contour | $\mathbf{18.60 \pm 0.05}$ | $\mathbf{0.691 \pm 0.001}$ | 25.6% | $0.1754$ | **Completed (3/3 Seeds)** |
+| **MVTec Toothbrush**| Synthetic Bristle Array | $\mathbf{23.05 \pm 0.38}$ | $\mathbf{0.685 \pm 0.012}$ | 28.6% | $0.0036$ | **Completed (3/3 Seeds)** |
+| **MVTec Transistor**| SMD Microelectronic Lead | $\mathbf{20.11 \pm 0.03}$ | $\mathbf{0.743 \pm 0.001}$ | 60.0% | $0.0140$ | **Completed (3/3 Seeds)** |
+| **MVTec Zipper** | Interlocking Metal/Plastic Teeth | $\mathbf{21.18 \pm 0.03}$ | $\mathbf{0.612 \pm 0.004}$ | 21.2% | $0.0473$ | **Completed (3/3 Seeds)** |
 
 ### B. Direct Head-to-Head Comparison against Competitors
 

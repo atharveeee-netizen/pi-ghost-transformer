@@ -1,0 +1,8 @@
+{
+    "active_dataset": "MVTec-Zipper",
+    "seed": 2026,
+    "epoch": 299,
+    "total_epochs": 300,
+    "current_best_psnr": 21.148562788963318,
+    "timestamp": "2026-10-17T02:58:15.663950"
+}
