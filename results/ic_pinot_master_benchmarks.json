@@ -10,13 +10,33 @@
                 "epistemic_uncertainty": 0.006595641651074402,
                 "best_epoch": 0,
                 "seed": 42
+            },
+            {
+                "psnr": 19.313274435698986,
+                "ssim": 0.6933344099670649,
+                "accuracy": 0.908,
+                "f1_score": 0.4758909853249476,
+                "aleatoric_uncertainty": 0.0009928134350047912,
+                "epistemic_uncertainty": 0.012769131630193442,
+                "best_epoch": 240,
+                "seed": 1337
+            },
+            {
+                "psnr": 19.313198514282703,
+                "ssim": 0.6931831575930119,
+                "accuracy": 0.908,
+                "f1_score": 0.4758909853249476,
+                "aleatoric_uncertainty": 0.002452071370498743,
+                "epistemic_uncertainty": 0.01096268105902709,
+                "best_epoch": 80,
+                "seed": 2026
             }
         ],
         "summary": {
-            "psnr_mean": 19.02398992329836,
-            "psnr_std": 0.0,
-            "ssim_mean": 0.6706092972308397,
-            "ssim_std": 0.0,
+            "psnr_mean": 19.216820957760017,
+            "psnr_std": 0.1363521356138338,
+            "ssim_mean": 0.6857089549303055,
+            "ssim_std": 0.010677248905997609,
             "accuracy_mean": 0.908,
             "accuracy_std": 0.0
         }
@@ -32,13 +52,33 @@
                 "epistemic_uncertainty": 0.003072573420164796,
                 "best_epoch": 0,
                 "seed": 42
+            },
+            {
+                "psnr": 21.901874310440487,
+                "ssim": 0.3945510753740867,
+                "accuracy": 0.8695652173913043,
+                "f1_score": 0.46511627906976744,
+                "aleatoric_uncertainty": 0.002150712835524852,
+                "epistemic_uncertainty": 0.004254193843937376,
+                "best_epoch": 40,
+                "seed": 1337
+            },
+            {
+                "psnr": 21.902926233079697,
+                "ssim": 0.3946187131934696,
+                "accuracy": 0.8695652173913043,
+                "f1_score": 0.46511627906976744,
+                "aleatoric_uncertainty": 0.0022901998373628077,
+                "epistemic_uncertainty": 0.00425896806215557,
+                "best_epoch": 40,
+                "seed": 2026
             }
         ],
         "summary": {
-            "psnr_mean": 21.44940699140231,
-            "psnr_std": 0.0,
-            "ssim_mean": 0.38348085019323563,
-            "ssim_std": 0.0,
+            "psnr_mean": 21.751402511640833,
+            "psnr_std": 0.2135435120662941,
+            "ssim_mean": 0.3908835462535973,
+            "ssim_std": 0.005234569414970908,
             "accuracy_mean": 0.8695652173913043,
             "accuracy_std": 0.0
         }
@@ -54,15 +94,203 @@
                 "epistemic_uncertainty": 0.06953209824860096,
                 "best_epoch": 0,
                 "seed": 42
+            },
+            {
+                "psnr": 17.391835749149323,
+                "ssim": 0.25782112777233124,
+                "accuracy": 0.23931623931623933,
+                "f1_score": 0.19310344827586207,
+                "aleatoric_uncertainty": 0.0009043480604304932,
+                "epistemic_uncertainty": 0.022965858690440655,
+                "best_epoch": 220,
+                "seed": 1337
+            },
+            {
+                "psnr": 17.39009976387024,
+                "ssim": 0.257729958742857,
+                "accuracy": 0.23931623931623933,
+                "f1_score": 0.19310344827586207,
+                "aleatoric_uncertainty": 0.0007708426710451022,
+                "epistemic_uncertainty": 0.02167015033774078,
+                "best_epoch": 220,
+                "seed": 2026
             }
         ],
         "summary": {
-            "psnr_mean": 15.873240679502487,
-            "psnr_std": 0.0,
-            "ssim_mean": 0.23304983973503113,
-            "ssim_std": 0.0,
+            "psnr_mean": 16.885058730840683,
+            "psnr_std": 0.715463756441275,
+            "ssim_mean": 0.24953364208340645,
+            "ssim_std": 0.011655867845373322,
             "accuracy_mean": 0.23931623931623933,
             "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Grid": {
+        "seed_runs": [
+            {
+                "psnr": 16.58950424194336,
+                "ssim": 0.2681535601615906,
+                "accuracy": 0.2692307692307692,
+                "f1_score": 0.21212121212121213,
+                "aleatoric_uncertainty": 0.002119295299053192,
+                "epistemic_uncertainty": 0.029621721431612968,
+                "best_epoch": 160,
+                "seed": 42
+            },
+            {
+                "psnr": 16.589679718017578,
+                "ssim": 0.268145477771759,
+                "accuracy": 0.2692307692307692,
+                "f1_score": 0.21212121212121213,
+                "aleatoric_uncertainty": 0.0046825740486383435,
+                "epistemic_uncertainty": 0.026621484383940696,
+                "best_epoch": 110,
+                "seed": 1337
+            },
+            {
+                "psnr": 16.589991807937622,
+                "ssim": 0.2680365204811096,
+                "accuracy": 0.2692307692307692,
+                "f1_score": 0.21212121212121213,
+                "aleatoric_uncertainty": 0.009935675375163554,
+                "epistemic_uncertainty": 0.02048651725053787,
+                "best_epoch": 90,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 16.589725255966187,
+            "psnr_std": 0.0002016356917197259,
+            "ssim_mean": 0.26811185280481975,
+            "ssim_std": 5.337009464124889e-05,
+            "accuracy_mean": 0.2692307692307692,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Leather": {
+        "seed_runs": [
+            {
+                "psnr": 24.150706827640533,
+                "ssim": 0.5006764978170395,
+                "accuracy": 0.25806451612903225,
+                "f1_score": 0.20512820512820512,
+                "aleatoric_uncertainty": 0.0015779746609041467,
+                "epistemic_uncertainty": 0.000531764846527949,
+                "best_epoch": 100,
+                "seed": 42
+            },
+            {
+                "psnr": 24.48445975780487,
+                "ssim": 0.5023807808756828,
+                "accuracy": 0.25806451612903225,
+                "f1_score": 0.20512820512820512,
+                "aleatoric_uncertainty": 0.000655523755995091,
+                "epistemic_uncertainty": 0.0011756627063732594,
+                "best_epoch": 200,
+                "seed": 1337
+            },
+            {
+                "psnr": 24.242984354496002,
+                "ssim": 0.49338721856474876,
+                "accuracy": 0.25806451612903225,
+                "f1_score": 0.20512820512820512,
+                "aleatoric_uncertainty": 0.006142955564428121,
+                "epistemic_uncertainty": 0.0026711897808127105,
+                "best_epoch": 10,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 24.29271697998047,
+            "psnr_std": 0.14071899925384132,
+            "ssim_mean": 0.49881483241915703,
+            "ssim_std": 0.003900460596768718,
+            "accuracy_mean": 0.25806451612903225,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Tile": {
+        "seed_runs": [
+            {
+                "psnr": 18.152821362018585,
+                "ssim": 0.29761527106165886,
+                "accuracy": 0.28205128205128205,
+                "f1_score": 0.22,
+                "aleatoric_uncertainty": 0.012809757376089692,
+                "epistemic_uncertainty": 0.004687570908572525,
+                "best_epoch": 30,
+                "seed": 42
+            },
+            {
+                "psnr": 18.15896764397621,
+                "ssim": 0.29708848521113396,
+                "accuracy": 0.28205128205128205,
+                "f1_score": 0.22,
+                "aleatoric_uncertainty": 0.0015107019571587443,
+                "epistemic_uncertainty": 0.017167935613542795,
+                "best_epoch": 230,
+                "seed": 1337
+            },
+            {
+                "psnr": 18.152719140052795,
+                "ssim": 0.29761990904808044,
+                "accuracy": 0.28205128205128205,
+                "f1_score": 0.22,
+                "aleatoric_uncertainty": 0.0021035804820712656,
+                "epistemic_uncertainty": 0.015689586056396365,
+                "best_epoch": 130,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 18.15483604868253,
+            "psnr_std": 0.0029217770945832093,
+            "ssim_mean": 0.2974412217736244,
+            "ssim_std": 0.0002494296021161122,
+            "accuracy_mean": 0.28205128205128205,
+            "accuracy_std": 0.0
+        }
+    },
+    "MVTec-Wood": {
+        "seed_runs": [
+            {
+                "psnr": 23.24968671798706,
+                "ssim": 0.4570460498332977,
+                "accuracy": 0.24050632911392406,
+                "f1_score": 0.19387755102040816,
+                "aleatoric_uncertainty": 0.0010438894387334585,
+                "epistemic_uncertainty": 0.0036250198259949683,
+                "best_epoch": 250,
+                "seed": 42
+            },
+            {
+                "psnr": 23.251465320587158,
+                "ssim": 0.45671831369400023,
+                "accuracy": 0.24050632911392406,
+                "f1_score": 0.19387755102040816,
+                "aleatoric_uncertainty": 0.0012152351438999176,
+                "epistemic_uncertainty": 0.003749683825299144,
+                "best_epoch": 200,
+                "seed": 1337
+            },
+            {
+                "psnr": 23.249104976654053,
+                "ssim": 0.4569754660129547,
+                "accuracy": 0.24050632911392406,
+                "f1_score": 0.19387755102040816,
+                "aleatoric_uncertainty": 0.0009212423115968704,
+                "epistemic_uncertainty": 0.003361746435984969,
+                "best_epoch": 250,
+                "seed": 2026
+            }
+        ],
+        "summary": {
+            "psnr_mean": 23.250085671742756,
+            "psnr_std": 0.001004051441253642,
+            "ssim_mean": 0.45691327651341757,
+            "ssim_std": 0.00014083890239067562,
+            "accuracy_mean": 0.24050632911392408,
+            "accuracy_std": 2.7755575615628914e-17
         }
     }
 }
