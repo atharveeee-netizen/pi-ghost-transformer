@@ -47,23 +47,45 @@ Single-photon computational ghost imaging reconstructs 2D spatial objects from s
 
 ## 2. System Architecture
 
-```text
-[Reference Exemplars (y_k, x_k)] ──> [In-Context Prompt Encoder] ──> [Prompt Tokens]
-                                                                           │
-[Single-Pixel Bucket Vector y_q] ──┐                                       ▼
-                                   ├──> [Fourier Neural Operator] ──> [Physics Tokens]
-[Optical Aberration State theta] ──┘                                       │
-                                                                           ▼
-                                                [Physics-Conditioned Cross-Attention (PCCA)]
-                                                                           │
-                                                                           ▼
-                                                [Hybrid Swin-UNet Spatial Decoder]
-                                                                           │
-                                                                           ▼
-                                                [Normal-Inverse-Gamma (NIG) Head]
-                                                                           │
-                                                                           ▼
-                                [Mean Recon gamma + Calibrated Aleatoric sigma^2_a + Epistemic sigma^2_e]
+![IC-PINOT Architecture Flowchart](figures/architecture_diagram.png)
+
+```mermaid
+flowchart TD
+    subgraph PhysicalStage ["1. Physical Optical Stage"]
+        SL["Structured Illumination: M Learned Patterns"]
+        OBJ["Target Defect Scene: x in R^(H x W)"]
+        WAVE["Differentiable Wave Optics: Defocus Aberration a_4"]
+        SPAD["Single-Pixel SPAD Detector: Bucket Vector y in R^M"]
+        SL --> SPAD
+        OBJ --> SPAD
+        WAVE --> SPAD
+    end
+
+    subgraph ConditioningStage ["2. Operator & Context Encoding"]
+        FNO["Continuous Fourier Neural Operator: Spectral Conv R_phi"]
+        ICE["In-Context Prompt Engine: K Exemplar Pairs"]
+        SPAD --> FNO
+        SPAD --> ICE
+    end
+
+    subgraph DeepBackbone ["3. Physics Cross-Attention & Decoder"]
+        PCCA["Physics-Conditioned Cross-Attention: PCCA"]
+        SWIN["Multi-Scale Hybrid Swin-UNet Spatial Decoder"]
+        FNO -->|"Operator Tokens"| PCCA
+        ICE -->|"Prompt Tokens"| PCCA
+        PCCA --> SWIN
+    end
+
+    subgraph EvidentialHead ["4. Evidential NIG Output Head"]
+        NIG["Normal-Inverse-Gamma NIG Parameter Head"]
+        RECON["Mean Reconstruction: gamma"]
+        ALEA["Aleatoric Uncertainty: sigma^2_a"]
+        EPIS["Epistemic Uncertainty: sigma^2_e"]
+        SWIN --> NIG
+        NIG --> RECON
+        NIG --> ALEA
+        NIG --> EPIS
+    end
 ```
 
 ---
