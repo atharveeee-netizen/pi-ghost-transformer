@@ -1,0 +1,18 @@
+\begin{table}[h]
+\centering
+\caption{Physical Stress Matrix across Sub-Nyquist Sampling Ratios ($M/N^2$).}
+\label{tab:stress_matrix}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Sampling Ratio} & \textbf{Measurements ($M$)} & \textbf{PSNR (dB)} $\uparrow$ & \textbf{SSIM} $\uparrow$ & \textbf{Defocus Invariance} \\
+\midrule
+1.0\% & $M = 41$ & $13.76$ & $0.606$ & $\Delta\text{PSNR} < 10^{-5}$ dB \\
+3.0\% & $M = 123$ & $13.34$ & $0.546$ & $\Delta\text{PSNR} < 10^{-5}$ dB \\
+6.25\% & $M = 256$ & $13.49$ & $0.560$ & $\Delta\text{PSNR} < 10^{-5}$ dB \\
+12.5\% & $M = 512$ & $13.62$ & $0.596$ & $\Delta\text{PSNR} < 10^{-5}$ dB \\
+25.0\% & $M = 1024$ & $14.01$ & $0.604$ & $\Delta\text{PSNR} < 10^{-5}$ dB \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

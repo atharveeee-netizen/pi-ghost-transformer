@@ -1,0 +1,18 @@
+\begin{table*}[t]
+\centering
+\caption{Zero-Gradient In-Context Adaptation across Unseen Target Domains ($K$-Shots).}
+\label{tab:in_context_adaptation}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Target Surface} & \textbf{$K=0$ Shots} & \textbf{$K=1$ Shot} & \textbf{$K=3$ Shots} & \textbf{$K=5$ Shots} & \textbf{Latency (ms)} $\downarrow$ & \textbf{FPS} $\uparrow$ \\
+\midrule
+MVTec Carpet & $9.51$ / $0.206$ & $9.52$ / $0.206$ & $9.52$ / $0.206$ & $9.52$ / $0.206$ & $9.3$ ms & $107$ FPS \\
+MVTec Grid & $11.49$ / $0.245$ & $11.50$ / $0.245$ & $11.50$ / $0.245$ & $11.50$ / $0.245$ & $8.7$ ms & $115$ FPS \\
+MVTec Leather & $9.55$ / $0.364$ & $9.57$ / $0.364$ & $9.57$ / $0.364$ & $9.57$ / $0.364$ & $7.2$ ms & $138$ FPS \\
+MVTec Tile & $11.70$ / $0.265$ & $11.71$ / $0.266$ & $11.71$ / $0.266$ & $11.71$ / $0.266$ & $8.6$ ms & $116$ FPS \\
+MVTec Wood & $16.31$ / $0.437$ & $16.34$ / $0.437$ & $16.34$ / $0.437$ & $16.34$ / $0.437$ & $7.2$ ms & $139$ FPS \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

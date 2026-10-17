@@ -100,7 +100,9 @@ def evaluate_baselines_on_dataset(name: str, test_dataset, device="cuda") -> dic
     ).to(dev)
     
     # Load checkpoint if available
-    ckpt_name = f"checkpoints/ic_pinot_{name.lower().replace(' ', '_').replace('-', '_')}_seed42.pt"
+    ckpt_name = f"checkpoints/ic_pinot_{name.lower().replace(' ', '_')}_seed42.pt"
+    if not os.path.exists(ckpt_name):
+        ckpt_name = f"checkpoints/ic_pinot_{name.lower().replace(' ', '_').replace('-', '_')}_seed42.pt"
     if os.path.exists(ckpt_name):
         print(f"Loading trained IC-PINOT weights from {ckpt_name}...")
         ic_pinot_model.load_state_dict(torch.load(ckpt_name, map_location=dev))

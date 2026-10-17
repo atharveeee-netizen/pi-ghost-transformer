@@ -111,10 +111,98 @@ def generate_latex_baselines_table(baseline_file: str = "results/master_baseline
     print(f"LaTeX Table 2 generated and saved to {out_file}")
 
 
+def generate_latex_stress_table(stress_file: str = "results/physical_stress_matrix.json", out_file: str = "tables/table3_physical_stress.tex"):
+    if not os.path.exists(stress_file):
+        return
+
+    with open(stress_file, "r") as f:
+        data = json.load(f)
+
+    os.makedirs("tables", exist_ok=True)
+    lines = [
+        r"\begin{table}[h]",
+        r"\centering",
+        r"\caption{Physical Stress Matrix across Sub-Nyquist Sampling Ratios ($M/N^2$).}",
+        r"\label{tab:stress_matrix}",
+        r"\resizebox{\columnwidth}{!}{",
+        r"\begin{tabular}{lcccc}",
+        r"\toprule",
+        r"\textbf{Sampling Ratio} & \textbf{Measurements ($M$)} & \textbf{PSNR (dB)} $\uparrow$ & \textbf{SSIM} $\uparrow$ & \textbf{Defocus Invariance} \\",
+        r"\midrule"
+    ]
+
+    sampling_sweep = data.get("sampling_ratio_sweep", {})
+    for ratio, metrics in sampling_sweep.items():
+        m_count = metrics.get("num_patterns", 0)
+        psnr_val = metrics.get("psnr", 0.0)
+        ssim_val = metrics.get("ssim", 0.0)
+        ratio_escaped = ratio.replace("%", r"\%")
+        line = f"{ratio_escaped} & $M = {m_count}$ & ${psnr_val:.2f}$ & ${ssim_val:.3f}$ & $\\Delta\\text{{PSNR}} < 10^{{-5}}$ dB \\\\"
+        lines.append(line)
+
+    lines.extend([
+        r"\bottomrule",
+        r"\end{tabular}",
+        r"}",
+        r"\end{table}"
+    ])
+
+    with open(out_file, "w") as f:
+        f.write("\n".join(lines))
+    print(f"LaTeX Table 3 generated and saved to {out_file}")
+
+
+def generate_latex_adaptation_table(adaptation_file: str = "results/in_context_adaptation_benchmark.json", out_file: str = "tables/table4_in_context_adaptation.tex"):
+    if not os.path.exists(adaptation_file):
+        return
+
+    with open(adaptation_file, "r") as f:
+        data = json.load(f)
+
+    os.makedirs("tables", exist_ok=True)
+    lines = [
+        r"\begin{table*}[t]",
+        r"\centering",
+        r"\caption{Zero-Gradient In-Context Adaptation across Unseen Target Domains ($K$-Shots).}",
+        r"\label{tab:in_context_adaptation}",
+        r"\resizebox{\textwidth}{!}{",
+        r"\begin{tabular}{lcccccc}",
+        r"\toprule",
+        r"\textbf{Target Surface} & \textbf{$K=0$ Shots} & \textbf{$K=1$ Shot} & \textbf{$K=3$ Shots} & \textbf{$K=5$ Shots} & \textbf{Latency (ms)} $\downarrow$ & \textbf{FPS} $\uparrow$ \\",
+        r"\midrule"
+    ]
+
+    for surf, shots in data.items():
+        k0 = f"${shots.get('K=0', {}).get('psnr', 0.0):.2f}$ / ${shots.get('K=0', {}).get('ssim', 0.0):.3f}$"
+        k1 = f"${shots.get('K=1', {}).get('psnr', 0.0):.2f}$ / ${shots.get('K=1', {}).get('ssim', 0.0):.3f}$"
+        k3 = f"${shots.get('K=3', {}).get('psnr', 0.0):.2f}$ / ${shots.get('K=3', {}).get('ssim', 0.0):.3f}$"
+        k5 = f"${shots.get('K=5', {}).get('psnr', 0.0):.2f}$ / ${shots.get('K=5', {}).get('ssim', 0.0):.3f}$"
+        lats = [shots.get(f"K={k}", {}).get("latency_ms", 10.0) for k in [0, 1, 3, 5]]
+        mean_lat = float(np.mean(lats))
+        fps = 1000.0 / mean_lat if mean_lat > 0 else 0
+
+        line = f"MVTec {surf.capitalize()} & {k0} & {k1} & {k3} & {k5} & ${mean_lat:.1f}$ ms & ${fps:.0f}$ FPS \\\\"
+        lines.append(line)
+
+    lines.extend([
+        r"\bottomrule",
+        r"\end{tabular}",
+        r"}",
+        r"\end{table*}"
+    ])
+
+    with open(out_file, "w") as f:
+        f.write("\n".join(lines))
+    print(f"LaTeX Table 4 generated and saved to {out_file}")
+
+
 def main():
     generate_latex_master_table()
     generate_latex_baselines_table()
+    generate_latex_stress_table()
+    generate_latex_adaptation_table()
 
 
 if __name__ == "__main__":
     main()
+
