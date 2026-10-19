@@ -90,8 +90,8 @@ To overcome the limitations of prior research, we developed \textbf{IC-PINOT} (I
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[width=0.98\textwidth]{figures/architecture_diagram.png}
-    \caption{\textbf{Deep neural architecture of the IC-PINOT framework.} The system maps 512 single-pixel SPAD bucket measurements into latent feature space. A Continuous 2D Fourier Neural Operator (FNO) models optical wave propagation in frequency space. The In-Context Prompt Engine encodes reference fabric pairs for instant adaptation. Physics-Conditioned Cross-Attention (PCCA) modulates features using the optical defocus state ($a_4$). The hierarchical Swin-UNet spatial decoder reconstructs fine yarn details, while the Evidential Normal-Inverse-Gamma head outputs the reconstructed image, sensor shot noise, and defect novelty heatmap in a single deterministic forward pass at 138 FPS.}
+    \includegraphics[width=0.48\textwidth]{figures/architecture_diagram.png}
+    \caption{\textbf{Complete 4-stage pipeline of the proposed IC-PINOT architecture,} showing (1) physical optical illumination and single-pixel SPAD bucket detection, (2) continuous Fourier neural operator and in-context prompt encoding, (3) physics-conditioned cross-attention (PCCA) and Swin-UNet decoder, and (4) single-pass evidential uncertainty output head.}
     \label{fig:arch}
 \end{figure*}
 

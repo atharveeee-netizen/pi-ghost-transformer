@@ -259,22 +259,42 @@ def build_pdf():
     p3 = "To overcome the limitations of prior research, we developed <b>IC-PINOT</b> (In-Context Physics-Informed Neural Operator Transformer). Our framework replaces multi-pixel sensor grids with active structured illumination and a single-pixel photodiode (a Single-Photon Avalanche Diode, SPAD). The system projects 512 known spatial light patterns onto the moving fabric and records the total reflected light as a single scalar measurement for each pattern. The deep neural operator then reconstructs the 2D fabric image and inspects defects in real time."
     story.append(Paragraph(p3, body_style))
 
-    # Architectural Schematic (Clean Vector Schematic, Not a Block Diagram)
+    # Combined Architecture Diagram and Novel Contributions (2-Column Layout on Page 2)
     arch_img_path = "figures/architecture_diagram.png"
+    
+    # Left column: Architecture flowchart + figure caption
+    left_flow = []
     if os.path.exists(arch_img_path):
-        story.append(Image(arch_img_path, width=516, height=215))
-        story.append(Paragraph("<b>Figure 1: Deep neural architecture of the IC-PINOT framework.</b> The system maps 512 single-pixel SPAD bucket measurements into latent feature space. A Continuous 2D Fourier Neural Operator (FNO) models optical wave propagation in frequency space. The In-Context Prompt Engine encodes reference fabric pairs for instant adaptation. Physics-Conditioned Cross-Attention (PCCA) modulates features using the optical defocus state (a4). The hierarchical Swin-UNet spatial decoder reconstructs fine yarn details, while the Evidential Normal-Inverse-Gamma head outputs the reconstructed image, sensor shot noise, and defect novelty heatmap in a single deterministic forward pass at 138 FPS.", caption_style))
-
-    story.append(Paragraph("Novel Scientific and Engineering Contributions:", subsec_heading))
+        # 185 pt width * (2673 / 1140) = 433.7 pt height
+        left_flow.append(Image(arch_img_path, width=185, height=434))
+        left_flow.append(Spacer(1, 4))
+        left_caption = "<b>Figure 1: Complete 4-stage pipeline of the IC-PINOT framework</b>, showing (1) physical optical illumination and SPAD bucket detection, (2) continuous Fourier neural operator and in-context prompt encoding, (3) physics-conditioned cross-attention and Swin-UNet decoder, and (4) single-pass evidential uncertainty output head."
+        left_flow.append(Paragraph(left_caption, caption_style))
+    
+    # Right column: Novel Contributions
+    right_flow = []
+    right_flow.append(Paragraph("<b>Novel Scientific and Engineering Contributions:</b>", subsec_heading))
+    right_flow.append(Spacer(1, 2))
     
     contrib_pts = [
-        "<b>1. Continuous Optical Wavefield Operator for Defocus Invariance:</b> Instead of using standard convolutional filters that fail when lenses vibrate out of focus, IC-PINOT embeds a continuous 2D Fourier Neural Operator (FNO). By computing spectral convolutions in continuous frequency space and filtering non-physical modes, the operator directly models Fresnel wave diffraction. This guarantees that reconstruction quality remains completely constant (PSNR variation under 0.00001 dB) across 3.0 waves of optical defocus.",
-        "<b>2. Zero-Gradient Test-Time In-Context Adaptation:</b> In operational textile mills, operators cannot halt production lines to collect defect labels and retrain deep models when changing fabric rolls. Our In-Context Prompt Engine conditions spatial cross-attention layers using a few reference exemplar pairs of the new weave. The model adapts to unseen fabric textures in 7.2 milliseconds (138 FPS) with zero backpropagation and zero weight modifications.",
-        "<b>3. Single-Pass Evidential Defect Detection (O(1) Latency):</b> Conventional uncertainty methods (like Monte Carlo Dropout) require 30 stochastic forward passes per frame, reducing speed to under 2 FPS. IC-PINOT places an evidential Normal-Inverse-Gamma prior over pixel predictions, outputting the clean image, the physical sensor noise map, and the defect novelty heatmap in one deterministic forward pass at 138 FPS.",
+        "<b>1. Continuous Wavefield Operator (Defocus Invariance):</b> Rather than rigid convolutional filters that fail when lenses vibrate out of focus, IC-PINOT embeds a continuous 2D Fourier Neural Operator (FNO). Computing spectral convolutions in continuous frequency space guarantees that reconstruction fidelity remains completely flat (PSNR variation under 0.00001 dB) across 3.0 waves of optical defocus.",
+        "<b>2. Zero-Gradient In-Context Adaptation:</b> In operational textile mills, operators cannot halt production lines to collect defect labels and retrain models when changing fabric rolls. Our In-Context Prompt Engine conditions spatial cross-attention using reference exemplar pairs of the new weave. The model adapts to unseen weaves in 7.2 ms (138 FPS) with zero backpropagation and zero weight modifications.",
+        "<b>3. Single-Pass Evidential Defect Detection:</b> Conventional uncertainty methods (such as Monte Carlo Dropout) require 30 stochastic forward passes per frame, reducing speed to under 2 FPS. IC-PINOT places an evidential Normal-Inverse-Gamma prior over pixel predictions, outputting the clean image, physical sensor noise map, and defect novelty heatmap in one deterministic forward pass at 138 FPS.",
         "<b>4. Flux-Normalized Likelihood for Single-Photon Stability:</b> Under extreme photon starvation (around 10 photons per pulse), standard loss functions cause severe gradient explosion. We derived a flux-normalized log-stabilized Poisson loss that aligns gradient magnitudes and ensures stable convergence throughout 300-epoch training."
     ]
     for pt in contrib_pts:
-        story.append(Paragraph(pt, body_style))
+        right_flow.append(Paragraph(pt, body_style))
+        right_flow.append(Spacer(1, 1.5))
+        
+    p2_table = Table([[left_flow, right_flow]], colWidths=[195, 321])
+    p2_table.setStyle(TableStyle([
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ('LEFTPADDING', (0,0), (-1,-1), 0),
+        ('RIGHTPADDING', (0,0), (-1,-1), 4),
+        ('TOPPADDING', (0,0), (-1,-1), 0),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+    ]))
+    story.append(p2_table)
 
     story.append(PageBreak())
 

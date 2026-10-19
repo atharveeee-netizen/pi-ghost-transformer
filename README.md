@@ -66,8 +66,8 @@ Single-photon computational ghost imaging reconstructs 2D scenes from 1D single-
 
 ## 2. System Architecture
 
-![IC-PINOT Architectural Schematic](figures/architecture_diagram.png)
-*Figure 2: End-to-end architectural pipeline of the IC-PINOT framework. The model processes compressive single-pixel SPAD bucket vectors ($y \in \mathbb{R}^{512}$) through a Continuous 2D Fourier Neural Operator (FNO) and In-Context Prompt Engine, dynamically steers cross-attention (PCCA) via optical defocus state ($a_4$), decodes spatial fabric textures through a hierarchical Swin-UNet, and parameterizes a Normal-Inverse-Gamma evidential head outputting calibrated mean $\hat{x}$, aleatoric noise $\sigma^2_a$, and epistemic novelty $\sigma^2_e$ in a single deterministic pass at 138 FPS.*
+![IC-PINOT Architectural Pipeline](figures/architecture_diagram.png)
+*Figure 2: Complete 4-stage pipeline of the IC-PINOT framework, comprising (1) Physical Optical Stage with structured illumination and single-pixel SPAD detection, (2) Operator and Context Encoding via continuous Fourier Neural Operator (FNO) and In-Context prompt engine, (3) Physics-Conditioned Cross-Attention (PCCA) and hierarchical Swin-UNet spatial decoder, and (4) Evidential Normal-Inverse-Gamma (NIG) output head delivering single-pass defect novelty, mean reconstruction, and sensor noise at 138 FPS.*
 
 ### Architectural Subsystem Breakdown:
 1. **Compressive Input Embedding:** Maps 512 bucket measurements into an initial latent feature volume $\mathbf{X}_0 \in \mathbb{R}^{64 \times 16 \times 16}$ via linear projection $W_p$ and 2D patch unflattening.
