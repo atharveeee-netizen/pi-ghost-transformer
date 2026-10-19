@@ -1,7 +1,7 @@
 @echo off
 title IC-PINOT Autonomous 24/7 Lab Runner with Power-Cut Recovery
 echo ===============================================================================
-echo   IC-PINOT: Autonomous Resilient 24/7 Training Engine
+echo   IC-PINOT: Resilient Batch Training Engine
 echo   Power-Cut and Crash-Resistant Auto-Resume Protocol
 echo ===============================================================================
 cd /d "%~dp0"

@@ -7,7 +7,7 @@ Set-Location $ScriptDir
 $PythonExe = "C:\ProgramData\anaconda3\python.exe"
 
 Write-Host "===============================================================================" -ForegroundColor Cyan
-Write-Host "   IC-PINOT: Autonomous Resilient 24/7 Training Engine" -ForegroundColor Green
+Write-Host "   IC-PINOT: Resilient Batch Training Engine" -ForegroundColor Green
 Write-Host "   Power-Cut and Crash-Resistant Auto-Resume Protocol" -ForegroundColor Yellow
 Write-Host "===============================================================================" -ForegroundColor Cyan
 

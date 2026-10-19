@@ -291,7 +291,7 @@ python benchmark_uncertainty_calibration.py
 python benchmark_in_context_adaptation.py
 ```
 
-### Autonomous 24/7 Watchdog:
+### Fault-Tolerant Training Execution:
 ```powershell
 # Windows PowerShell
 .\resume_campaign.ps1
@@ -366,8 +366,8 @@ Compiles [`results/IC_PINOT_Comprehensive_Results_Report.pdf`](results/IC_PINOT_
 ├── benchmark_uncertainty_calibration.py
 ├── config.py                 # Central hyperparameter configuration
 ├── requirements.txt          # Python dependencies
-├── resume_campaign.bat       # Windows batch auto-resume watchdog
-├── resume_campaign.ps1       # Windows PowerShell watchdog
+├── resume_campaign.bat       # Windows batch auto-resume execution script
+├── resume_campaign.ps1       # Windows PowerShell auto-resume execution script
 ├── run_master_campaign.py    # Master campaign sequence runner
 ├── smoke_test_ic_pinot.py    # Pipeline sanity check script
 └── train_ic_pinot_master.py  # Master 300-epoch SGDR training pipeline
