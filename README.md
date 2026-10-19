@@ -11,7 +11,7 @@
 
 ---
 
-> **[Paper PDF](results/IC_PINOT_Comprehensive_Results_Report.pdf)** | **[Model Zoo](checkpoints/)** | **[LaTeX Tables](tables/)** | **[Vector Figures](figures/)** | **[Benchmark Metrics](results/)**
+> **[Faculty Briefing (PDF)](docs/project_overview_professor.pdf)** | **[LaTeX Source](docs/project_overview_professor.tex)** | **[Empirical Report](results/IC_PINOT_Comprehensive_Results_Report.pdf)** | **[Model Zoo](checkpoints/)** | **[LaTeX Tables](tables/)** | **[Vector Figures](figures/)**
 
 ---
 
