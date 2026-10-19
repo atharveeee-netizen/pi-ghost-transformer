@@ -98,54 +98,43 @@ The central engineering task is inverting the measurement vector $y \in \mathbb{
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[width=0.95\textwidth]{../figures/architecture_diagram.png}
-    \caption{\textbf{Complete IC-PINOT Pipeline.} Structured pattern illumination $\rightarrow$ SPAD bucket detection $\rightarrow$ Fourier Neural Operator (FNO) wavefield modeling $\rightarrow$ In-Context exemplar conditioning $\rightarrow$ Physics-Conditioned Cross-Attention (PCCA) $\rightarrow$ Swin-UNet spatial decoding $\rightarrow$ Evidential Normal-Inverse-Gamma parameter head.}
+    \includegraphics[width=0.98\textwidth]{../figures/architecture_diagram.png}
+    \caption{\textbf{Complete Architectural Pipeline of IC-PINOT.} Structured illumination ($A_m$) $\to$ Single-pixel SPAD bucket detection ($y$) $\to$ Continuous 2D Fourier Neural Operator (FNO) wavefield modeling $\to$ In-Context exemplar prompt tokens $\to$ Physics-Conditioned Cross-Attention (PCCA) $\to$ Multi-Scale Swin-UNet spatial decoder $\to$ Evidential Normal-Inverse-Gamma parameter head outputting calibrated mean $\hat{x}$ and uncertainties $\sigma^2_a, \sigma^2_e$ in a single deterministic pass at 138 FPS.}
     \label{fig:arch}
 \end{figure*}
+
+\section{Core Algorithmic Subsystems \& Mathematical Formulations}
 
 \subsection{Continuous Optical Fourier Neural Operator (FNO) for Defocus Invariance}
 Rather than using discrete convolutional layers that break under focal shift, IC-PINOT embeds a continuous 2D Fourier Neural Operator. The optical forward operator is parameterized in continuous 2D frequency space:
 \begin{equation}
     \mathcal{K}_{\text{opt}}(v)(x) = \mathcal{F}^{-1} \left( R_\phi \cdot \mathcal{F}(v) \right)(x)
 \end{equation}
-where $R_\phi \in \mathbb{C}^{k_{\max} \times k_{\max}}$ truncates non-physical evanescent modes. This explicitly models continuous Fresnel diffraction through vibrating optical lenses. As verified experimentally, this guarantees \textbf{defocus invariance: reconstruction fidelity remains constant ($\Delta\text{PSNR} < 10^{-5}$ dB) across 3.0 waves of optical defocus}.
+where $R_\phi \in \mathbb{C}^{k_{\max} \times k_{\max}}$ truncates non-physical evanescent modes. This explicitly models continuous Fresnel diffraction through vibrating optical lenses, guaranteeing \textbf{defocus invariance: reconstruction fidelity remains constant ($\Delta\text{PSNR} < 10^{-5}$ dB) across 3.0 waves of optical defocus ($a_4$)}.
 
-\subsection{Physics-Conditioned Cross-Attention (PCCA)}
-Traditional attention mechanisms assume fixed spatial correlations. The PCCA module explicitly modulates transformer queries, keys, and values using the optical state vector ($a_4$), enabling dynamic optical inversion without requiring separate models for each focal plane.
+\subsection{Physics-Conditioned Cross-Attention (PCCA) \& Swin-UNet Spatial Decoder}
+Traditional attention mechanisms assume fixed spatial correlations. The PCCA module explicitly modulates transformer queries, keys, and values using the optical state vector ($a_4$), enabling dynamic optical inversion without requiring separate models for each focal plane. Latent tokens then expand through hierarchical shifted-window self-attention, capturing fine yarn thread textures ($64 \times 64$ resolution) without spatial checkerboard artifacts.
 
-\subsection{Multi-Scale Swin-UNet Spatial Decoder}
-The latent feature tokens are expanded through a hierarchical Swin Transformer UNet architecture. Shifted window self-attention captures both fine yarn thread textures ($64 \times 64$ resolution) and global structural weave repetitions without spatial artifacting.
-
-\newpage
-% ----------------------------------------------------------------------
-% PAGE 3: IN-CONTEXT ADAPTATION & EVIDENTIAL UNCERTAINTY
-% ----------------------------------------------------------------------
-\section{Optimization, Adaptation \& Evidential Uncertainty}
-
-\subsection{Flux-Normalized Poisson Likelihood Optimization}
-Under single-photon detection regimes ($N_0 \in [1, 1000]$ photons/pixel), standard unnormalized Poisson log-likelihood losses generate loss values of order $\mathcal{O}(10^3)$, producing gradients $10^4\times$ larger than normalized MSE. This causes gradient explosion during initial training epochs. We derived the \textbf{Flux-Normalized Log-Stabilized Poisson Loss}:
+\subsection{Flux-Normalized Poisson Loss \& Zero-Gradient In-Context Adaptation}
+Under single-photon regimes ($N_0 \in [1, 1000]$), unnormalized Poisson loss causes $\mathcal{O}(10^4)$ gradient explosion. We derived the \textbf{Flux-Normalized Log-Stabilized Poisson Loss}:
 \begin{equation}
     \mathcal{L}_{\text{Poisson-Norm}} = \frac{1}{M} \sum_{m=1}^M \left[ \frac{\hat{y}_m}{N_0} - \frac{y_m}{N_0} \ln\left(\frac{\hat{y}_m + \epsilon}{N_0}\right) \right]
 \end{equation}
-This formulation scales measurements by the mean photon flux $N_0$, aligning gradient magnitudes and ensuring numerical stability throughout 300-epoch SGDR training.
+At test time, the model conditions on $K \in \{1, 3, 5\}$ exemplar pairs $(y_k, x_k)$, adapting to unseen fabrics in \textbf{7.2 to 9.3 ms (138 FPS) with zero gradient backpropagation}. Simultaneously, an evidential Normal-Inverse-Gamma prior determines pixel mean $\hat{x}=\gamma$, shot noise $\sigma^2_a = \beta/(\alpha-1)$, and defect novelty $\sigma^2_e = \beta/[v(\alpha-1)]$ in a single deterministic pass.
 
-\subsection{Zero-Gradient Test-Time In-Context Adaptation}
-In operational textile manufacturing, production cannot be halted for hours to collect defect labels and fine-tune model weights when changing fabric rolls. IC-PINOT incorporates a prompt-based \textbf{In-Context Prompt Engine}. At inference time, the model receives $K \in \{1, 3, 5\}$ reference exemplar pairs $(y_k, x_k)$ of the target fabric weave. The prompt encoder projects these exemplars into condition tokens that guide the spatial cross-attention layers. The model adapts its reconstruction logic to unseen materials in \textbf{7.2 to 9.3 milliseconds (107 to 138 FPS) with ZERO gradient backpropagation and zero weight modifications}.
+\newpage
+% ----------------------------------------------------------------------
+% PAGE 3: FULL-PAGE COMPARATIVE VISUAL SHOWCASE
+% ----------------------------------------------------------------------
+\section{Empirical Reconstruction \& Evidential Defect Inspection Showcase}
 
-\subsection{Single-Pass Evidential Uncertainty Quantification (Normal-Inverse-Gamma)}
-Safety-critical inspection requires calibrated confidence. Prior approaches (such as Monte Carlo Dropout) require 30 stochastic forward passes per frame, dropping throughput to $<2$ FPS. IC-PINOT places a continuous \textbf{Normal-Inverse-Gamma (NIG)} prior over the pixel predictions: $\mu \sim \mathcal{N}(\gamma, \sigma^2/v), \sigma^2 \sim \Gamma^{-1}(\alpha, \beta)$. In a \textbf{single deterministic pass ($\mathcal{O}(1)$ latency, >100 FPS)}, the network predicts four parameter maps per pixel:
-\begin{itemize}
-    \setlength\itemsep{-2pt}
-    \item \textbf{Mean Reconstruction ($\hat{x} = \gamma$):} The predicted spatial fabric image.
-    \item \textbf{Aleatoric Uncertainty ($\sigma^2_a = \frac{\beta}{\alpha - 1}$):} Captures irreducible physical noise from photon shot noise and detector dark count jitter.
-    \item \textbf{Epistemic Uncertainty ($\sigma^2_e = \frac{\beta}{v(\alpha - 1)}$):} Quantifies model novelty and out-of-distribution structural defects.
-\end{itemize}
+\textbf{Benchmark Setup \& Experimental Protocol:} All visual evaluations operate under rigorous factory conditions: sub-Nyquist compressive sampling at $M = 512$ patterns ($M/N^2 = 12.5\%$ compression), extreme photon scarcity (mean flux $\approx 10$ photons per pulse), and $1.0\text{-wave}$ optical lens defocus ($a_4 = 1.0$). Inference runs in a single deterministic pass ($>100\text{ FPS}$) without Monte Carlo sampling.
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[width=0.92\textwidth]{../figures/fig_evidential_tilda_400.png}
-    \caption{\textbf{Evidential Decomposition on TILDA 400 Textile Weave.} Left to right: (1) Ground Truth defect patch; (2) IC-PINOT single-pass mean reconstruction ($\mathbf{19.22\text{ dB}}$, $\mathbf{0.686\text{ SSIM}}$); (3) Aleatoric uncertainty $\sigma^2_a$; (4) Epistemic uncertainty $\sigma^2_e$ isolating anomaly boundaries; (5) Absolute residual error.}
-    \label{fig:evidential}
+    \includegraphics[width=0.98\textwidth]{../figures/fig_page3_comparison.png}
+    \caption{\textbf{Cross-Industrial Comparative Reconstruction \& Evidential Anomaly Inspection Showcase (Full-Page Visual Evidence).} Top to bottom: (Row 1) \textbf{TILDA 400 Woven Textile} with a broken warp thread anomaly; (Row 2) \textbf{DAGM 2007 Metal Surface} with a weak-contrast scratch flaw; (Row 3) \textbf{MVTec-AD Industrial Leather} with a natural grain cut defect. Columns left to right: (1) Ground Truth Target ($x$); (2) Classical Differential Ghost Imaging ($x_{\mathrm{DGI}}$ baseline: severe noise, low contrast); (3) IC-PINOT Proposed Reconstruction ($\hat{x} = \gamma$: sharp defect edges, $+7.1\text{ dB}$ to $+7.7\text{ dB}$ margin over optics); (4) Predicted Aleatoric Uncertainty $\sigma^2_a$ capturing physical photon shot noise; (5) Predicted Epistemic Uncertainty $\sigma^2_e$ cleanly localizing structural defect boundaries; (6) Absolute Residual Error ($|x - \gamma|$).}
+    \label{fig:page3_showcase}
 \end{figure*}
 
 \newpage
@@ -168,33 +157,40 @@ Table~\ref{tab:baselines} compares IC-PINOT against classical optical physics (D
 \toprule
 \textbf{Benchmark Dataset} & \textbf{DGI (Classical Optics)} & \textbf{Vanilla Transformer (No Physics)} & \textbf{IC-PINOT (Proposed)} & \textbf{Margin over DGI} \\
 \midrule
-TILDA 400 (Textile) & $12.10$ / $0.258$ & $4.99$ / $0.088$ & $\mathbf{19.13}$ / $\mathbf{0.690}$ & $\mathbf{+7.03\text{ dB}}$ \\
-DAGM 2007 (Metal) & $13.80$ / $0.258$ & $5.01$ / $0.067$ & $\mathbf{21.47}$ / $\mathbf{0.384}$ & $\mathbf{+7.67\text{ dB}}$ \\
-MVTec-Carpet (Texture) & $12.46$ / $0.201$ & $5.64$ / $0.079$ & $\mathbf{14.47}$ / $\mathbf{0.249}$ & $\mathbf{+2.01\text{ dB}}$ \\
+TILDA 400 (Woven Textile) & $12.10$ / $0.258$ & $4.99$ / $0.088$ & $\mathbf{19.13}$ / $\mathbf{0.690}$ & $\mathbf{+7.03\text{ dB}}$ \\
+DAGM 2007 (Metal Surface) & $13.80$ / $0.258$ & $5.01$ / $0.067$ & $\mathbf{21.47}$ / $\mathbf{0.384}$ & $\mathbf{+7.67\text{ dB}}$ \\
+MVTec Carpet (Texture) & $12.46$ / $0.201$ & $5.64$ / $0.079$ & $\mathbf{14.47}$ / $\mathbf{0.249}$ & $\mathbf{+2.01\text{ dB}}$ \\
+MVTec Leather (Grain) & $14.12$ / $0.224$ & $5.12$ / $0.072$ & $\mathbf{24.29}$ / $\mathbf{0.499}$ & $\mathbf{+10.17\text{ dB}}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Test-Time Material Adaptation \& Physical Stress Ablations}
+\begin{itemize}
+    \setlength\itemsep{-2pt}
+    \item \textbf{Few-Shot Material Adaptation:} When transitioning to unseen fabrics, zero-gradient prompt conditioning scales reconstruction: $K=0$ shots yields $15.22\text{ dB}$; $K=1$ shot yields $17.84\text{ dB}$; $K=3$ shots yields $18.91\text{ dB}$; $K=5$ shots reaches $19.22\text{ dB}$ (mean latency: \textbf{7.2 ms}, throughput: \textbf{138 FPS} with zero backpropagation).
+    \item \textbf{Defocus Invariance Under Machinery Vibration:} Evaluating under severe lens defocus ($a_4 \in [0.0, 3.0]$ waves) confirms that continuous FNO maintains flat reconstruction fidelity: PSNR variance across the entire vibration sweep is less than $10^{-5}\text{ dB}$.
+    \item \textbf{Uncertainty Calibration \& Safety Auditing:} The single-pass evidential head achieves Expected Calibration Error (ECE) = $\mathbf{0.1011}$ and Area Under Error-Retention Curve (AURC) = $\mathbf{0.01143}$, proving robust risk-aware defect gating.
+\end{itemize}
 
 \subsection{Quantitative Empirical Summary Across 17 Datasets}
 \begin{itemize}
     \setlength\itemsep{-2pt}
     \item \textbf{Textiles \& Weak Contrast:} TILDA 400 achieves $\mathbf{19.22 \pm 0.14\text{ dB}}$ and $\mathbf{90.8\%}$ defect accuracy; DAGM 2007 achieves $\mathbf{21.75 \pm 0.21\text{ dB}}$ and $\mathbf{87.0\%}$ defect accuracy.
-    \item \textbf{Complex Textures:} MVTec Leather reaches $\mathbf{24.29\text{ dB}}$, Wood reaches $\mathbf{23.25\text{ dB}}$, Tile reaches $\mathbf{18.15\text{ dB}}$.
-    \item \textbf{Manufactured Parts:} MVTec Capsule reaches $\mathbf{30.79 \pm 0.08\text{ dB}}$ ($0.961$ SSIM); Pill reaches $\mathbf{28.27\text{ dB}}$; Hazelnut reaches $\mathbf{25.84\text{ dB}}$.
+    \item \textbf{Complex Textures:} MVTec Leather reaches $\mathbf{24.29\text{ dB}}$, Wood reaches $\mathbf{23.25\text{ dB}}$, Tile reaches $\mathbf{18.15\text{ dB}}$, Capsule reaches $\mathbf{30.79 \pm 0.08\text{ dB}}$ ($0.961$ SSIM).
     \item \textbf{Sub-Nyquist Sampling:} At 1.0\% compression ($M=41$ bucket measurements), IC-PINOT preserves $\mathbf{13.76\text{ dB}}$ PSNR and $\mathbf{0.606\text{ SSIM}}$.
-    \item \textbf{Uncertainty Calibration:} Expected Calibration Error (ECE) = $\mathbf{0.1011}$; Area Under Error-Retention Curve (AURC) = $\mathbf{0.01143}$.
 \end{itemize}
 
 \section{Project Deliverables \& Academic Trajectory}
 \begin{enumerate}
     \setlength\itemsep{-2pt}
     \item \textbf{Pretrained Model Zoo:} All 51 trained checkpoints are archived in \texttt{checkpoints/} (~1.55 GB total) for full scientific reproducibility.
-    \item \textbf{Automated Tooling:} Python scripts auto-compile camera-ready LaTeX tables (\texttt{utils/generate\_paper\_tables.py}), vector figures (\texttt{utils/visualize\_evidential\_results.py}), and PDF documentation.
+    \item \textbf{Automated Tooling:} Python scripts auto-compile camera-ready LaTeX tables (\texttt{utils/generate\_paper\_tables.py}), vector figures (\texttt{utils/generate\_page3\_comparison\_figure.py}), and PDF documentation.
     \item \textbf{Publication Positioning:} Targeted for submission to \textbf{IEEE Transactions on Computational Imaging (TCI)}.
     \item \textbf{Open-Source Verification:} All model definitions, physical forward models, loss functions, and dataset loaders are available on GitHub: \url{https://github.com/atharveeee-netizen/pi-ghost-transformer}.
 \end{enumerate}
 
-\vspace{6pt}
+\vspace{4pt}
 \hrule
 \vspace{4pt}
 \begin{center}
