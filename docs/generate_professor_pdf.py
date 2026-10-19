@@ -28,20 +28,20 @@ class MonochromeProfessorCanvas(canvas.Canvas):
 
     def draw_decorations(self, page_count):
         self.saveState()
-        self.setFont("Helvetica-Bold", 8)
+        self.setFont("Helvetica-Bold", 8.5)
         self.setFillColor(colors.black)
-        self.drawString(54, 755, "IC-PINOT: Technical Overview & Methodological Briefing")
-        self.setFont("Helvetica", 8)
-        self.drawRightString(558, 755, "Single-Photon Computational Imaging")
+        self.drawString(48, 755, "IC-PINOT: Technical Overview & Methodological Briefing")
+        self.setFont("Helvetica", 8.5)
+        self.drawRightString(564, 755, "Single-Photon Computational Imaging")
         self.setStrokeColor(colors.black)
-        self.setLineWidth(0.6)
-        self.line(54, 748, 558, 748)
+        self.setLineWidth(0.7)
+        self.line(48, 747, 564, 747)
 
         # Footer
-        self.line(54, 45, 558, 45)
-        self.setFont("Helvetica", 8)
-        self.drawString(54, 32, "Technical Briefing Document — Computational Imaging & Machine Vision")
-        self.drawRightString(558, 32, f"Page {self._pageNumber} of {page_count}")
+        self.line(48, 42, 564, 42)
+        self.setFont("Helvetica", 8.5)
+        self.drawString(48, 30, "Technical Briefing Document — Computational Imaging & Machine Vision")
+        self.drawRightString(564, 30, f"Page {self._pageNumber} of {page_count}")
         self.restoreState()
 
 def build_pdf():
@@ -49,30 +49,30 @@ def build_pdf():
     doc = SimpleDocTemplate(
         pdf_path,
         pagesize=letter,
-        leftMargin=54,
-        rightMargin=54,
-        topMargin=54,
-        bottomMargin=54
+        leftMargin=48,
+        rightMargin=48,
+        topMargin=48,
+        bottomMargin=48
     )
 
     styles = getSampleStyleSheet()
 
-    # Pure Academic Typography (No colored text)
+    # Highly Legible, Generous Typography
     title_style = ParagraphStyle(
         'DocTitle',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=14,
-        leading=17,
+        fontSize=15.5,
+        leading=18.5,
         textColor=colors.black,
-        spaceAfter=2
+        spaceAfter=3
     )
     subtitle_style = ParagraphStyle(
         'DocSubtitle',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=9.0,
-        leading=12,
+        fontSize=9.8,
+        leading=13.0,
         textColor=colors.black,
         spaceAfter=4
     )
@@ -80,8 +80,8 @@ def build_pdf():
         'RepoLink',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=8.2,
-        leading=10.5,
+        fontSize=9.0,
+        leading=11.5,
         textColor=colors.black,
         spaceAfter=5
     )
@@ -89,117 +89,117 @@ def build_pdf():
         'SecTitle',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=9.8,
-        leading=12,
+        fontSize=10.8,
+        leading=13.5,
         textColor=colors.black,
-        spaceBefore=4,
-        spaceAfter=2
+        spaceBefore=5,
+        spaceAfter=2.5
     )
     subsec_title = ParagraphStyle(
         'SubSecTitle',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=8.4,
-        leading=10.5,
+        fontSize=9.5,
+        leading=12.0,
         textColor=colors.black,
-        spaceBefore=3,
-        spaceAfter=1.5
+        spaceBefore=3.5,
+        spaceAfter=2.0
     )
     body_style = ParagraphStyle(
         'Body',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=7.8,
-        leading=10.2,
+        fontSize=8.8,
+        leading=11.6,
         textColor=colors.black,
-        spaceAfter=2.8
+        spaceAfter=3.2
     )
     box_style = ParagraphStyle(
         'BoxText',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=7.6,
-        leading=9.8,
+        fontSize=8.6,
+        leading=11.2,
         textColor=colors.black
     )
     caption_style = ParagraphStyle(
         'Caption',
         parent=styles['Normal'],
         fontName='Helvetica-Oblique',
-        fontSize=7.0,
-        leading=8.8,
+        fontSize=8.0,
+        leading=10.2,
         textColor=colors.black,
-        spaceAfter=2
+        spaceAfter=2.5
     )
     th_style = ParagraphStyle(
         'TH',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=7.0,
-        leading=8.8,
+        fontSize=8.0,
+        leading=10.0,
         textColor=colors.white
     )
     td_style = ParagraphStyle(
         'TD',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=7.0,
-        leading=8.8,
+        fontSize=8.0,
+        leading=10.0,
         textColor=colors.black
     )
     td_bold = ParagraphStyle(
         'TDBold',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=7.0,
-        leading=8.8,
+        fontSize=8.0,
+        leading=10.0,
         textColor=colors.black
     )
 
     story = []
 
     # =========================================================================
-    # PAGE 1: Title, Executive Summary, Industrial Problem, Physical CGI
+    # PAGE 1: Title, Executive Summary, Industrial Problem, Physical Principles
     # =========================================================================
     story.append(Paragraph("IC-PINOT: In-Context Physics-Informed Neural Operator Transformer", title_style))
     story.append(Paragraph("Defocus-Invariant Single-Photon Computational Imaging for Fabric Micro-Defect Inspection", subtitle_style))
     story.append(Paragraph("Open-Source Repository: <a href='https://github.com/atharveeee-netizen/pi-ghost-transformer'><u>https://github.com/atharveeee-netizen/pi-ghost-transformer</u></a>", repo_link_style))
-    story.append(HRFlowable(width="100%", thickness=0.8, color=colors.black, spaceAfter=4))
+    story.append(HRFlowable(width="100%", thickness=0.8, color=colors.black, spaceAfter=5))
 
-    exec_text = "<b>Executive Summary:</b> This project addresses automated quality control in high-speed manufacturing: <i>how to reconstruct high-fidelity imagery and detect microscopic structural defects under extreme photon starvation, mechanical vibration, and shifting material types where conventional cameras fail</i>. Standard industrial cameras rely on 2D multi-pixel sensor grids, requiring intense illumination, suffering from motion blur at conveyor speeds (1–2 m/s), and experiencing severe defocus blur from loom machinery vibration. We eliminate the multi-pixel camera entirely, adopting <b>Single-Photon Computational Ghost Imaging (CGI)</b>. We illuminate target scenes with structured light patterns and record total reflected light using a single-pixel detector. We then solve the ill-posed compressive inverse problem using <b>IC-PINOT</b>, a neural operator architecture combining continuous optical wavefield modeling, instant material adaptation, and single-pass uncertainty estimation."
-    t_box = Table([[Paragraph(exec_text, box_style)]], colWidths=[504])
+    exec_text = "<b>Executive Summary:</b> This project addresses an essential manufacturing automation challenge: <i>how to reliably image fabric surfaces and identify microscopic defects under photon starvation, machinery vibration, and frequent material changeovers where standard cameras fail</i>. Conventional automated inspection systems rely on 2D multi-pixel cameras that suffer severe motion blur at high conveyor speeds (1–2 m/s) and lose focus due to mechanical vibration. We replace the multi-pixel camera with <b>Single-Photon Computational Ghost Imaging (CGI)</b>, projecting known structured light patterns and measuring reflected intensity with a single-pixel detector. We then solve the compressive reconstruction problem using <b>IC-PINOT</b>, combining continuous wave optics modeling, instant material adaptation, and single-pass evidential defect detection."
+    t_box = Table([[Paragraph(exec_text, box_style)]], colWidths=[516])
     t_box.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F2F2F2")),
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F4F4F4")),
         ('BOX', (0,0), (-1,-1), 0.8, colors.black),
-        ('TOPPADDING', (0,0), (-1,-1), 3.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3.5),
-        ('LEFTPADDING', (0,0), (-1,-1), 5),
-        ('RIGHTPADDING', (0,0), (-1,-1), 5),
+        ('TOPPADDING', (0,0), (-1,-1), 4.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4.5),
+        ('LEFTPADDING', (0,0), (-1,-1), 6),
+        ('RIGHTPADDING', (0,0), (-1,-1), 6),
     ]))
     story.append(t_box)
-    story.append(Spacer(1, 3))
+    story.append(Spacer(1, 4))
 
     story.append(Paragraph("1. The Real-World Engineering Problem in Industrial Textile Manufacturing", sec_title))
-    p1 = "Commercial textile looms weave industrial fabrics continuously at high speeds exceeding 1 to 2 meters per second. Microscopic anomalies—such as broken yarns, warp knots, cracks, or foreign oil droplets—ruin continuous production batches if undetected. However, standard industrial line-scan cameras face insurmountable physical failure modes:"
+    p1 = "Commercial textile looms weave fabric rolls continuously at speeds exceeding 1 to 2 meters per second. Microscopic anomalies—such as broken yarns, warp knots, cracks, or foreign oil threads—ruin entire production batches if undetected. However, standard industrial line-scan cameras face three insurmountable physical bottlenecks:"
     story.append(Paragraph(p1, body_style))
 
     p1_pts = [
-        "<b>• Photon Starvation and Motion Blur:</b> Operating at meter-per-second line speeds requires microsecond camera exposure times. Under low photon flux, conventional multi-pixel camera pixels capture insufficient light, becoming overwhelmed by thermal and electronic read noise.",
-        "<b>• Mechanical Vibration Defocus:</b> Heavy weaving machinery generates continuous mechanical oscillation. This continuously shifts the optical distance between the imaging lens and the moving fabric, causing severe, time-varying out-of-focus blur that erases high-frequency defect boundaries.",
-        "<b>• Dynamic Material Switching:</b> Production lines alternate between varied weaves (cotton, denim, twill, silk, synthetic yarn) daily. Traditional supervised deep learning models degrade catastrophically when evaluated on fabric textures outside their training distribution."
+        "<b>• Photon Starvation and Motion Blur:</b> At meter-per-second line speeds, cameras require microsecond exposure times. Under low light, individual camera pixels receive too few photons, causing images to be overwhelmed by thermal and electronic read noise.",
+        "<b>• Mechanical Vibration Defocus:</b> Heavy industrial weaving machinery generates constant mechanical oscillation. This continuously shifts the optical distance between the lens and moving fabric, causing time-varying defocus blur that erases high-frequency defect boundaries.",
+        "<b>• Dynamic Material Switching:</b> Modern mills alternate between different fabric weaves (cotton, denim, twill, silk, synthetic yarn) daily. Standard supervised deep learning models degrade sharply when tested on fabric textures outside their training distribution."
     ]
     for pt in p1_pts:
         story.append(Paragraph(pt, body_style))
 
     story.append(Paragraph("2. Mathematical Principles of Single-Photon Computational Ghost Imaging", sec_title))
-    p2_intro = "Computational Ghost Imaging (CGI) replaces multi-pixel sensor grids with active illumination and a single photodiode. The physical and mathematical principles operate as follows:"
+    p2_intro = "Computational Ghost Imaging (CGI) replaces multi-pixel sensor grids with active illumination and a single photodiode. The physical operational steps are:"
     story.append(Paragraph(p2_intro, body_style))
 
     p2_steps = [
-        "<b>1. Active Structured Illumination:</b> An optical projector (e.g., Digital Micromirror Device or high-speed LED spatial light modulator) illuminates the target object $x \\in \\mathbb{R}^{H \\times W}$ with a sequence of $M$ known spatial patterns $A_m \\in \\mathbb{R}^{H \\times W}$ ($m = 1, \\dots, M$).",
-        "<b>2. Single-Pixel Bucket Detection:</b> Instead of a 2D camera array, a single photodiode—specifically a <b>Single-Photon Avalanche Diode (SPAD)</b>—collects all diffusely reflected light across the scene. The SPAD records no spatial information; it produces a single scalar intensity reading $y_m$ for each projected pattern.",
+        "<b>1. Active Structured Illumination:</b> An optical projector illuminates the fabric scene $x \\in \\mathbb{R}^{H \\times W}$ with a sequence of $M$ known spatial patterns $A_m \\in \\mathbb{R}^{H \\times W}$ ($m = 1, \\dots, M$).",
+        "<b>2. Single-Pixel Bucket Detection:</b> Instead of a 2D camera array, a single photodiode—specifically a <b>Single-Photon Avalanche Diode (SPAD)</b>—collects all diffusely reflected light across the scene, outputting a single scalar intensity reading $y_m$ for each projected pattern.",
         "<b>3. Linear Forward Model:</b> Mathematically, each bucket measurement is the inner product of the illumination pattern with the unknown fabric image: <b>$y_m = \\langle A_m, x \\rangle + \\eta_m$</b>, where $\\eta_m \\sim \\text{Poisson}(\\lambda_m)$ represents quantum photon arrival shot noise.",
-        "<b>4. Concrete Engineering Advantage:</b> SPAD single-pixel detectors offer sub-nanosecond timing resolution, zero read noise, single-photon counting sensitivity, and operational capability across non-visible infrared wavebands (SWIR/MWIR) where multi-pixel sensor arrays are cost-prohibitive."
+        "<b>4. Concrete Engineering Advantage:</b> SPAD single-pixel detectors offer sub-nanosecond timing resolution, zero read noise, single-photon counting sensitivity, and operational capability across infrared wavebands (SWIR/MWIR) where multi-pixel sensors are cost-prohibitive."
     ]
     for st in p2_steps:
         story.append(Paragraph(st, body_style))
@@ -207,25 +207,25 @@ def build_pdf():
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 2: Compressive Inverse Problem, Architecture Blueprint & Innovations
+    # PAGE 2: Compressive Inverse Problem, Architecture Blueprint & Subsystems
     # =========================================================================
     story.append(Paragraph("3. The Compressive Inverse Challenge & Defocus Wavefront Aberration", sec_title))
-    p3 = "The central engineering task is inverting the compressive measurement vector $y \\in \\mathbb{R}^M$ to recover the 2D image $x \\in \\mathbb{R}^{64 \\times 64}$. This problem is severely ill-posed because the system operates in the sub-Nyquist compressive regime ($M \\ll N^2$, e.g., $M/N^2 = 1.0\\% - 12.5\\%$). Furthermore, loom vibrations introduce optical phase aberrations, blurring the projected patterns by an unknown optical Point Spread Function (PSF) parameterized by defocus waves ($a_4$). Standard neural networks produce blurred, non-physical artifacts when optical focus drifts."
+    p3 = "The central engineering task is inverting the compressive measurement vector $y \\in \\mathbb{R}^M$ to recover the 2D image $x \\in \\mathbb{R}^{64 \\times 64}$. This problem is severely ill-posed because the system operates in the sub-Nyquist regime ($M \\ll N^2$, e.g., $M/N^2 = 1.0\\% - 12.5\\%$). Furthermore, loom vibrations introduce optical phase aberrations, blurring the projected patterns by an unknown optical Point Spread Function (PSF) parameterized by defocus waves ($a_4$). Standard neural networks produce unphysical blurred artifacts when optical focus drifts."
     story.append(Paragraph(p3, body_style))
 
-    # Architecture Diagram Image (Sharp Monochrome & Fully Legible)
+    # Architecture Diagram Image (Large, Sharp, Readable)
     arch_img_path = "figures/architecture_diagram.png"
     if os.path.exists(arch_img_path):
-        story.append(Image(arch_img_path, width=504, height=220))
+        story.append(Image(arch_img_path, width=516, height=215))
         story.append(Paragraph("<b>Figure 1: Complete Architectural Pipeline of IC-PINOT.</b> Structured illumination ($A_m$) $\\to$ Single-pixel SPAD bucket detection ($y$) $\\to$ Continuous 2D Fourier Neural Operator (FNO) wavefield modeling $\\to$ In-Context exemplar prompt tokens $\\to$ Physics-Conditioned Cross-Attention (PCCA) $\\to$ Multi-Scale Swin-UNet spatial decoder $\\to$ Evidential Normal-Inverse-Gamma parameter head outputting calibrated mean $\\hat{x}$ and uncertainties $\\sigma^2_a, \\sigma^2_e$ in a single deterministic pass at 138 FPS.", caption_style))
 
     story.append(Paragraph("4. Core Algorithmic Subsystems & Physical Innovations", sec_title))
 
     inn_pts = [
-        "<b>A. Continuous Optical Fourier Neural Operator (FNO):</b> Rather than using discrete convolutional layers that break under focal shift, IC-PINOT embeds a continuous 2D Fourier Neural Operator. The optical operator is parameterized in continuous 2D frequency space: <b>$\\mathcal{K}_{\\text{opt}}(v)(x) = \\mathcal{F}^{-1}(R_\\phi \\cdot \\mathcal{F}(v))(x)$</b>, where $R_\\phi \\in \\mathbb{C}^{k_{\\max} \\times k_{\\max}}$ truncates non-physical evanescent modes. This explicitly models continuous Fresnel diffraction through vibrating optical lenses, guaranteeing <b>defocus invariance: reconstruction fidelity remains constant ($\\Delta\\text{PSNR} < 10^{-5}$ dB) across 3.0 waves of optical defocus ($a_4$)</b>.",
-        "<b>B. Physics-Conditioned Cross-Attention (PCCA):</b> Traditional attention assumes static spatial correlations. PCCA explicitly modulates transformer queries, keys, and values with the optical state vector ($a_4$), enabling dynamic optical inversion across variable focal planes without requiring retraining.",
-        "<b>C. Multi-Scale Swin-UNet Spatial Decoder:</b> Latent tokens expand through hierarchical shifted-window self-attention. This preserves local yarn weave textures ($64 \\times 64$ resolution) and global structural repetitions without spatial checkerboard artifacts.",
-        "<b>D. Flux-Normalized Poisson Likelihood Loss:</b> Under photon starvation ($N_0 \\in [1, 1000]$), unnormalized Poisson loss causes $\\mathcal{O}(10^4)$ gradient explosion. We derived the <b>Flux-Normalized Log-Stabilized Poisson Loss</b>: <b>$\\mathcal{L}_{\\text{Poisson-Norm}} = \\frac{1}{M} \\sum_{m=1}^M [ \\frac{\\hat{y}_m}{N_0} - \\frac{y_m}{N_0} \\ln(\\frac{\\hat{y}_m + \\epsilon}{N_0}) ]$</b>, stabilizing 300-epoch SGDR convergence.",
+        "<b>A. Continuous Optical Fourier Neural Operator (FNO):</b> Rather than using discrete convolutional layers that break under focal shift, IC-PINOT embeds a continuous 2D Fourier Neural Operator. The optical operator is parameterized in continuous frequency space: <b>$\\mathcal{K}_{\\text{opt}}(v)(x) = \\mathcal{F}^{-1}(R_\\phi \\cdot \\mathcal{F}(v))(x)$</b>, where $R_\\phi \\in \\mathbb{C}^{k_{\\max} \\times k_{\\max}}$ truncates non-physical evanescent modes. This explicitly models continuous Fresnel diffraction, guaranteeing <b>defocus invariance: reconstruction fidelity remains constant ($\\Delta\\text{PSNR} < 10^{-5}$ dB) across 3.0 waves of optical defocus ($a_4$)</b>.",
+        "<b>B. Physics-Conditioned Cross-Attention (PCCA):</b> Traditional attention assumes fixed spatial correlations. PCCA explicitly modulates transformer queries, keys, and values with the optical state vector ($a_4$), enabling dynamic optical inversion without requiring separate models for each focal plane.",
+        "<b>C. Multi-Scale Swin-UNet Spatial Decoder:</b> Latent tokens expand through hierarchical shifted-window self-attention, capturing fine yarn weave textures ($64 \\times 64$ resolution) and global structural repetitions without spatial checkerboard artifacts.",
+        "<b>D. Flux-Normalized Poisson Likelihood Loss:</b> Under photon starvation ($N_0 \\in [1, 1000]$), unnormalized Poisson loss causes $\\mathcal{O}(10^4)$ gradient explosion. We derived the <b>Flux-Normalized Log-Stabilized Poisson Loss</b>: <b>$\\mathcal{L}_{\\text{Poisson-Norm}} = \\frac{1}{M} \\sum_{m=1}^M [ \\frac{\\hat{y}_m}{N_0} - \\frac{y_m}{N_0} \\ln(\\frac{\\hat{y}_m + \\epsilon}{N_0}) ]$</b>, ensuring numerical stability throughout 300-epoch SGDR training.",
         "<b>E. Zero-Gradient In-Context Adaptation & Evidential NIG Head:</b> At inference time, $K \\in \\{1, 3, 5\\}$ reference exemplar pairs $(y_k, x_k)$ guide spatial cross-attention to adapt to unseen fabrics in <b>7.2 to 9.3 ms (107 to 138 FPS) with zero backpropagation</b>. Simultaneously, an evidential Normal-Inverse-Gamma prior determines pixel mean $\\hat{x} = \\gamma$, shot noise $\\sigma^2_a = \\frac{\\beta}{\\alpha - 1}$, and defect novelty $\\sigma^2_e = \\frac{\\beta}{v(\\alpha - 1)}$ deterministically."
     ]
     for pt in inn_pts:
@@ -243,7 +243,7 @@ def build_pdf():
     # Large Full-Page Showcase Figure
     page3_img = "figures/fig_page3_comparison.png"
     if os.path.exists(page3_img):
-        story.append(Image(page3_img, width=504, height=480))
+        story.append(Image(page3_img, width=516, height=485))
         story.append(Paragraph("<b>Figure 2: Cross-Industrial Comparative Reconstruction & Evidential Anomaly Inspection Showcase (Full-Page Visual Evidence).</b> Top to bottom: (Row 1) <b>TILDA 400 Woven Textile</b> with a broken warp thread anomaly; (Row 2) <b>DAGM 2007 Metal Surface</b> with a weak-contrast scratch flaw; (Row 3) <b>MVTec-AD Industrial Leather</b> with a natural grain cut defect. Columns left to right: (1) Ground Truth Target ($x$); (2) Classical Differential Ghost Imaging ($x_{\\mathrm{DGI}}$ baseline: severe noise, low contrast); (3) IC-PINOT Proposed Reconstruction ($\\hat{x} = \\gamma$: sharp defect edges, $+7.1\\text{ dB}$ to $+7.7\\text{ dB}$ margin over optics); (4) Predicted Aleatoric Uncertainty $\\sigma^2_a$ capturing physical photon shot noise; (5) Predicted Epistemic Uncertainty $\\sigma^2_e$ cleanly localizing structural defect boundaries; (6) Absolute Residual Error ($|x - \\gamma|$).", caption_style))
 
     story.append(PageBreak())
@@ -255,7 +255,7 @@ def build_pdf():
     p8 = "The model was trained and validated across <b>17 industrial benchmark datasets</b> covering woven textiles (TILDA 400), weak-contrast metal surfaces (DAGM 2007), and all 15 MVTec-AD defect categories. All runs executed for <b>300 epochs</b> under SGDR Cosine Annealing across <b>3 independent optical seeds</b> ($S \\in \\{42, 1337, 2026\\}$), generating 51 validated checkpoints."
     story.append(Paragraph(p8, body_style))
 
-    # Table 1: Head-to-Head Comparison (Monochrome)
+    # Table 1: Head-to-Head Comparison (Monochrome, Highly Legible)
     story.append(Paragraph("<b>Table 1: Direct Head-to-Head Comparison Against Classical Optics and Deep Baselines</b> (PSNR in dB / SSIM)", subsec_title))
     b_rows = [
         [Paragraph("Benchmark Dataset", th_style), Paragraph("DGI (Classical Optics)", th_style), Paragraph("Vanilla Transformer (No Physics)", th_style), Paragraph("IC-PINOT (Proposed)", th_style), Paragraph("Margin over DGI", th_style)],
@@ -264,14 +264,14 @@ def build_pdf():
         [Paragraph("<b>MVTec Carpet (Texture)</b>", td_bold), Paragraph("12.46 dB / 0.201", td_style), Paragraph("5.64 dB / 0.079", td_style), Paragraph("<b>14.47 dB / 0.249</b>", td_bold), Paragraph("<b>+2.01 dB gain</b>", td_bold)],
         [Paragraph("<b>MVTec Leather (Grain)</b>", td_bold), Paragraph("14.12 dB / 0.224", td_style), Paragraph("5.12 dB / 0.072", td_style), Paragraph("<b>24.29 dB / 0.499</b>", td_bold), Paragraph("<b>+10.17 dB gain</b>", td_bold)]
     ]
-    t_base = Table(b_rows, colWidths=[110, 95, 105, 95, 99])
+    t_base = Table(b_rows, colWidths=[116, 96, 108, 96, 100])
     t_base.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.black),
         ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.2),
-        ('TOPPADDING', (0,0), (-1,-1), 2.2),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor("#F2F2F2")]),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
+        ('TOPPADDING', (0,0), (-1,-1), 2.5),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor("#F4F4F4")]),
+        ('GRID', (0,0), (-1,-1), 0.6, colors.black),
     ]))
     story.append(t_base)
     story.append(Spacer(1, 3))
@@ -299,18 +299,18 @@ def build_pdf():
         "<b>1. Pretrained Model Zoo:</b> All 51 trained checkpoints are archived in <code>checkpoints/</code> (~1.55 GB total) for complete scientific reproducibility.",
         "<b>2. Automated Tooling:</b> Python scripts auto-compile camera-ready LaTeX tables (<code>utils/generate_paper_tables.py</code>), vector figures (<code>utils/generate_page3_comparison_figure.py</code>), and PDF documentation.",
         "<b>3. Publication Positioning:</b> Targeted for submission to <b>IEEE Transactions on Computational Imaging (TCI)</b>.",
-        "<b>4. Open-Source Verification:</b> All model definitions, physical forward models, loss functions, and dataset loaders are available on GitHub: <a href='https://github.com/atharveeee-netizen-pi-ghost-transformer'><u>https://github.com/atharveeee-netizen/pi-ghost-transformer</u></a>."
+        "<b>4. Open-Source Verification:</b> All model definitions, physical forward models, loss functions, and dataset loaders are available on GitHub: <a href='https://github.com/atharveeee-netizen/pi-ghost-transformer'><u>https://github.com/atharveeee-netizen/pi-ghost-transformer</u></a>."
     ]
     for d in deliv_pts:
         story.append(Paragraph(d, body_style))
     story.append(Spacer(1, 3))
 
-    foot_table = Table([[Paragraph("<b>Repository:</b> <a href='https://github.com/atharveeee-netizen/pi-ghost-transformer'><u>https://github.com/atharveeee-netizen/pi-ghost-transformer</u></a> &nbsp;|&nbsp; <b>Release:</b> v1.0.0 &nbsp;|&nbsp; <b>License:</b> MIT", box_style)]], colWidths=[504])
+    foot_table = Table([[Paragraph("<b>Repository:</b> <a href='https://github.com/atharveeee-netizen/pi-ghost-transformer'><u>https://github.com/atharveeee-netizen/pi-ghost-transformer</u></a> &nbsp;|&nbsp; <b>Release:</b> v1.0.0 &nbsp;|&nbsp; <b>License:</b> MIT", box_style)]], colWidths=[516])
     foot_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F2F2F2")),
-        ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-        ('TOPPADDING', (0,0), (-1,-1), 2.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F4F4F4")),
+        ('BOX', (0,0), (-1,-1), 0.6, colors.black),
+        ('TOPPADDING', (0,0), (-1,-1), 3),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
     ]))
     story.append(foot_table)

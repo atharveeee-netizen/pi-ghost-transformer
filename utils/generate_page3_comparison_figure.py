@@ -36,7 +36,7 @@ def generate_page3_comparison():
     cfg = get_config()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     dev = torch.device(device)
-    print(f"Generating Page 3 comparison using device: {dev}")
+    print(f"Generating enhanced Page 3 comparison figure on device: {dev}")
 
     forward_model = GhostImagingForwardModel(
         image_size=64,
@@ -71,26 +71,27 @@ def generate_page3_comparison():
         }
     ]
 
-    fig, axes = plt.subplots(3, 6, figsize=(18, 9.5), dpi=300)
-    plt.subplots_adjust(wspace=0.18, hspace=0.28)
+    # Large canvas for high-legibility print scale
+    fig, axes = plt.subplots(3, 6, figsize=(19, 10.5), dpi=300)
+    plt.subplots_adjust(wspace=0.22, hspace=0.36, left=0.10, right=0.96, top=0.88, bottom=0.08)
 
     col_headers = [
-        "1. Ground Truth Target\n($x \\in \\mathbb{R}^{64 \\times 64}$)",
-        "2. Classical DGI Optics\n($x_{\\mathrm{DGI}}$ Standard Baseline)",
-        "3. IC-PINOT Reconstruction\n(Proposed Mean $\\hat{x} = \\gamma$)",
-        "4. Aleatoric Uncertainty $\\sigma^2_a$\n(Photon Shot Noise)",
-        "5. Epistemic Uncertainty $\\sigma^2_e$\n(Structural Defect Novelty)",
-        "6. Absolute Residual Error\n($|x - \\gamma|$)"
+        "1. Ground Truth Target\n(Actual Object $x$)",
+        "2. Classical Optics (DGI)\n(Standard Physics Baseline)",
+        r"3. IC-PINOT Reconstruction\n(Proposed Model $\hat{x} = \gamma$)",
+        r"4. Aleatoric Uncertainty\n(Sensor Shot Noise $\sigma^2_a$)",
+        r"5. Epistemic Uncertainty\n(Defect Novelty Map $\sigma^2_e$)",
+        r"6. Pixel Absolute Error\n(Residual $|x - \gamma|$)"
     ]
 
     for col in range(6):
-        axes[0, col].set_title(col_headers[col], fontsize=11, fontweight="bold", pad=10)
+        axes[0, col].set_title(col_headers[col], fontsize=13, fontweight="bold", pad=12, color="#111111")
 
     for row, t in enumerate(tasks):
         model = ICPINOT(num_patterns=512, embed_dim=cfg.model.embed_dim, img_size=64).to(dev)
         if os.path.exists(t["ckpt"]):
             model.load_state_dict(torch.load(t["ckpt"], map_location=dev))
-            print(f"Loaded: {t['ckpt']}")
+            print(f"Loaded checkpoint: {t['ckpt']}")
         model.eval()
 
         img, _ = t["dataset"][t["idx"]]
@@ -114,59 +115,62 @@ def generate_page3_comparison():
         ssim_dgi = calculate_ssim(dgi_rec, x)
         psnr_our = calculate_psnr(nig_out["gamma"], x)
         ssim_our = calculate_ssim(nig_out["gamma"], x)
+        gain_psnr = psnr_our - psnr_dgi
 
         # 1. Ground Truth
         axes[row, 0].imshow(gt, cmap="gray", vmin=0, vmax=1)
-        axes[row, 0].set_ylabel(f"{t['name']}\n{t['subtitle']}", fontsize=10.5, fontweight="bold", labelpad=8)
+        axes[row, 0].set_ylabel(f"{t['name']}\n{t['subtitle']}", fontsize=12, fontweight="bold", labelpad=10, color="#111111")
         axes[row, 0].set_xticks([])
         axes[row, 0].set_yticks([])
 
         # 2. DGI
         axes[row, 1].imshow(dgi_np, cmap="gray", vmin=0, vmax=1)
-        axes[row, 1].set_xlabel(f"PSNR: {psnr_dgi:.2f} dB\nSSIM: {ssim_dgi:.3f}", fontsize=9.5, fontweight="bold")
+        axes[row, 1].set_xlabel(f"PSNR: {psnr_dgi:.2f} dB\nSSIM: {ssim_dgi:.3f}", fontsize=11, fontweight="bold", labelpad=6, color="#333333")
         axes[row, 1].set_xticks([])
         axes[row, 1].set_yticks([])
 
         # 3. IC-PINOT
         axes[row, 2].imshow(gamma, cmap="gray", vmin=0, vmax=1)
-        gain_psnr = psnr_our - psnr_dgi
-        axes[row, 2].set_xlabel(f"PSNR: {psnr_our:.2f} dB ( +{gain_psnr:.2f} dB )\nSSIM: {ssim_our:.3f}", fontsize=9.5, fontweight="bold")
+        axes[row, 2].set_xlabel(f"PSNR: {psnr_our:.2f} dB (+{gain_psnr:.2f} dB)\nSSIM: {ssim_our:.3f}", fontsize=11, fontweight="bold", labelpad=6, color="#000000")
         axes[row, 2].set_xticks([])
         axes[row, 2].set_yticks([])
 
         # 4. Aleatoric UQ
         im_a = axes[row, 3].imshow(alea, cmap="viridis")
-        axes[row, 3].set_xlabel(f"Mean $\\sigma^2_a$: {np.mean(alea):.4f}", fontsize=9.5)
+        axes[row, 3].set_xlabel(f"Mean Noise: {np.mean(alea):.4f}", fontsize=11, fontweight="bold", labelpad=6, color="#333333")
         axes[row, 3].set_xticks([])
         axes[row, 3].set_yticks([])
         divider = make_axes_locatable(axes[row, 3])
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        fig.colorbar(im_a, cax=cax)
+        cax = divider.append_axes("right", size="5%", pad=0.06)
+        cbar = fig.colorbar(im_a, cax=cax)
+        cbar.ax.tick_params(labelsize=9.5)
 
         # 5. Epistemic UQ
         im_e = axes[row, 4].imshow(epis, cmap="inferno")
-        axes[row, 4].set_xlabel(f"Peak Novelty: {np.max(epis):.4f}", fontsize=9.5, fontweight="bold")
+        axes[row, 4].set_xlabel(f"Peak Novelty: {np.max(epis):.4f}", fontsize=11, fontweight="bold", labelpad=6, color="#000000")
         axes[row, 4].set_xticks([])
         axes[row, 4].set_yticks([])
         divider = make_axes_locatable(axes[row, 4])
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        fig.colorbar(im_e, cax=cax)
+        cax = divider.append_axes("right", size="5%", pad=0.06)
+        cbar = fig.colorbar(im_e, cax=cax)
+        cbar.ax.tick_params(labelsize=9.5)
 
         # 6. Error
         im_err = axes[row, 5].imshow(err, cmap="magma")
-        axes[row, 5].set_xlabel(f"MAE: {np.mean(err):.4f}", fontsize=9.5)
+        axes[row, 5].set_xlabel(f"MAE: {np.mean(err):.4f}", fontsize=11, fontweight="bold", labelpad=6, color="#333333")
         axes[row, 5].set_xticks([])
         axes[row, 5].set_yticks([])
         divider = make_axes_locatable(axes[row, 5])
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        fig.colorbar(im_err, cax=cax)
+        cax = divider.append_axes("right", size="5%", pad=0.06)
+        cbar = fig.colorbar(im_err, cax=cax)
+        cbar.ax.tick_params(labelsize=9.5)
 
     out_png = "figures/fig_page3_comparison.png"
     out_pdf = "figures/fig_page3_comparison.pdf"
     plt.savefig(out_png, bbox_inches="tight", dpi=300)
     plt.savefig(out_pdf, bbox_inches="tight")
     plt.close()
-    print(f"Generated Page 3 comparison showcase:\n  - {out_png}\n  - {out_pdf}")
+    print(f"Generated enhanced high-legibility Page 3 showcase:\n  - {out_png}\n  - {out_pdf}")
 
 if __name__ == "__main__":
     generate_page3_comparison()
