@@ -2,7 +2,7 @@
 # Automatically resumes execution from the exact dataset, seed, and pillar where interrupted.
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-Set-Location $ScriptDir
+Set-Location (Join-Path $ScriptDir "..")
 
 $PythonExe = "C:\ProgramData\anaconda3\python.exe"
 
@@ -15,7 +15,7 @@ while ($true) {
     $Now = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     Write-Host "[$Now] Running / Resuming Master Campaign..." -ForegroundColor Cyan
 
-    & $PythonExe -u run_master_campaign.py --all --epochs 300 --seeds 42 1337 2026
+    & $PythonExe -u training/run_master_campaign.py --all --epochs 300 --seeds 42 1337 2026
 
     if ($LASTEXITCODE -eq 0) {
         Write-Host "`n===============================================================================" -ForegroundColor Green

@@ -1,3 +1,8 @@
+import os, sys
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
 """
 Quick smoke test: verify the full PI-GhostFormer pipeline runs end-to-end.
 Uses a tiny dataset and 2 epochs to validate all modules connect correctly.
@@ -11,7 +16,7 @@ import os
 import time
 
 # Add project root to path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from config import get_config
 from physics.forward_model import GhostImagingForwardModel

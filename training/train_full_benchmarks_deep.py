@@ -1,3 +1,8 @@
+import os, sys
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
 """
 Comprehensive Deep Benchmark Suite (150-200 Epochs) for PI-GhostFormer.
 Evaluates across:

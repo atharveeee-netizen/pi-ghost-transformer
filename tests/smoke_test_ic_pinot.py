@@ -1,3 +1,8 @@
+import os, sys
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
 """
 End-to-End Verification Test for IC-PINOT:
 In-Context Physics-Informed Neural Operator Transformer.
@@ -7,7 +12,7 @@ import torch
 import sys
 import os
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from models.ic_pinot import ICPINOT
 from models.evidential import EvidentialNIGLoss

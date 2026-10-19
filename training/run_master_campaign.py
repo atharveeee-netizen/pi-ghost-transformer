@@ -14,11 +14,15 @@ import argparse
 import datetime
 import json
 
-from train_ic_pinot_master import run_full_suite
-from benchmark_baselines import main as run_baselines
-from benchmark_stress_matrix import evaluate_stress_matrix
-from benchmark_uncertainty_calibration import run_uncertainty_calibration
-from benchmark_in_context_adaptation import evaluate_in_context_adaptation
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
+from training.train_ic_pinot_master import run_full_suite
+from benchmarks.benchmark_baselines import main as run_baselines
+from benchmarks.benchmark_stress_matrix import evaluate_stress_matrix
+from benchmarks.benchmark_uncertainty_calibration import run_uncertainty_calibration
+from benchmarks.benchmark_in_context_adaptation import evaluate_in_context_adaptation
 
 
 def main():

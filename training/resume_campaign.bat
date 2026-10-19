@@ -4,11 +4,11 @@ echo ===========================================================================
 echo   IC-PINOT: Resilient Batch Training Engine
 echo   Power-Cut and Crash-Resistant Auto-Resume Protocol
 echo ===============================================================================
-cd /d "%~dp0"
+cd /d "%~dp0\.."
 
 :LOOP
 echo [%DATE% %TIME%] Starting / Resuming IC-PINOT Master Campaign...
-"C:\ProgramData\anaconda3\python.exe" -u run_master_campaign.py --all --epochs 300 --seeds 42 1337 2026
+"C:\ProgramData\anaconda3\python.exe" -u training/run_master_campaign.py --all --epochs 300 --seeds 42 1337 2026
 
 if %ERRORLEVEL% EQU 0 (
     echo.

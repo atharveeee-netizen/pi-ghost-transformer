@@ -242,31 +242,31 @@ pip install -r requirements.txt
 
 ### Sanity Verification
 ```bash
-python smoke_test_ic_pinot.py
+python tests/smoke_test_ic_pinot.py
 ```
 
 ### Reproduce Benchmark Pillars:
 ```bash
 # Pillar 2: Head-to-Head Baseline Suite
-python benchmark_baselines.py
+python benchmarks/benchmark_baselines.py
 
 # Pillar 3: 3D Physical Stress Matrix
-python benchmark_stress_matrix.py
+python benchmarks/benchmark_stress_matrix.py
 
 # Pillar 4: Evidential Uncertainty Calibration
-python benchmark_uncertainty_calibration.py
+python benchmarks/benchmark_uncertainty_calibration.py
 
 # Pillar 5: In-Context Zero-Gradient Adaptation
-python benchmark_in_context_adaptation.py
+python benchmarks/benchmark_in_context_adaptation.py
 ```
 
 ### Fault-Tolerant Training Execution:
 ```powershell
 # Windows PowerShell
-.\resume_campaign.ps1
+.\training\resume_campaign.ps1
 
 # Or batch script
-.\resume_campaign.bat
+.\training\resume_campaign.bat
 ```
 
 ---
@@ -321,25 +321,24 @@ Compiles [`results/IC_PINOT_Comprehensive_Results_Report.pdf`](results/IC_PINOT_
 │   ├── forward_model.py      # Single-pixel bucket simulator
 │   ├── noise.py              # SPAD dead-time and dark count noise
 │   └── psf.py                # Zernike wavefront point spread function
+├── benchmarks/               # Empirical evaluation suites (baselines, stress matrix, UQ, adaptation)
+├── checkpoints/              # 51 trained PyTorch model checkpoints
+├── data/                     # Data loaders and benchmark splits
+├── docs/                     # Briefing PDF, LaTeX source, PDF compilation script
+├── figures/                  # 300 DPI publication figures & architecture schematics
+├── logs/                     # Historical training and benchmark execution logs
+├── models/                   # Architecture modules (PCCA, Swin, NIG, FNO)
+├── physics/                  # Differentiable optical wave propagation
 ├── results/                  # Empirical JSON metrics & compiled PDF report
 ├── tables/                   # Ready-to-compile LaTeX tables
+├── tests/                    # Sanity checks and end-to-end smoke tests
+├── training/                 # Model training suites & 24/7 campaign orchestrator
 ├── utils/                    # Automated publication tools
-│   ├── generate_architecture_diagram.py
-│   ├── generate_paper_tables.py
-│   ├── generate_results_pdf.py
-│   ├── metrics.py
-│   └── visualize_evidential_results.py
-├── benchmark_baselines.py
-├── benchmark_in_context_adaptation.py
-├── benchmark_stress_matrix.py
-├── benchmark_uncertainty_calibration.py
+├── .gitignore
 ├── config.py                 # Central hyperparameter configuration
-├── requirements.txt          # Python dependencies
-├── resume_campaign.bat       # Windows batch auto-resume execution script
-├── resume_campaign.ps1       # Windows PowerShell auto-resume execution script
-├── run_master_campaign.py    # Master campaign sequence runner
-├── smoke_test_ic_pinot.py    # Pipeline sanity check script
-└── train_ic_pinot_master.py  # Master 300-epoch SGDR training pipeline
+├── LICENSE                   # MIT License
+├── README.md                 # Primary documentation
+└── requirements.txt          # Python dependencies
 ```
 
 ---
