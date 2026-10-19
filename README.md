@@ -153,7 +153,7 @@ Comparison against classical Differential Ghost Imaging (DGI) and an unconstrain
 ### A. Sub-Nyquist Sampling Compression
 Reconstruction quality across aggressive measurement compression:
 
-| Sampling Ratio | Measurements ($M$) | PSNR (dB) | SSIM | Defocus Invariance (0–3 waves) |
+| Sampling Ratio | Measurements ($M$) | PSNR (dB) | SSIM | Defocus Invariance (0 to 3 waves) |
 |:---:|:---:|:---:|:---:|:---:|
 | **1.0%** | $M = 41$ | $13.76\text{ dB}$ | $0.606$ | $\Delta\text{PSNR} < 10^{-5}\text{ dB}$ |
 | **3.0%** | $M = 123$ | $13.34\text{ dB}$ | $0.546$ | $\Delta\text{PSNR} < 10^{-5}\text{ dB}$ |
