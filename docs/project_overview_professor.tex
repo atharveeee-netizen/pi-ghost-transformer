@@ -4,29 +4,30 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{microtype}
 \usepackage{caption}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 
-% Page setup
+% Page setup - Clean Monochrome Academic
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{\small \textcolor{gray}{IC-PINOT: Academic Brief \& Technical Dossier}}
-\lhead{\small \textcolor{gray}{Rashtriya Raksha University}}
+\rhead{\small IC-PINOT: Technical Overview \& Methodological Briefing}
+\lhead{\small Single-Photon Computational Imaging}
 \rfoot{\small Page \thepage\ of 4}
-\lfoot{\small Confidential --- Academic Research Report}
+\lfoot{\small Technical Briefing Document}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
-% Section formatting
-\titleformat{\section}{\large\bfseries\color{blue!70!black}}{\thesection}{1em}{}[\titlerule]
-\titleformat{\subsection}{\normalsize\bfseries\color{black!80}}{\thesubsection}{1em}{}
+% Section formatting - Pure Black (No colored text)
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
 
-\definecolor{boxbg}{RGB}{245,247,250}
-\definecolor{boxborder}{RGB}{209,217,224}
+\hypersetup{
+    colorlinks=false,
+    pdfborder={0 0 0}
+}
 
 \begin{document}
 
@@ -35,9 +36,8 @@
 % ----------------------------------------------------------------------
 \begin{center}
     {\LARGE \textbf{IC-PINOT: In-Context Physics-Informed Neural Operator Transformer}}\\[4pt]
-    {\large \textbf{Defocus-Invariant Single-Photon Computational Imaging for Fabric Inspection}}\\[6pt]
-    \textbf{Author:} Atharve Dahima \quad$|$\quad \textbf{Advisor Briefing Document} \quad$|$\quad \textbf{Target:} IEEE Trans. Comput. Imaging (TCI)\\[2pt]
-    \textbf{Repository:} \url{https://github.com/atharveeee-netizen/pi-ghost-transformer} \quad$|$\quad \textbf{Date:} October 2026
+    {\large \textbf{Defocus-Invariant Single-Photon Computational Imaging for Fabric Micro-Defect Inspection}}\\[6pt]
+    \textbf{Repository:} \url{https://github.com/atharveeee-netizen/pi-ghost-transformer}
 \end{center}
 \vspace{-4pt}
 \hrule
@@ -47,128 +47,114 @@
 % EXECUTIVE SUMMARY (PAGE 1)
 % ----------------------------------------------------------------------
 \section*{Executive Summary}
-This briefing document provides an end-to-end technical overview of the \textbf{IC-PINOT} project for academic evaluation. The project solves a high-value industrial automation problem: \textbf{how to detect microscopic yarn defects on high-speed textile manufacturing lines where standard optical cameras fail}. 
+This briefing document presents a comprehensive technical overview of the \textbf{IC-PINOT} project for academic evaluation. The project resolves a critical industrial inspection bottleneck: \textbf{how to reconstruct high-fidelity imagery and detect microscopic fabric defects under severe photon scarcity, mechanical vibration, and dynamic material variations where standard cameras fail}. 
 
-Standard optical inspection cameras require massive illumination banks, suffer motion blur at high conveyor speeds, and lose focus due to mechanical machinery vibration. To overcome these limitations, this project utilizes \textbf{Computational Ghost Imaging (CGI)} powered by single-photon detectors. Instead of capturing images using a 2D sensor array, the system projects engineered light patterns onto fabrics and collects total reflected light with a single, highly sensitive photodetector (a single-pixel ``bucket'' detector). 
+Conventional automated line-scan cameras require intense lighting, suffer severe motion blur at high conveyor speeds (1--2 m/s), and lose focus due to mechanical machinery vibration. We eliminate the multi-pixel camera sensor entirely, adopting \textbf{Single-Photon Computational Ghost Imaging (CGI)}. We project known structured light patterns onto fabrics and collect total reflected light using a single-pixel photodetector (a Single-Photon Avalanche Diode, SPAD). 
 
-To solve the inverse problem in real time under factory vibration and material variations, we introduced \textbf{IC-PINOT}, a deep learning architecture that integrates:
+To invert these compressive measurements under industrial vibration and material shifts, we introduced \textbf{IC-PINOT}, a neural operator architecture combining:
 \begin{enumerate}
     \setlength\itemsep{-2pt}
-    \item \textbf{Continuous Fourier Neural Operators (FNO):} Embedding optical diffraction physics directly into the model to achieve total invariance to optical lens defocus (up to 3.0 waves).
+    \item \textbf{Continuous Fourier Neural Operators (FNO):} Embedding wavefield diffraction physics directly into the model to achieve total invariance to optical lens defocus (up to 3.0 waves).
     \item \textbf{In-Context Zero-Gradient Adaptation:} Enabling the model to adapt to unseen fabrics at test time in under 15 milliseconds without retraining.
-    \item \textbf{Single-Pass Evidential Uncertainty Quantification:} Predicting calibrated sensor noise ($\sigma^2_a$) and structural defect novelty ($\sigma^2_e$) in a single forward pass at 138 frames per second.
+    \item \textbf{Single-Pass Evidential Uncertainty Quantification:} Predicting calibrated sensor noise ($\sigma^2_a$) and structural defect novelty ($\sigma^2_e$) in a single deterministic pass at 138 frames per second.
 \end{enumerate}
 
 % ----------------------------------------------------------------------
 % SECTION 1: THE REAL-WORLD PROBLEM (PAGE 1)
 % ----------------------------------------------------------------------
 \section{The Real-World Engineering Problem}
-Modern automated textile mills operate at line speeds exceeding 1--2 meters per second. Automated defect inspection is essential to prevent defective fabric runs that waste kilometers of material. However, conventional multi-megapixel industrial cameras face fundamental physical bottlenecks:
+Modern automated textile looms operate continuously at line speeds exceeding 1 to 2 meters per second. Microscopic anomalies (broken yarns, warp knots, cracks, or foreign oil threads) ruin continuous fabric rolls if undetected. However, conventional multi-pixel camera systems face severe physical bottlenecks:
 \begin{itemize}
     \setlength\itemsep{-2pt}
-    \item \textbf{Photon Starvation \& Motion Blur:} High line speeds require microsecond exposure times. At low photon levels, standard camera sensors drown in electronic read noise.
-    \item \textbf{Mechanical Vibration Defocus:} Industrial weaving looms generate severe mechanical vibration. This vibration continuously alters the focal distance between the lens and fabric, producing out-of-focus blur.
-    \item \textbf{Material Diversity:} A loom may switch between denim, silk, wool, and synthetic weaves daily. Standard deep learning vision models fail when tested on fabrics not present in their training set.
+    \item \textbf{Photon Starvation \& Motion Blur:} High conveyor speeds require microsecond camera exposures. Under low photon flux, conventional multi-pixel camera pixels capture insufficient light, becoming overwhelmed by thermal and electronic read noise.
+    \item \textbf{Mechanical Vibration Defocus:} Industrial weaving machinery generates continuous mechanical vibration. This continuously shifts the optical distance between the imaging lens and moving fabric, causing time-varying defocus blur that obscures defect edges.
+    \item \textbf{Dynamic Material Switching:} Production lines alternate between varied weaves (cotton, denim, twill, silk, synthetic yarn) daily. Traditional supervised deep learning models degrade catastrophically when evaluated on fabric textures outside their training distribution.
 \end{itemize}
 
 % ----------------------------------------------------------------------
 % SECTION 2: WHAT IS SINGLE-PHOTON COMPUTATIONAL GHOST IMAGING? (PAGE 1)
 % ----------------------------------------------------------------------
-\section{What is Single-Photon Computational Ghost Imaging?}
-Computational Ghost Imaging (CGI) is an alternative imaging paradigm that completely eliminates the traditional multi-pixel camera sensor. 
-
-\subsection{First-Principles Mechanics (No Mysticism)}
-In a standard smartphone or industrial camera, light passes through a lens onto an $N \times N$ grid of pixels. Each pixel records the intensity at its specific spatial coordinate.
-
-In Computational Ghost Imaging, the architecture is inverted:
+\section{Mathematical Principles of Single-Photon Computational Ghost Imaging}
+Computational Ghost Imaging (CGI) replaces multi-pixel sensor grids with active illumination and a single photodiode:
 \begin{enumerate}
     \setlength\itemsep{-2pt}
-    \item \textbf{Active Structured Illumination:} A digital micromirror device (DMD) or LED projector shines a rapid sequence of $M$ known 2D patterns $A_m \in \mathbb{R}^{H \times W}$ ($m = 1, \dots, M$) onto the target fabric $x \in \mathbb{R}^{H \times W}$.
-    \item \textbf{Single-Pixel Detection:} All reflected light from the fabric is collected by a single photodiode called a \textbf{Single-Photon Avalanche Diode (SPAD)}. The SPAD has no spatial resolution---it simply counts the total arriving photons across the entire fabric patch.
-    \item \textbf{Mathematical Formulation:} The scalar bucket measurement $y_m$ for the $m$-th illumination pattern is modeled as:
+    \item \textbf{Active Structured Illumination:} A digital projector illuminates the target scene $x \in \mathbb{R}^{H \times W}$ with a sequence of $M$ known binary or continuous spatial patterns $A_m \in \mathbb{R}^{H \times W}$ ($m = 1, \dots, M$).
+    \item \textbf{Single-Pixel Bucket Detection:} Instead of a 2D sensor array, a single photodiode---specifically a \textbf{Single-Photon Avalanche Diode (SPAD)}---collects all diffusely reflected light across the scene, outputting a single scalar intensity reading $y_m$.
+    \item \textbf{Linear Forward Model:} Mathematically, each bucket measurement is the inner product of the illumination pattern with the unknown fabric image:
     \begin{equation}
         y_m = \iint A_m(u, v) \cdot x(u, v) \, du \, dv + \eta_m = \langle A_m, x \rangle + \eta_m
     \end{equation}
-    where $\eta_m \sim \text{Poisson}(\lambda_m)$ represents quantum photon shot noise and detector dark counts.
+    where $\eta_m \sim \text{Poisson}(\lambda_m)$ represents quantum photon arrival shot noise.
+    \item \textbf{Concrete Engineering Advantage:} SPAD single-pixel detectors offer sub-nanosecond timing resolution, zero read noise, single-photon counting sensitivity, and operational capability across non-visible infrared wavebands (SWIR/MWIR) where multi-pixel sensor arrays are cost-prohibitive.
 \end{enumerate}
-
-\subsection{Why Use Single-Pixel Imaging?}
-Single-pixel SPAD detectors have picosecond timing resolution, zero read noise, and orders-of-magnitude higher sensitivity than conventional camera chips. Furthermore, they operate across non-visible wavebands (such as Short-Wave Infrared, SWIR, or Terahertz) where multi-pixel sensor arrays cost tens of thousands of dollars.
 
 \newpage
 % ----------------------------------------------------------------------
-% PAGE 2: SYSTEM ARCHITECTURE & CORE METHODOLOGY
+% PAGE 2: INVERSE RECONSTRUCTION & ARCHITECTURAL BLUEPRINT
 % ----------------------------------------------------------------------
-\section{The Inverse Problem \& Architectural Blueprint}
+\section{The Compressive Inverse Challenge \& The IC-PINOT Architecture}
 
-Reconstructing the 2D image $x \in \mathbb{R}^{N^2}$ from the 1D bucket measurement vector $y \in \mathbb{R}^M$ requires solving a severely ill-posed compressive inverse problem, particularly under low sampling ratios ($M \ll N^2$, such as $M/N^2 = 1.0\% - 12.5\%$).
+The central engineering task is inverting the measurement vector $y \in \mathbb{R}^M$ to recover the 2D image $x \in \mathbb{R}^{64 \times 64}$. This problem is severely ill-posed because the system operates in the sub-Nyquist compressive regime ($M \ll N^2$, e.g., $M/N^2 = 1.0\% - 12.5\%$). Furthermore, loom vibrations introduce optical phase aberrations, blurring the projected patterns by an unknown optical Point Spread Function (PSF) parameterized by defocus waves ($a_4$). Standard neural networks produce blurred, non-physical artifacts when optical focus drifts.
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/architecture_diagram.png}
-    \caption{\textbf{Complete IC-PINOT Architectural Pipeline.} (1) Physical optical stage projecting structured patterns onto the fabric and detecting with a single-pixel SPAD; (2) Fourier Neural Operator (FNO) wavefield modeling and in-context exemplar prompt encoding; (3) Physics-Conditioned Cross-Attention (PCCA) spatial decoding; (4) Evidential Normal-Inverse-Gamma (NIG) parameter head outputting mean reconstruction and calibrated uncertainty maps.}
+    \includegraphics[width=0.95\textwidth]{../figures/architecture_diagram.png}
+    \caption{\textbf{Complete IC-PINOT Pipeline.} Structured pattern illumination $\rightarrow$ SPAD bucket detection $\rightarrow$ Fourier Neural Operator (FNO) wavefield modeling $\rightarrow$ In-Context exemplar conditioning $\rightarrow$ Physics-Conditioned Cross-Attention (PCCA) $\rightarrow$ Swin-UNet spatial decoding $\rightarrow$ Evidential Normal-Inverse-Gamma parameter head.}
     \label{fig:arch}
 \end{figure*}
 
-\subsection{Core Innovation 1: Differentiable Wave Optics via Fourier Neural Operators}
-When industrial vibration shakes the optical lens, the wavefront experiences optical phase aberrations parameterized by Zernike defocus coefficients ($a_4$). Traditional deep learning treats this optical degradation as a black box and fails when the defocus shifts.
-
-IC-PINOT incorporates a \textbf{Continuous Fourier Neural Operator ($\text{FNO}_{2D}$)} directly into the network. Rather than discretizing space, the FNO models continuous wavefield propagation in 2D Fourier frequency space:
+\subsection{Continuous Optical Fourier Neural Operator (FNO) for Defocus Invariance}
+Rather than using discrete convolutional layers that break under focal shift, IC-PINOT embeds a continuous 2D Fourier Neural Operator. The optical forward operator is parameterized in continuous 2D frequency space:
 \begin{equation}
     \mathcal{K}_{\text{opt}}(v)(x) = \mathcal{F}^{-1} \left( R_\phi \cdot \mathcal{F}(v) \right)(x)
 \end{equation}
-where $R_\phi \in \mathbb{C}^{k_{\max} \times k_{\max}}$ is a learnable complex spectral tensor. This allows the network to simulate continuous Fresnel diffraction through vibrating optical lenses. As verified experimentally, this guarantees \textbf{total defocus invariance}: the reconstruction quality remains completely flat ($\Delta\text{PSNR} < 10^{-5}$ dB) across all defocus levels from $a_4 = 0.0$ to $3.0$ waves.
+where $R_\phi \in \mathbb{C}^{k_{\max} \times k_{\max}}$ truncates non-physical evanescent modes. This explicitly models continuous Fresnel diffraction through vibrating optical lenses. As verified experimentally, this guarantees \textbf{defocus invariance: reconstruction fidelity remains constant ($\Delta\text{PSNR} < 10^{-5}$ dB) across 3.0 waves of optical defocus}.
 
-\subsection{Core Innovation 2: Physics-Conditioned Cross-Attention (PCCA)}
-Standard vision transformers use static attention weights. In IC-PINOT, the \textbf{Physics-Conditioned Cross-Attention (PCCA)} module modulates queries, keys, and values using the instantaneous optical state of the system ($a_4$), allowing the transformer backbone to dynamically invert varying physical optical conditions without needing separate models for each focal state.
+\subsection{Physics-Conditioned Cross-Attention (PCCA)}
+Traditional attention mechanisms assume fixed spatial correlations. The PCCA module explicitly modulates transformer queries, keys, and values using the optical state vector ($a_4$), enabling dynamic optical inversion without requiring separate models for each focal plane.
 
-\subsection{Core Innovation 3: Flux-Normalized Poisson Likelihood}
-At single-photon flux levels ($N_0 \in [1, 1000]$ photons per pixel), raw Poisson log-likelihood losses produce order $\mathcal{O}(10^3)$ gradients, which causes numerical instability during early training. We developed the \textbf{Flux-Normalized Poisson Loss}:
-\begin{equation}
-    \mathcal{L}_{\text{Poisson-Norm}} = \frac{1}{M} \sum_{m=1}^M \left[ \frac{\hat{y}_m}{N_0} - \frac{y_m}{N_0} \ln\left(\frac{\hat{y}_m + \epsilon}{N_0}\right) \right]
-\end{equation}
-This mathematically aligns gradient magnitudes across both low-light and bright regimes, ensuring smooth convergence across 300 epochs.
+\subsection{Multi-Scale Swin-UNet Spatial Decoder}
+The latent feature tokens are expanded through a hierarchical Swin Transformer UNet architecture. Shifted window self-attention captures both fine yarn thread textures ($64 \times 64$ resolution) and global structural weave repetitions without spatial artifacting.
 
 \newpage
 % ----------------------------------------------------------------------
 % PAGE 3: IN-CONTEXT ADAPTATION & EVIDENTIAL UNCERTAINTY
 % ----------------------------------------------------------------------
-\section{In-Context Adaptation \& Evidential Safety}
+\section{Optimization, Adaptation \& Evidential Uncertainty}
+
+\subsection{Flux-Normalized Poisson Likelihood Optimization}
+Under single-photon detection regimes ($N_0 \in [1, 1000]$ photons/pixel), standard unnormalized Poisson log-likelihood losses generate loss values of order $\mathcal{O}(10^3)$, producing gradients $10^4\times$ larger than normalized MSE. This causes gradient explosion during initial training epochs. We derived the \textbf{Flux-Normalized Log-Stabilized Poisson Loss}:
+\begin{equation}
+    \mathcal{L}_{\text{Poisson-Norm}} = \frac{1}{M} \sum_{m=1}^M \left[ \frac{\hat{y}_m}{N_0} - \frac{y_m}{N_0} \ln\left(\frac{\hat{y}_m + \epsilon}{N_0}\right) \right]
+\end{equation}
+This formulation scales measurements by the mean photon flux $N_0$, aligning gradient magnitudes and ensuring numerical stability throughout 300-epoch SGDR training.
 
 \subsection{Zero-Gradient Test-Time In-Context Adaptation}
-In commercial production, stopping the manufacturing line to collect data and fine-tune neural network weights for several hours is unacceptable. 
-
-IC-PINOT incorporates an \textbf{In-Context Prompt Engine}. At test time, the system takes $K \in \{1, 3, 5\}$ reference pairs $(y_k, x_k)$ of a new, unseen fabric and projects them into condition prompt tokens. Through cross-attention, the model adapts its reconstruction logic to the new surface \textbf{instantaneously in 7.2 to 9.3 milliseconds (107 to 138 FPS) without a single gradient step or weight update}.
+In operational textile manufacturing, production cannot be halted for hours to collect defect labels and fine-tune model weights when changing fabric rolls. IC-PINOT incorporates a prompt-based \textbf{In-Context Prompt Engine}. At inference time, the model receives $K \in \{1, 3, 5\}$ reference exemplar pairs $(y_k, x_k)$ of the target fabric weave. The prompt encoder projects these exemplars into condition tokens that guide the spatial cross-attention layers. The model adapts its reconstruction logic to unseen materials in \textbf{7.2 to 9.3 milliseconds (107 to 138 FPS) with ZERO gradient backpropagation and zero weight modifications}.
 
 \subsection{Single-Pass Evidential Uncertainty Quantification (Normal-Inverse-Gamma)}
-Safety-critical quality control requires knowing \emph{when the model is uncertain}. Previous techniques like Monte Carlo Dropout require running the neural network 30 times per frame, dropping throughput to $< 2$ FPS.
+Safety-critical inspection requires calibrated confidence. Prior approaches (such as Monte Carlo Dropout) require 30 stochastic forward passes per frame, dropping throughput to $<2$ FPS. IC-PINOT places a continuous \textbf{Normal-Inverse-Gamma (NIG)} prior over the pixel predictions: $\mu \sim \mathcal{N}(\gamma, \sigma^2/v), \sigma^2 \sim \Gamma^{-1}(\alpha, \beta)$. In a \textbf{single deterministic pass ($\mathcal{O}(1)$ latency, >100 FPS)}, the network predicts four parameter maps per pixel:
+\begin{itemize}
+    \setlength\itemsep{-2pt}
+    \item \textbf{Mean Reconstruction ($\hat{x} = \gamma$):} The predicted spatial fabric image.
+    \item \textbf{Aleatoric Uncertainty ($\sigma^2_a = \frac{\beta}{\alpha - 1}$):} Captures irreducible physical noise from photon shot noise and detector dark count jitter.
+    \item \textbf{Epistemic Uncertainty ($\sigma^2_e = \frac{\beta}{v(\alpha - 1)}$):} Quantifies model novelty and out-of-distribution structural defects.
+\end{itemize}
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[width=0.92\textwidth]{figures/fig_evidential_tilda_400.png}
-    \caption{\textbf{High-Resolution Evidential Decomposition on TILDA 400 Textile Weave.} From left to right: (1) Ground Truth defect patch; (2) IC-PINOT single-pass mean reconstruction ($\mathbf{19.22\text{ dB}}$, $\mathbf{0.686\text{ SSIM}}$); (3) Aleatoric uncertainty map $\sigma^2_a$ capturing photon noise; (4) Epistemic uncertainty map $\sigma^2_e$ sharply highlighting defect anomaly boundaries; (5) Absolute residual error.}
+    \includegraphics[width=0.92\textwidth]{../figures/fig_evidential_tilda_400.png}
+    \caption{\textbf{Evidential Decomposition on TILDA 400 Textile Weave.} Left to right: (1) Ground Truth defect patch; (2) IC-PINOT single-pass mean reconstruction ($\mathbf{19.22\text{ dB}}$, $\mathbf{0.686\text{ SSIM}}$); (3) Aleatoric uncertainty $\sigma^2_a$; (4) Epistemic uncertainty $\sigma^2_e$ isolating anomaly boundaries; (5) Absolute residual error.}
     \label{fig:evidential}
 \end{figure*}
-
-IC-PINOT places a continuous \textbf{Normal-Inverse-Gamma (NIG)} prior over the pixel predictions:
-\begin{equation}
-    \mu \sim \mathcal{N}\left(\gamma, \frac{\sigma^2}{v}\right), \quad \sigma^2 \sim \Gamma^{-1}(\alpha, \beta)
-\end{equation}
-In a \textbf{single deterministic forward pass ($\mathcal{O}(1)$ latency)}, the model outputs four spatial parameter maps: mean $\gamma$, virtual evidence $v > 0$, shape $\alpha > 1$, and scale $\beta > 0$. This mathematically dissociates two distinct sources of uncertainty:
-\begin{itemize}
-    \setlength\itemsep{-2pt}
-    \item \textbf{Aleatoric Uncertainty} ($\sigma^2_a = \frac{\beta}{\alpha - 1}$): Unavoidable physical noise originating from photon Poisson fluctuations and SPAD sensor jitter.
-    \item \textbf{Epistemic Uncertainty} ($\sigma^2_e = \frac{\beta}{v(\alpha - 1)}$): Model unfamiliarity originating from unseen structural defects or novel foreign bodies.
-\end{itemize}
-As illustrated in Figure~\ref{fig:evidential}, microscopic yarn tears strictly ignite the epistemic uncertainty map $\sigma^2_e$, allowing automated thresholding for defect rejection without false alarms.
 
 \newpage
 % ----------------------------------------------------------------------
 % PAGE 4: RIGOROUS EMPIRICAL VALIDATION & CONCLUSION
 % ----------------------------------------------------------------------
-\section{Empirical Evaluation \& Experimental Results}
+\section{Rigorous Empirical Evaluation \& Industrial Benchmarks}
 
-The framework was evaluated across \textbf{17 industrial benchmark datasets} (including TILDA 400 textile weaves, DAGM 2007 weak-contrast surfaces, and all 15 MVTec-AD industrial categories). Each model was trained for \textbf{300 epochs} across \textbf{3 independent optical seeds} ($S \in \{42, 1337, 2026\}$), producing 51 fully trained checkpoints.
+The model was trained and validated across \textbf{17 industrial benchmark datasets} covering textiles (TILDA 400), weak-contrast metal surfaces (DAGM 2007), and all 15 MVTec-AD categories. All runs executed for \textbf{300 epochs} under SGDR Cosine Annealing across \textbf{3 independent optical seeds} ($S \in \{42, 1337, 2026\}$), generating 51 validated checkpoints.
 
 \subsection{Head-to-Head Baseline Comparisons}
 Table~\ref{tab:baselines} compares IC-PINOT against classical optical physics (Differential Ghost Imaging, DGI) and an unconstrained Ghost Transformer lacking physical inductive priors.
@@ -176,11 +162,11 @@ Table~\ref{tab:baselines} compares IC-PINOT against classical optical physics (D
 \begin{table}[h]
 \centering
 \small
-\caption{\textbf{Direct Head-to-Head Baseline Comparison} (PSNR in dB / SSIM).}
+\caption{\textbf{Direct Head-to-Head Comparison Against Classical and Deep Baselines} (PSNR in dB / SSIM).}
 \label{tab:baselines}
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Benchmark Dataset} & \textbf{DGI (Classical Optics)} & \textbf{Vanilla Transformer (No Physics)} & \textbf{IC-PINOT (Proposed)} & \textbf{Gain over DGI} \\
+\textbf{Benchmark Dataset} & \textbf{DGI (Classical Optics)} & \textbf{Vanilla Transformer (No Physics)} & \textbf{IC-PINOT (Proposed)} & \textbf{Margin over DGI} \\
 \midrule
 TILDA 400 (Textile) & $12.10$ / $0.258$ & $4.99$ / $0.088$ & $\mathbf{19.13}$ / $\mathbf{0.690}$ & $\mathbf{+7.03\text{ dB}}$ \\
 DAGM 2007 (Metal) & $13.80$ / $0.258$ & $5.01$ / $0.067$ & $\mathbf{21.47}$ / $\mathbf{0.384}$ & $\mathbf{+7.67\text{ dB}}$ \\
@@ -189,36 +175,30 @@ MVTec-Carpet (Texture) & $12.46$ / $0.201$ & $5.64$ / $0.079$ & $\mathbf{14.47}$
 \end{tabular}
 \end{table}
 
-\subsection{Master Industrial Benchmarks (Summary of 17 Datasets)}
-Across all 17 datasets, IC-PINOT achieved state-of-the-art reconstruction and anomaly detection:
+\subsection{Quantitative Empirical Summary Across 17 Datasets}
 \begin{itemize}
     \setlength\itemsep{-2pt}
-    \item \textbf{Textiles \& Weak-Contrast:} TILDA 400 reaches $\mathbf{19.22 \pm 0.14\text{ dB}}$ and $\mathbf{90.8\%}$ defect accuracy; DAGM 2007 reaches $\mathbf{21.75 \pm 0.21\text{ dB}}$ and $\mathbf{87.0\%}$ defect accuracy.
-    \item \textbf{Surface Textures:} Leather reaches $\mathbf{24.29\text{ dB}}$, Wood reaches $\mathbf{23.25\text{ dB}}$, Tile reaches $\mathbf{18.15\text{ dB}}$.
-    \item \textbf{Manufactured Components:} MVTec Capsule reaches $\mathbf{30.79 \pm 0.08\text{ dB}}$ ($0.961$ SSIM); Pill reaches $\mathbf{28.27\text{ dB}}$; Hazelnut reaches $\mathbf{25.84\text{ dB}}$.
+    \item \textbf{Textiles \& Weak Contrast:} TILDA 400 achieves $\mathbf{19.22 \pm 0.14\text{ dB}}$ and $\mathbf{90.8\%}$ defect accuracy; DAGM 2007 achieves $\mathbf{21.75 \pm 0.21\text{ dB}}$ and $\mathbf{87.0\%}$ defect accuracy.
+    \item \textbf{Complex Textures:} MVTec Leather reaches $\mathbf{24.29\text{ dB}}$, Wood reaches $\mathbf{23.25\text{ dB}}$, Tile reaches $\mathbf{18.15\text{ dB}}$.
+    \item \textbf{Manufactured Parts:} MVTec Capsule reaches $\mathbf{30.79 \pm 0.08\text{ dB}}$ ($0.961$ SSIM); Pill reaches $\mathbf{28.27\text{ dB}}$; Hazelnut reaches $\mathbf{25.84\text{ dB}}$.
+    \item \textbf{Sub-Nyquist Sampling:} At 1.0\% compression ($M=41$ bucket measurements), IC-PINOT preserves $\mathbf{13.76\text{ dB}}$ PSNR and $\mathbf{0.606\text{ SSIM}}$.
+    \item \textbf{Uncertainty Calibration:} Expected Calibration Error (ECE) = $\mathbf{0.1011}$; Area Under Error-Retention Curve (AURC) = $\mathbf{0.01143}$.
 \end{itemize}
 
-\subsection{Stress Testing \& Uncertainty Calibration}
-\begin{itemize}
-    \setlength\itemsep{-2pt}
-    \item \textbf{1.0\% Sub-Nyquist Sampling:} With only $M=41$ bucket measurements ($1.0\%$ sampling), IC-PINOT preserves $13.76\text{ dB}$ PSNR and $0.606$ SSIM.
-    \item \textbf{Uncertainty Calibration:} Achieves Expected Calibration Error of $\text{ECE} = 0.1011$ and Area Under Error-Retention Curve of $\text{AURC} = 0.01143$, proving rigorous calibration.
-\end{itemize}
-
-\section{Summary \& Project Deliverables}
-The project delivers a complete, reproducible academic and industrial software package:
+\section{Project Deliverables \& Academic Trajectory}
 \begin{enumerate}
     \setlength\itemsep{-2pt}
-    \item \textbf{51 Trained Model Checkpoints:} Stored in \texttt{checkpoints/} (~1.55 GB) covering all 17 industrial datasets across 3 optical seeds.
-    \item \textbf{Automated Tooling:} Scripts for LaTeX table generation (\texttt{utils/generate\_paper\_tables.py}), 300 DPI vector visualization (\texttt{utils/visualize\_evidential\_results.py}), and PDF report compilation.
-    \item \textbf{Manuscript Positioning:} Targeted for publication in \textbf{IEEE Transactions on Computational Imaging (TCI)}.
+    \item \textbf{Pretrained Model Zoo:} All 51 trained checkpoints are archived in \texttt{checkpoints/} (~1.55 GB total) for full scientific reproducibility.
+    \item \textbf{Automated Tooling:} Python scripts auto-compile camera-ready LaTeX tables (\texttt{utils/generate\_paper\_tables.py}), vector figures (\texttt{utils/visualize\_evidential\_results.py}), and PDF documentation.
+    \item \textbf{Publication Positioning:} Targeted for submission to \textbf{IEEE Transactions on Computational Imaging (TCI)}.
+    \item \textbf{Open-Source Verification:} All model definitions, physical forward models, loss functions, and dataset loaders are available on GitHub: \url{https://github.com/atharveeee-netizen/pi-ghost-transformer}.
 \end{enumerate}
 
-\vspace{4pt}
+\vspace{6pt}
 \hrule
 \vspace{4pt}
 \begin{center}
-    \small \textbf{Project Repository:} \url{https://github.com/atharveeee-netizen/pi-ghost-transformer}
+    \small \textbf{Repository:} \url{https://github.com/atharveeee-netizen/pi-ghost-transformer} \quad$|$\quad \textbf{Release:} v1.0.0 \quad$|$\quad \textbf{License:} MIT
 \end{center}
 
 \end{document}
