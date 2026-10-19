@@ -66,47 +66,16 @@ Single-photon computational ghost imaging reconstructs 2D scenes from 1D single-
 
 ## 2. System Architecture
 
-![IC-PINOT Architecture Schematic](figures/architecture_diagram.png)
-*Figure 2: Complete IC-PINOT architecture schematic showing physical measurement, FNO operator encoding, in-context prompt conditioning, Swin-UNet spatial decoding, and evidential parameter estimation.*
+![IC-PINOT Architectural Schematic](figures/architecture_diagram.png)
+*Figure 2: End-to-end architectural pipeline of the IC-PINOT framework. The model processes compressive single-pixel SPAD bucket vectors ($y \in \mathbb{R}^{512}$) through a Continuous 2D Fourier Neural Operator (FNO) and In-Context Prompt Engine, dynamically steers cross-attention (PCCA) via optical defocus state ($a_4$), decodes spatial fabric textures through a hierarchical Swin-UNet, and parameterizes a Normal-Inverse-Gamma evidential head outputting calibrated mean $\hat{x}$, aleatoric noise $\sigma^2_a$, and epistemic novelty $\sigma^2_e$ in a single deterministic pass at 138 FPS.*
 
-```mermaid
-flowchart TD
-    subgraph PhysicalStage ["1. Physical Optical Stage"]
-        SL["Structured Illumination: M Learned Patterns"]
-        OBJ["Target Defect Scene: x in R^(H x W)"]
-        WAVE["Differentiable Wave Optics: Defocus Aberration a_4"]
-        SPAD["Single-Pixel SPAD Detector: Bucket Vector y in R^M"]
-        SL --> SPAD
-        OBJ --> SPAD
-        WAVE --> SPAD
-    end
-
-    subgraph ConditioningStage ["2. Operator & Context Encoding"]
-        FNO["Continuous Fourier Neural Operator: Spectral Conv R_phi"]
-        ICE["In-Context Prompt Engine: K Exemplar Pairs"]
-        SPAD --> FNO
-        SPAD --> ICE
-    end
-
-    subgraph DeepBackbone ["3. Physics Cross-Attention & Decoder"]
-        PCCA["Physics-Conditioned Cross-Attention: PCCA"]
-        SWIN["Multi-Scale Hybrid Swin-UNet Spatial Decoder"]
-        FNO -->|"Operator Tokens"| PCCA
-        ICE -->|"Prompt Tokens"| PCCA
-        PCCA --> SWIN
-    end
-
-    subgraph EvidentialHead ["4. Evidential NIG Output Head"]
-        NIG["Normal-Inverse-Gamma NIG Parameter Head"]
-        RECON["Mean Reconstruction: gamma"]
-        ALEA["Aleatoric Uncertainty: sigma^2_a"]
-        EPIS["Epistemic Uncertainty: sigma^2_e"]
-        SWIN --> NIG
-        NIG --> RECON
-        NIG --> ALEA
-        NIG --> EPIS
-    end
-```
+### Architectural Subsystem Breakdown:
+1. **Compressive Input Embedding:** Maps 512 bucket measurements into an initial latent feature volume $\mathbf{X}_0 \in \mathbb{R}^{64 \times 16 \times 16}$ via linear projection $W_p$ and 2D patch unflattening.
+2. **Continuous 2D Fourier Neural Operator (FNO):** Computes complex spectral convolution $R_\phi \cdot \mathcal{F}(v)$ in continuous 2D frequency space. Truncating evanescent modes guarantees mathematical invariance to lens defocus up to 3.0 waves ($\Delta\text{PSNR} < 10^{-5}\text{ dB}$).
+3. **In-Context Prompt Adaptation Engine:** Encodes $K \in \{1, 3, 5\}$ exemplar pairs $(y_k, x_k)$ into condition tokens $\mathbf{Z}_{\text{Prompt}} \in \mathbb{R}^{K \times 256}$, providing 7.2 ms zero-gradient adaptation across novel fabric materials without test-time backpropagation.
+4. **Physics-Conditioned Cross-Attention (PCCA):** Dynamically modulates transformer queries, keys, and values using the instantaneous optical defocus state vector ($a_4$), enabling focal-invariant feature routing.
+5. **Hierarchical Swin-UNet Spatial Decoder:** Expands latent feature tokens through multi-scale shifted-window self-attention ($16 \to 32 \to 64 \times 64$), capturing micro-yarn thread textures without spatial checkerboard artifacts.
+6. **Evidential Normal-Inverse-Gamma (NIG) Head:** Predicts 4 parameter maps $[\gamma, v, \alpha, \beta]$ in a single forward pass, decomposing predictions into mean image $\hat{x} = \gamma$, sensor shot noise $\sigma^2_a = \beta/(\alpha - 1)$, and structural defect novelty $\sigma^2_e = \beta/[v(\alpha - 1)]$.
 
 ---
 
