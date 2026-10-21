@@ -141,7 +141,7 @@ All methods evaluated under an exact equal photon budget ($5120$ total photons a
   - **MVTec Grid:** $73.85\%$ Image AUROC | $18.77\%$ Pixel PRO
   - **MVTec Multi-Category Texture Average:** $63.47\%$ Image AUROC | $25.37\%$ Pixel PRO
 - **AITEX Leave-One-Fabric-Out (LOFO) Cross-Validation ([`benchmarks/benchmark_aitex_lofo.py`](benchmarks/benchmark_aitex_lofo.py)):**
-  - Evaluated across 8 distinct commercial fabric weaves: Macro Average PSNR $18.19\text{ dB}$ | Macro SSIM $0.398$ | Defect AUROC $100.0\%$.
+  - Evaluated across 7 distinct commercial fabric weaves: Macro Average PSNR $18.38\text{ dB}$ | Macro SSIM $0.398$ | Macro F1 $0.382$ | Defect AUROC $36.80\%$.
 
 ---
 

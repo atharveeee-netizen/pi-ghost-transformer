@@ -28,30 +28,42 @@ from models.ic_pinot import ICPINOT
 from utils.metrics import calculate_psnr, calculate_ssim
 
 
+FABRIC_MAP = {
+    "00": {"folder": "2311694-2040n7u", "name": "twill_fine"},
+    "01": {"folder": "2608691-202020u", "name": "plain_weave"},
+    "02": {"folder": "2306894-210033u", "name": "heavy_twill"},
+    "03": {"folder": "2311694-1930c7u", "name": "cotton_rib"},
+    "04": {"folder": "2311517-195063u", "name": "synthetic_mesh"},
+    "05": {"folder": "2306881-210020u", "name": "dense_twill"},
+    "06": {"folder": "2311980-185026u", "name": "loose_knit"}
+}
+
+
 class AITEXFabricDataset(Dataset):
-    """Loads AITEX samples filtered by fabric type."""
-    def __init__(self, root_dir: str, target_fabric: str = None, exclude_fabric: str = None, image_size: int = 64):
+    """Loads AITEX samples filtered by fabric ID (pairing normal and defect images)."""
+    def __init__(self, root_dir: str, target_fabric: str = None, image_size: int = 64):
         self.image_size = image_size
         self.samples = []
         
-        # All image paths
-        all_imgs = []
-        for ext in ["*.png", "*.PNG", "*.tif", "*.jpg"]:
-            all_imgs.extend(glob.glob(os.path.join(root_dir, "**", ext), recursive=True))
-            
-        all_imgs = [p for p in all_imgs if "_mask" not in p and "Mask_images" not in p]
+        target_fids = [target_fabric] if target_fabric is not None else list(FABRIC_MAP.keys())
         
-        for p in all_imgs:
-            fab_name = os.path.basename(os.path.dirname(p))
-            if target_fabric is not None and fab_name != target_fabric:
+        for fid in target_fids:
+            if fid not in FABRIC_MAP:
                 continue
-            if exclude_fabric is not None and fab_name == exclude_fabric:
-                continue
-                
-            base_name = os.path.splitext(os.path.basename(p))[0]
-            mask_path = os.path.join(root_dir, "Mask_images", f"{base_name}_mask.png")
-            is_defect = 1 if (os.path.exists(mask_path) or "Defect_images" in p) else 0
-            self.samples.append((p, is_defect))
+            folder = FABRIC_MAP[fid]["folder"]
+            norm_dir = os.path.join(root_dir, "NODefect_images", folder)
+            def_dir = os.path.join(root_dir, "Defect_images")
+            
+            # Normal images (Label 0)
+            if os.path.exists(norm_dir):
+                for p in glob.glob(os.path.join(norm_dir, "*.png")):
+                    self.samples.append((p, 0))
+                    
+            # Defect images (Label 1)
+            if os.path.exists(def_dir):
+                for p in glob.glob(os.path.join(def_dir, f"*_{fid}.png")):
+                    if "_mask" not in p and "Mask_images" not in p:
+                        self.samples.append((p, 1))
 
     def __len__(self):
         return len(self.samples)
@@ -85,12 +97,8 @@ def run_aitex_lofo(
 
     dev = torch.device(device if torch.cuda.is_available() else "cpu")
     
-    # Discover available fabric categories
-    all_imgs = [p for p in glob.glob(os.path.join(root_dir, "**", "*.png"), recursive=True) if "_mask" not in p and "Mask_images" not in p]
-    fabrics = sorted(list(set([os.path.basename(os.path.dirname(p)) for p in all_imgs])))
-    
-    if len(fabrics) == 0:
-        raise ValueError(f"No fabric subdirectories found in {root_dir}")
+    # Discover available fabric categories from FABRIC_MAP
+    fabrics = sorted(list(FABRIC_MAP.keys()))
         
     print("=" * 75)
     print(f"AITEX LEAVE-ONE-FABRIC-OUT (LOFO) BENCHMARK | Found {len(fabrics)} Fabrics")

@@ -395,9 +395,9 @@ def build_pdf():
         ],
         [
             Paragraph("<b>AITEX LOFO Cross-Validation</b>", td_bold),
-            Paragraph("Leave-One-Fabric-Out (8 Fabrics)", td_style),
-            Paragraph("100.0% (PSNR 18.19 dB)", td_bold),
-            Paragraph("Macro SSIM 0.398", td_bold)
+            Paragraph("Leave-One-Fabric-Out (7 Fabrics)", td_style),
+            Paragraph("36.80% (F1: 0.382)", td_bold),
+            Paragraph("PSNR 18.38 dB / SSIM 0.398", td_bold)
         ]
     ]
     t3 = Table(t3_rows, colWidths=[140, 136, 120, 120])

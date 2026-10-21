@@ -1,83 +1,83 @@
 {
     "TILDA 400": {
         "Line-Scan Camera (Equal Photons)": {
-            "psnr_mean": 6.202479600906372,
-            "psnr_std": 0.10996946438216625,
-            "ssim_mean": 0.1272074282169342
+            "psnr_mean": 6.226986391203744,
+            "psnr_std": 0.1009421081796619,
+            "ssim_mean": 0.12866956634180887
         },
         "DGI (Classical SPI)": {
-            "psnr_mean": 11.655572823115758,
-            "psnr_std": 0.659105792788516,
-            "ssim_mean": 0.2503571552889688
+            "psnr_mean": 11.618772745132446,
+            "psnr_std": 0.5912889593967652,
+            "ssim_mean": 0.24833896330424718
         },
         "TV-CS (L1 Optimization)": {
-            "psnr_mean": 17.7043354511261,
-            "psnr_std": 0.16260476188816234,
-            "ssim_mean": 0.3118601696831839
+            "psnr_mean": 17.70015001296997,
+            "psnr_std": 0.1924878293526204,
+            "ssim_mean": 0.3111879825592041
         },
         "Deep SPI (ReconNet)": {
-            "psnr_mean": 17.540614094052994,
-            "psnr_std": 0.16334403867476074,
-            "ssim_mean": 0.3114596392427172
+            "psnr_mean": 17.593990564346313,
+            "psnr_std": 0.2035029392658681,
+            "ssim_mean": 0.31046932509967257
         },
         "IC-PINOT (Blind Inversion)": {
-            "psnr_mean": 19.728810446602957,
-            "psnr_std": 0.12330361286419732,
-            "ssim_mean": 0.3519119790622166
+            "psnr_mean": 19.786296572004044,
+            "psnr_std": 0.16563323089641094,
+            "ssim_mean": 0.35147539632661
         }
     },
     "DAGM 2007": {
         "Line-Scan Camera (Equal Photons)": {
-            "psnr_mean": 6.402342234339033,
-            "psnr_std": 0.03149925387615838,
-            "ssim_mean": 0.12677876119102752
+            "psnr_mean": 6.404169372149876,
+            "psnr_std": 0.012000788186330505,
+            "ssim_mean": 0.12617721089294978
         },
         "DGI (Classical SPI)": {
-            "psnr_mean": 13.000823770250593,
-            "psnr_std": 0.4289037097490506,
-            "ssim_mean": 0.2767338752746582
+            "psnr_mean": 13.288243838718959,
+            "psnr_std": 0.238506136447259,
+            "ssim_mean": 0.2788066693714687
         },
         "TV-CS (L1 Optimization)": {
-            "psnr_mean": 16.61680477006095,
-            "psnr_std": 0.03391328670756855,
-            "ssim_mean": 0.32353582978248596
+            "psnr_mean": 16.66697553225926,
+            "psnr_std": 0.034460761336768904,
+            "ssim_mean": 0.3224019876548222
         },
         "Deep SPI (ReconNet)": {
-            "psnr_mean": 15.590629747935704,
-            "psnr_std": 0.06401407787855663,
-            "ssim_mean": 0.3154467301709311
+            "psnr_mean": 16.268173967088973,
+            "psnr_std": 0.039071661668226,
+            "ssim_mean": 0.3184478666101183
         },
         "IC-PINOT (Blind Inversion)": {
-            "psnr_mean": 18.517903089523315,
-            "psnr_std": 0.03201859744003288,
-            "ssim_mean": 0.35313847235270907
+            "psnr_mean": 18.56482880456107,
+            "psnr_std": 0.03952874279811919,
+            "ssim_mean": 0.3517847401755197
         }
     },
     "MVTec Carpet": {
         "Line-Scan Camera (Equal Photons)": {
-            "psnr_mean": 6.284698418208531,
-            "psnr_std": 0.014480081296566208,
-            "ssim_mean": 0.09048057666846684
+            "psnr_mean": 6.289247444697788,
+            "psnr_std": 0.017946812259237128,
+            "ssim_mean": 0.09152201456683022
         },
         "DGI (Classical SPI)": {
-            "psnr_mean": 12.47898084776742,
-            "psnr_std": 0.303978927135198,
-            "ssim_mean": 0.3653879335948399
+            "psnr_mean": 12.576812165124077,
+            "psnr_std": 0.11901510647322364,
+            "ssim_mean": 0.3676704296043941
         },
         "TV-CS (L1 Optimization)": {
-            "psnr_mean": 16.35655335017613,
-            "psnr_std": 0.14379729285115972,
-            "ssim_mean": 0.4028623402118683
+            "psnr_mean": 16.370910746710642,
+            "psnr_std": 0.13919456300999122,
+            "ssim_mean": 0.4057157720838274
         },
         "Deep SPI (ReconNet)": {
-            "psnr_mean": 16.23105560030256,
-            "psnr_std": 0.15417127040064,
-            "ssim_mean": 0.39833442653928486
+            "psnr_mean": 16.34864125932966,
+            "psnr_std": 0.13722831841525646,
+            "ssim_mean": 0.40504089423588346
         },
         "IC-PINOT (Blind Inversion)": {
-            "psnr_mean": 16.987364973340714,
-            "psnr_std": 0.16937931233112863,
-            "ssim_mean": 0.38982272148132324
+            "psnr_mean": 17.012426171983993,
+            "psnr_std": 0.14827236329882504,
+            "ssim_mean": 0.39267665999276297
         }
     }
 }
