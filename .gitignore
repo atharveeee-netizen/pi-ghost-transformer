@@ -25,3 +25,10 @@ train_real_log.txt
 Thumbs.db
 .vscode/
 .idea/
+
+# Document and presentation files
+*.pdf
+*.ppt
+*.pptx
+*.key
+*.odp

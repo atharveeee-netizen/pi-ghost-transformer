@@ -5,13 +5,13 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Target: IEEE TCI](https://img.shields.io/badge/Target%20Venue-IEEE%20Trans.%20Comput.%20Imaging-blue.svg)](https://signalprocessingsociety.org/publications-resources/ieee-transactions-computational-imaging)
-[![Report: PDF](https://img.shields.io/badge/Faculty%20Briefing-PDF%20Dossier-brightgreen.svg)](docs/project_overview_professor.pdf)
+[![Report: LaTeX](https://img.shields.io/badge/Academic%20Briefing-LaTeX%20Source-brightgreen.svg)](docs/project_overview_professor.tex)
 [![Checkpoints: 51 Models](https://img.shields.io/badge/Model%20Zoo-51%20Trained%20Checkpoints-purple.svg)](checkpoints/)
 [![Calibration: ECE 0.10](https://img.shields.io/badge/UQ%20Calibration-ECE%200.1011-orange.svg)](results/uncertainty_calibration.json)
 
 ---
 
-> **[Faculty Briefing (PDF)](docs/project_overview_professor.pdf)** | **[LaTeX Source](docs/project_overview_professor.tex)** | **[Empirical Report](results/IC_PINOT_Comprehensive_Results_Report.pdf)** | **[Model Zoo](checkpoints/)** | **[LaTeX Tables](tables/)** | **[Vector Figures](figures/)**
+> **[LaTeX Source](docs/project_overview_professor.tex)** | **[Empirical Benchmarks](results/)** | **[Model Zoo](checkpoints/)** | **[LaTeX Tables](tables/)** | **[Figures](figures/)**
 
 ---
 
@@ -20,7 +20,7 @@
 - **Equal-Photon Supremacy over Line-Scan Cameras:** Outperforms simulated high-speed line-scan cameras under an identical photon budget ($N_{\text{total}} = 5120$ photons, $\approx 1.25$ photons/pixel) by $+13.5\text{ dB}$ ($19.73\text{ dB}$ vs $6.20\text{ dB}$), where CMOS read noise and motion blur overwhelm multi-pixel sensors.
 - **Rigorous Three-Fold Sanity Suite:** Verified against a constant-mean baseline floor, passes shuffled-measurement permutation collapse ($\Delta\text{PSNR} > 13\text{ dB}$), and exhibits monotonic degradation across photon flux and optical defocus sweeps.
 - **Blind Optical Evaluation:** Inverts bucket measurements blindly without oracle knowledge of the true lens defocus parameter ($a_4$).
-- **Industrial Anomaly Detection:** Delivers up to $86.1\%$ image-level AUROC on MVTec-AD and $100\%$ detection across 8 Leave-One-Fabric-Out (LOFO) cross-validation folds on AITEX.
+- **Industrial Anomaly Detection:** Evaluated across MVTec-AD and 7 Leave-One-Fabric-Out (LOFO) cross-validation folds on AITEX.
 - **138 FPS Real-Time Evidential Inference:** Produces single-pass evidential uncertainty quantification with zero Monte Carlo sampling overhead.
 - **Zero-Gradient Test-Time Adaptation:** Adapts to novel surface materials in under 15 ms without backpropagation.
 
@@ -250,7 +250,7 @@ python benchmarks/benchmark_mvtec_auroc_pro.py
 python benchmarks/benchmark_aitex_lofo.py
 ```
 
-### Compile Academic Briefing PDF:
+### Compile Academic Briefing (Optional Local Script):
 ```bash
 python docs/generate_professor_pdf.py
 ```
@@ -268,14 +268,13 @@ python docs/generate_professor_pdf.py
 │   └── benchmark_aitex_lofo.py # AITEX Leave-One-Fabric-Out cross validation
 ├── checkpoints/              # Trained PyTorch model checkpoints & trained_patterns.pt
 ├── data/                     # Benchmark dataset loaders (TILDA, DAGM, MVTec, AITEX)
-├── docs/                     # Briefing PDF, LaTeX source, and ReportLab compilation script
-│   ├── project_overview_professor.pdf # Academic 4-page technical briefing
+├── docs/                     # Academic briefing LaTeX source and local PDF compilation script
 │   ├── project_overview_professor.tex # LaTeX source code
-│   └── generate_professor_pdf.py      # Deterministic 4-page PDF builder
+│   └── generate_professor_pdf.py      # Local PDF builder
 ├── figures/                  # Publication figures and architecture diagrams
 ├── models/                   # Architecture modules (PCCA, Swin, NIG, FNO, Adjoint)
 ├── physics/                  # Differentiable optical wave propagation and noise models
-├── results/                  # Empirical JSON metrics & compiled reports
+├── results/                  # Empirical JSON metrics & benchmark logs
 ├── tests/                    # Smoke tests and pipeline verification
 └── training/                 # Model training suites & campaign scripts
 ```
