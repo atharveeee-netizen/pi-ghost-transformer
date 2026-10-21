@@ -1,0 +1,47 @@
+{
+    "carpet": {
+        "category": "carpet",
+        "num_test_images": 117,
+        "num_defective": 89,
+        "image_auroc": 0.5112359550561798,
+        "pixel_auroc": 0.5043688569803018,
+        "pixel_pro": 0.1777000784990528
+    },
+    "grid": {
+        "category": "grid",
+        "num_test_images": 78,
+        "num_defective": 57,
+        "image_auroc": 0.7385129490392648,
+        "pixel_auroc": 0.5560822601111495,
+        "pixel_pro": 0.18770350521299048
+    },
+    "leather": {
+        "category": "leather",
+        "num_test_images": 124,
+        "num_defective": 92,
+        "image_auroc": 0.4789402173913044,
+        "pixel_auroc": 0.6252642734694567,
+        "pixel_pro": 0.27757716923731773
+    },
+    "tile": {
+        "category": "tile",
+        "num_test_images": 117,
+        "num_defective": 84,
+        "image_auroc": 0.5833333333333334,
+        "pixel_auroc": 0.5262027776928626,
+        "pixel_pro": 0.3434907800417009
+    },
+    "wood": {
+        "category": "wood",
+        "num_test_images": 79,
+        "num_defective": 60,
+        "image_auroc": 0.8614035087719298,
+        "pixel_auroc": 0.5768165672254421,
+        "pixel_pro": 0.28180803438645946
+    },
+    "MEAN": {
+        "image_auroc": 0.6346851927184025,
+        "pixel_auroc": 0.5577469470958426,
+        "pixel_pro": 0.25365591347550426
+    }
+}

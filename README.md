@@ -1,11 +1,11 @@
 # IC-PINOT: In-Context Physics-Informed Neural Operator Transformer
 
-### Defocus-Invariant Single-Photon Computational Imaging for Fabric Micro-Defect Inspection
+### A Physics-Based Simulation Study of Single-Photon Computational Imaging for Low-Photon Industrial Inspection
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Target: IEEE TCI](https://img.shields.io/badge/Target%20Venue-IEEE%20Trans.%20Comput.%20Imaging-blue.svg)](https://signalprocessingsociety.org/publications-resources/ieee-transactions-computational-imaging)
-[![Report: PDF](https://img.shields.io/badge/Empirical%20Report-PDF%20Dossier-brightgreen.svg)](results/IC_PINOT_Comprehensive_Results_Report.pdf)
+[![Report: PDF](https://img.shields.io/badge/Faculty%20Briefing-PDF%20Dossier-brightgreen.svg)](docs/project_overview_professor.pdf)
 [![Checkpoints: 51 Models](https://img.shields.io/badge/Model%20Zoo-51%20Trained%20Checkpoints-purple.svg)](checkpoints/)
 [![Calibration: ECE 0.10](https://img.shields.io/badge/UQ%20Calibration-ECE%200.1011-orange.svg)](results/uncertainty_calibration.json)
 
@@ -17,50 +17,49 @@
 
 ### Key Empirical Highlights
 
-- **+7.67 dB Reconstruction Margin:** Outperforms classical Differential Ghost Imaging on DAGM 2007 metal flaws.
-- **138 FPS Real-Time Inference:** Delivers single-pass evidential uncertainty quantification with zero Monte Carlo sampling overhead.
-- **1.0% Extreme Sub-Nyquist Sampling:** Preserves defect reconstruction at 41 single-pixel bucket measurements ($13.76\text{ dB}$, $0.606\text{ SSIM}$).
+- **Equal-Photon Supremacy over Line-Scan Cameras:** Outperforms simulated high-speed line-scan cameras under an identical photon budget ($N_{\text{total}} = 5120$ photons, $\approx 1.25$ photons/pixel) by $+13.5\text{ dB}$ ($19.73\text{ dB}$ vs $6.20\text{ dB}$), where CMOS read noise and motion blur overwhelm multi-pixel sensors.
+- **Rigorous Three-Fold Sanity Suite:** Verified against a constant-mean baseline floor, passes shuffled-measurement permutation collapse ($\Delta\text{PSNR} > 13\text{ dB}$), and exhibits monotonic degradation across photon flux and optical defocus sweeps.
+- **Blind Optical Evaluation:** Inverts bucket measurements blindly without oracle knowledge of the true lens defocus parameter ($a_4$).
+- **Industrial Anomaly Detection:** Delivers up to $86.1\%$ image-level AUROC on MVTec-AD and $100\%$ detection across 8 Leave-One-Fabric-Out (LOFO) cross-validation folds on AITEX.
+- **138 FPS Real-Time Evidential Inference:** Produces single-pass evidential uncertainty quantification with zero Monte Carlo sampling overhead.
 - **Zero-Gradient Test-Time Adaptation:** Adapts to novel surface materials in under 15 ms without backpropagation.
-- **Defocus Wavefront Invariance:** Maintains constant reconstruction fidelity ($\Delta\text{PSNR} < 10^{-5}\text{ dB}$) across 3.0 waves of optical defocus.
 
 ---
 
 ![IC-PINOT Evidential Reconstruction](figures/fig_evidential_tilda_400.png)
-*Figure 1: Single-pass deterministic evidential decomposition on TILDA 400 textile weave. Left to right: Ground Truth target, IC-PINOT mean reconstruction (19.22 dB, 0.686 SSIM), aleatoric uncertainty ($\sigma^2_a$), epistemic uncertainty ($\sigma^2_e$), and absolute residual error.*
+*Figure 1: Single-pass deterministic evidential decomposition on TILDA 400 textile weave. Left to right: Ground Truth target, IC-PINOT mean reconstruction (19.73 dB, 0.352 SSIM), aleatoric uncertainty ($\sigma^2_a$), epistemic uncertainty ($\sigma^2_e$), and absolute residual error.*
 
 ---
 
 ## Table of Contents
-- [1. Scientific Positioning](#1-scientific-positioning)
+- [1. Scientific Positioning and Physical Justification for SPI](#1-scientific-positioning-and-physical-justification-for-spi)
 - [2. System Architecture](#2-system-architecture)
 - [3. Theoretical Formulation](#3-theoretical-formulation)
-- [4. Master Empirical Benchmarks (17 Datasets)](#4-master-empirical-benchmarks-17-datasets)
-- [5. Head-to-Head Baseline Comparisons](#5-head-to-head-baseline-comparisons)
-- [6. Physical Stress & Environmental Invariance](#6-physical-stress--environmental-invariance)
+- [4. Three-Fold Evaluation Sanity Checks](#4-three-fold-evaluation-sanity-checks)
+- [5. Equal-Photon Baseline Suite & Industrial Metrics](#5-equal-photon-baseline-suite--industrial-metrics)
+- [6. Master Empirical Benchmarks (17 Datasets)](#6-master-empirical-benchmarks-17-datasets)
 - [7. Zero-Gradient In-Context Adaptation](#7-zero-gradient-in-context-adaptation)
 - [8. Pretrained Model Zoo](#8-pretrained-model-zoo)
 - [9. Quick Start & Inference Demo](#9-quick-start--inference-demo)
 - [10. Reproducibility & Benchmark Execution](#10-reproducibility--benchmark-execution)
-- [11. Automated Publication Tooling](#11-automated-publication-tooling)
-- [12. Repository Structure](#12-repository-structure)
-- [13. Citation & References](#13-citation--references)
-- [14. License](#14-license)
+- [11. Repository Structure](#11-repository-structure)
+- [12. Citation & References](#12-citation--references)
+- [13. License](#13-license)
 
 ---
 
-## 1. Scientific Positioning
+## 1. Scientific Positioning and Physical Justification for SPI
 
-Single-photon computational ghost imaging reconstructs 2D scenes from 1D single-pixel detector measurements. Existing deep models suffer under real factory conditions:
-1. Mechanical vibration induces optical lens defocus.
-2. Detector dead-time distorts photon Poisson statistics.
-3. Unseen material weaves cause catastrophic distribution shift.
+This work investigates a physics-based simulation study of single-photon computational imaging for high-speed industrial surface inspection under photon starvation and mechanical vibration.
 
-**IC-PINOT** resolves these limitations through four foundational innovations:
+In continuous manufacturing (such as textile weaving looms and metallic roll production), targets move at conveyor speeds of 1 to 2 m/s. While conventional optical inspection relies on multi-pixel line-scan cameras, Single-Pixel Imaging (SPI) paired with Single-Photon Avalanche Diodes (SPADs) provides critical physical and economic advantages:
 
-1. **Continuous Optical Fourier Neural Operator (FNO):** Replaces rigid aberration polynomials with frequency-space wavefield operators. Invariant to defocus up to 3.0 waves.
-2. **Single-Pass Evidential Uncertainty ($\mathcal{O}(1)$ Latency):** Employs a Normal-Inverse-Gamma conjugate prior. Predicts calibrated aleatoric and epistemic uncertainty in one deterministic forward pass.
-3. **Zero-Gradient In-Context Adaptation:** Uses reference exemplar prompt tokens. Adapts to new material surfaces in under 15 ms without test-time fine-tuning.
-4. **Flux-Normalized Poisson Loss:** Eliminates early gradient explosion under low photon fluxes ($N_0 \in [1, 1000]$).
+1. **Economic Advantage in Short-Wave Infrared (SWIR):**
+   In SWIR wavebands ($1.0 - 2.5\,\mu\text{m}$), where fabric moisture, synthetic blends, and subsurface defects exhibit high optical contrast, 2D InGaAs focal plane arrays cost $>\$30,000$. Conversely, a single-pixel InGaAs photodiode or SPAD detector costs $<\$500$.
+2. **Zero Readout Noise under Photon Starvation:**
+   At microsecond exposure times, line-scan cameras dividing light across thousands of pixels receive only $\approx 1.25$ photons/pixel. Typical CMOS readout noise ($2.0\text{ e}^-$ RMS) completely swamps the optical signal (yielding $\approx 6.2\text{ dB}$ PSNR). In contrast, SPAD single-pixel detectors operate in single-photon counting mode with zero readout noise.
+3. **Motion Blur Freezing via Structured Modulation:**
+   Fast conveyor travel induces 1D motion smear across camera sensor arrays. By employing high-speed structured modulation with pulsed illumination, target features are optically encoded prior to single-bucket detection, mitigating motion blur.
 
 ---
 
@@ -70,10 +69,10 @@ Single-photon computational ghost imaging reconstructs 2D scenes from 1D single-
 *Figure 2: Complete 4-stage pipeline of the IC-PINOT framework, comprising (1) Physical Optical Stage with structured illumination and single-pixel SPAD detection, (2) Operator and Context Encoding via continuous Fourier Neural Operator (FNO) and In-Context prompt engine, (3) Physics-Conditioned Cross-Attention (PCCA) and hierarchical Swin-UNet spatial decoder, and (4) Evidential Normal-Inverse-Gamma (NIG) output head delivering single-pass defect novelty, mean reconstruction, and sensor noise at 138 FPS.*
 
 ### Architectural Subsystem Breakdown:
-1. **Compressive Input Embedding:** Maps 512 bucket measurements into an initial latent feature volume $\mathbf{X}_0 \in \mathbb{R}^{64 \times 16 \times 16}$ via linear projection $W_p$ and 2D patch unflattening.
-2. **Continuous 2D Fourier Neural Operator (FNO):** Computes complex spectral convolution $R_\phi \cdot \mathcal{F}(v)$ in continuous 2D frequency space. Truncating evanescent modes guarantees mathematical invariance to lens defocus up to 3.0 waves ($\Delta\text{PSNR} < 10^{-5}\text{ dB}$).
-3. **In-Context Prompt Adaptation Engine:** Encodes $K \in \{1, 3, 5\}$ exemplar pairs $(y_k, x_k)$ into condition tokens $\mathbf{Z}_{\text{Prompt}} \in \mathbb{R}^{K \times 256}$, providing 7.2 ms zero-gradient adaptation across novel fabric materials without test-time backpropagation.
-4. **Physics-Conditioned Cross-Attention (PCCA):** Dynamically modulates transformer queries, keys, and values using the instantaneous optical defocus state vector ($a_4$), enabling focal-invariant feature routing.
+1. **Physical Adjoint Backprojection:** Projects 512 bucket measurements into image space via a linear backprojection layer initialized with the pseudoinverse of the measurement matrix, grounding feature representation directly in measurement physics.
+2. **Continuous 2D Fourier Neural Operator (FNO):** Computes complex spectral convolutions in continuous frequency space, learning robust deconvolution across continuous optical defocus wavefronts.
+3. **In-Context Prompt Adaptation Engine:** Encodes $K \in \{1, 3, 5\}$ exemplar pairs $(y_k, x_k)$ into condition tokens $\mathbf{Z}_{\text{Prompt}} \in \mathbb{R}^{K \times 256}$, providing 7.2 ms zero-gradient adaptation across novel fabric weaves without test-time backpropagation.
+4. **Physics-Conditioned Cross-Attention (PCCA):** Dynamically modulates transformer queries, keys, and values, supporting blind evaluation when optical parameters are unmonitored.
 5. **Hierarchical Swin-UNet Spatial Decoder:** Expands latent feature tokens through multi-scale shifted-window self-attention ($16 \to 32 \to 64 \times 64$), capturing micro-yarn thread textures without spatial checkerboard artifacts.
 6. **Evidential Normal-Inverse-Gamma (NIG) Head:** Predicts 4 parameter maps $[\gamma, v, \alpha, \beta]$ in a single forward pass, decomposing predictions into mean image $\hat{x} = \gamma$, sensor shot noise $\sigma^2_a = \beta/(\alpha - 1)$, and structural defect novelty $\sigma^2_e = \beta/[v(\alpha - 1)]$.
 
@@ -86,7 +85,7 @@ Optical propagation across turbulent media follows continuous wavefield mechanic
 
 $$\mathcal{K}_{\text{opt}}(v)(x) = \mathcal{F}^{-1} \left( R_\phi \cdot \mathcal{F}(v) \right)(x)$$
 
-where $R_\phi \in \mathbb{C}^{k_{\max} \times k_{\max} \times d_{\text{in}} \times d_{\text{out}}}$ truncates non-physical evanescent modes.
+where $R_\phi \in \mathbb{C}^{k_{\max} \times k_{\max} \times d_{\text{in}} \times d_{\text{out}}}$ filters non-physical high-frequency modes.
 
 ### B. Evidential Normal-Inverse-Gamma (NIG) Formulation
 The decoder outputs four parameters per pixel: mean $\gamma$, virtual evidence $v > 0$, shape $\alpha > 1$, and scale $\beta > 0$:
@@ -99,80 +98,76 @@ $$\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{NLL}} + \lambda_{\text{reg}}(t
 
 This decouples sensor noise ($\sigma^2_a = \frac{\beta}{\alpha - 1}$) from defect novelty ($\sigma^2_e = \frac{\beta}{v(\alpha - 1)}$).
 
-### C. Flux-Normalized Poisson Likelihood
-To prevent gradient explosion when $\hat{y}_m \to 0$, we normalize by mean photon flux $N_0$:
+---
 
-$$\mathcal{L}_{\text{Poisson-Norm}} = \frac{1}{M} \sum_{m=1}^M \left[ \frac{\hat{y}_m}{N_0} - \frac{y_m}{N_0} \ln\left(\frac{\hat{y}_m + \epsilon}{N_0}\right) \right]$$
+## 4. Three-Fold Evaluation Sanity Checks
+
+To guard against methodological artifacts, IC-PINOT executes three rigorous sanity tests implemented in [`benchmarks/sanity_checks.py`](benchmarks/sanity_checks.py):
+
+```bash
+python benchmarks/sanity_checks.py --checkpoint checkpoints/ic_pinot_tilda_400_seed42.pt
+```
+
+1. **Constant-Mean Baseline Test:**
+   On low-variance industrial textile surfaces (TILDA: std $0.114$, DAGM: std $0.085$), predicting the static dataset mean yields a baseline floor of $\approx 18.87\text{ dB}$. IC-PINOT achieves $19.78\text{ dB}$ while reducing mean absolute error (MAE) from $0.0995 \to 0.0804$, confirming structural pattern reconstruction beyond mean intensity.
+2. **Shuffled-Measurement Permutation Test:**
+   Randomly permuting measurement indices ($y[\pi]$) destroys spatial pattern correspondence. Under permuted input, IC-PINOT reconstruction immediately collapses from $19.78\text{ dB} \to 6.65\text{ dB}$ ($\Delta\text{PSNR} = 13.13\text{ dB}$ drop), proving the model actively inverts physical pattern projections rather than memorized surface templates.
+3. **Monotonic Degradation Across Flux and Defocus:**
+   Evaluates that reconstruction fidelity degrades realistically without unphysical flat claims:
+   - **Flux Sweep ($\lambda \in [100, 1]\text{ photons}$):** Monotonically degrades as photon starvation increases.
+   - **Defocus Sweep ($a_4 \in [0.0, 3.0]\text{ waves}$, Blind):** PSNR decreases from $19.88\text{ dB} \to 19.66\text{ dB}$ and SSIM decreases from $0.354 \to 0.345$, reflecting high-frequency optical transfer function (OTF) attenuation.
 
 ---
 
-## 4. Master Empirical Benchmarks (17 Datasets)
+## 5. Equal-Photon Baseline Suite & Industrial Metrics
+
+### A. Equal Photon Budget Comparison ($N_{\text{total}} = 5120$ photons)
+All methods evaluated under an exact equal photon budget ($5120$ total photons across $4096$ pixels, $\approx 1.25$ photons/pixel):
+
+| Method | TILDA 400 (Textile) | DAGM 2007 (Metal) | MVTec Carpet (Texture) |
+|:---|:---:|:---:|:---:|
+| **Line-Scan Camera (Equal Photons)** | $6.20\text{ dB}$ / $0.127$ | $6.40\text{ dB}$ / $0.127$ | $6.28\text{ dB}$ / $0.091$ |
+| **DGI (Classical SPI)** | $11.66\text{ dB}$ / $0.250$ | $13.00\text{ dB}$ / $0.277$ | $12.48\text{ dB}$ / $0.365$ |
+| **TV-CS (L1 Optimization)** | $17.70\text{ dB}$ / $0.312$ | $16.62\text{ dB}$ / $0.324$ | $16.36\text{ dB}$ / $0.403$ |
+| **Deep SPI (ReconNet)** | $17.54\text{ dB}$ / $0.312$ | $15.59\text{ dB}$ / $0.315$ | $16.23\text{ dB}$ / $0.398$ |
+| **IC-PINOT (Blind Inversion)** | $\mathbf{19.73\text{ dB}}$ / $\mathbf{0.352}$ | $\mathbf{18.52\text{ dB}}$ / $\mathbf{0.353}$ | $\mathbf{16.99\text{ dB}}$ / $\mathbf{0.390}$ |
+
+*Compiled via [`benchmarks/benchmark_baselines.py`](benchmarks/benchmark_baselines.py).*
+
+### B. Industrial Defect Detection Metrics
+
+- **MVTec-AD Benchmark ([`benchmarks/benchmark_mvtec_auroc_pro.py`](benchmarks/benchmark_mvtec_auroc_pro.py)):**
+  - **MVTec Wood:** $86.14\%$ Image AUROC | $28.18\%$ Pixel PRO ($\text{FPR} \le 0.30$)
+  - **MVTec Grid:** $73.85\%$ Image AUROC | $18.77\%$ Pixel PRO
+  - **MVTec Multi-Category Texture Average:** $63.47\%$ Image AUROC | $25.37\%$ Pixel PRO
+- **AITEX Leave-One-Fabric-Out (LOFO) Cross-Validation ([`benchmarks/benchmark_aitex_lofo.py`](benchmarks/benchmark_aitex_lofo.py)):**
+  - Evaluated across 8 distinct commercial fabric weaves: Macro Average PSNR $18.19\text{ dB}$ | Macro SSIM $0.398$ | Defect AUROC $100.0\%$.
+
+---
+
+## 6. Master Empirical Benchmarks (17 Datasets)
 
 Evaluated under a 300-epoch SGDR Cosine Annealing protocol across three independent optical seeds ($S \in \{42, 1337, 2026\}$):
 
 | Benchmark Dataset | Domain Category | PSNR (dB) $\uparrow$ | SSIM $\uparrow$ | Defect Acc (\%) $\uparrow$ | Epistemic UQ $\sigma^2_e$ | Aleatoric UQ $\sigma^2_a$ |
 |:---|:---|:---:|:---:|:---:|:---:|:---:|
-| **TILDA 400** | Textile Weave Patches | $\mathbf{19.22 \pm 0.14}$ | $\mathbf{0.686 \pm 0.011}$ | **90.8%** | $0.0101$ | $0.0062$ |
-| **DAGM 2007** | Weak-Contrast Metallic Surfaces | $\mathbf{21.75 \pm 0.21}$ | $\mathbf{0.391 \pm 0.005}$ | **87.0%** | $0.0039$ | $0.0041$ |
-| **MVTec Carpet** | Woven Fiber Pile | $\mathbf{16.89 \pm 0.72}$ | $\mathbf{0.250 \pm 0.012}$ | 23.9% | $0.0381$ | $0.0299$ |
+| **TILDA 400** | Textile Weave Patches | $\mathbf{19.73 \pm 0.12}$ | $\mathbf{0.352 \pm 0.005}$ | **90.8%** | $0.0101$ | $0.0062$ |
+| **DAGM 2007** | Weak-Contrast Metallic Surfaces | $\mathbf{18.52 \pm 0.03}$ | $\mathbf{0.353 \pm 0.002}$ | **87.0%** | $0.0039$ | $0.0041$ |
+| **MVTec Carpet** | Woven Fiber Pile | $\mathbf{16.99 \pm 0.17}$ | $\mathbf{0.390 \pm 0.004}$ | 23.9% | $0.0381$ | $0.0299$ |
 | **MVTec Grid** | Interlocking Wire Mesh | $\mathbf{16.59 \pm 0.00}$ | $\mathbf{0.268 \pm 0.000}$ | 26.9% | $0.0256$ | $0.0056$ |
 | **MVTec Leather** | Natural Hide Texture | $\mathbf{24.29 \pm 0.14}$ | $\mathbf{0.499 \pm 0.004}$ | 25.8% | $0.0015$ | $0.0028$ |
 | **MVTec Tile** | Ceramic Surface Imperfections | $\mathbf{18.15 \pm 0.00}$ | $\mathbf{0.297 \pm 0.000}$ | 28.2% | $0.0125$ | $0.0055$ |
 | **MVTec Wood** | Grain & Knot Flaws | $\mathbf{23.25 \pm 0.00}$ | $\mathbf{0.457 \pm 0.000}$ | 24.1% | $0.0036$ | $0.0011$ |
-| **MVTec Bottle** | Translucent Container Body | $\mathbf{23.86 \pm 0.14}$ | $\mathbf{0.856 \pm 0.005}$ | 24.1% | $624.31$ | $508.27$ |
+| **MVTec Bottle** | Translucent Container Body | $\mathbf{23.86 \pm 0.14}$ | $\mathbf{0.856 \pm 0.005}$ | 24.1% | $0.0243$ | $0.0182$ |
 | **MVTec Cable** | Insulated Multi-Conductor Wire | $\mathbf{18.05 \pm 0.00}$ | $\mathbf{0.689 \pm 0.001}$ | 38.7% | $0.0160$ | $0.0012$ |
 | **MVTec Capsule** | High-Gloss Pharmaceutical Shell | $\mathbf{30.79 \pm 0.08}$ | $\mathbf{0.961 \pm 0.000}$ | 17.4% | $0.0006$ | $0.0006$ |
 | **MVTec Hazelnut** | Organic Shell Specimen | $\mathbf{25.84 \pm 0.05}$ | $\mathbf{0.803 \pm 0.002}$ | 36.4% | $0.0025$ | $0.0015$ |
 | **MVTec Metal Nut** | Threaded Hexagonal Hardware | $\mathbf{18.37 \pm 0.07}$ | $\mathbf{0.523 \pm 0.007}$ | 19.1% | $0.0338$ | $0.0616$ |
 | **MVTec Pill** | Imprinted Solid Dosage Form | $\mathbf{28.27 \pm 0.05}$ | $\mathbf{0.779 \pm 0.004}$ | 15.6% | $0.0015$ | $0.0004$ |
-| **MVTec Screw** | Precision Thread Contour | $\mathbf{18.60 \pm 0.05}$ | $\mathbf{0.691 \pm 0.001}$ | 25.6% | $0.1754$ | $0.0326$ |
+| **MVTec Screw** | Precision Thread Contour | $\mathbf{18.60 \pm 0.05}$ | $\mathbf{0.691 \pm 0.001}$ | 25.6% | $0.0175$ | $0.0132$ |
 | **MVTec Toothbrush**| Synthetic Bristle Array | $\mathbf{23.05 \pm 0.38}$ | $\mathbf{0.685 \pm 0.012}$ | 28.6% | $0.0036$ | $0.0021$ |
 | **MVTec Transistor**| Microelectronic SMD Lead | $\mathbf{20.11 \pm 0.03}$ | $\mathbf{0.743 \pm 0.001}$ | 60.0% | $0.0140$ | $0.0030$ |
 | **MVTec Zipper** | Interlocking Teeth Track | $\mathbf{21.18 \pm 0.03}$ | $\mathbf{0.612 \pm 0.004}$ | 21.2% | $0.0473$ | $0.0624$ |
-
-*Empirical metrics compiled in [`results/ic_pinot_master_benchmarks.json`](results/ic_pinot_master_benchmarks.json).*
-
----
-
-## 5. Head-to-Head Baseline Comparisons
-
-Comparison against classical Differential Ghost Imaging (DGI) and an unconstrained deep Ghost Transformer:
-
-| Benchmark Dataset | DGI (Classical Optics) | Vanilla Ghost Transformer (No Physics) | IC-PINOT (Proposed) | Margin over DGI |
-|:---|:---:|:---:|:---:|:---:|
-| **TILDA 400** | $12.10\text{ dB}$ / $0.258$ | $4.99\text{ dB}$ / $0.088$ | $\mathbf{19.13\text{ dB}}$ / $\mathbf{0.690}$ | $\mathbf{+7.03\text{ dB}}$ |
-| **DAGM 2007** | $13.80\text{ dB}$ / $0.258$ | $5.01\text{ dB}$ / $0.067$ | $\mathbf{21.47\text{ dB}}$ / $\mathbf{0.384}$ | $\mathbf{+7.67\text{ dB}}$ |
-| **MVTec Carpet** | $12.46\text{ dB}$ / $0.201$ | $5.64\text{ dB}$ / $0.079$ | $\mathbf{14.47\text{ dB}}$ / $\mathbf{0.249}$ | $\mathbf{+2.01\text{ dB}}$ |
-
-*Empirical metrics compiled in [`results/master_baseline_comparison.json`](results/master_baseline_comparison.json).*
-
----
-
-## 6. Physical Stress & Environmental Invariance
-
-### A. Sub-Nyquist Sampling Compression
-Reconstruction quality across aggressive measurement compression:
-
-| Sampling Ratio | Measurements ($M$) | PSNR (dB) | SSIM | Defocus Invariance (0 to 3 waves) |
-|:---:|:---:|:---:|:---:|:---:|
-| **1.0%** | $M = 41$ | $13.76\text{ dB}$ | $0.606$ | $\Delta\text{PSNR} < 10^{-5}\text{ dB}$ |
-| **3.0%** | $M = 123$ | $13.34\text{ dB}$ | $0.546$ | $\Delta\text{PSNR} < 10^{-5}\text{ dB}$ |
-| **6.25%** | $M = 256$ | $13.49\text{ dB}$ | $0.560$ | $\Delta\text{PSNR} < 10^{-5}\text{ dB}$ |
-| **12.5%** | $M = 512$ | $13.62\text{ dB}$ | $0.596$ | $\Delta\text{PSNR} < 10^{-5}\text{ dB}$ |
-| **25.0%** | $M = 1024$ | $14.01\text{ dB}$ | $0.604$ | $\Delta\text{PSNR} < 10^{-5}\text{ dB}$ |
-
-### B. Defocus Wavefront Aberration Sweep
-Varying the optical defocus coefficient $a_4 \in [0.0, 3.0]$ waves yields identical reconstruction fidelity:
-* $a_4 = 0.0$ waves: $19.13\text{ dB}$ ($0.690\text{ SSIM}$)
-* $a_4 = 1.0$ waves: $19.13\text{ dB}$ ($0.690\text{ SSIM}$)
-* $a_4 = 2.0$ waves: $19.13\text{ dB}$ ($0.690\text{ SSIM}$)
-* $a_4 = 3.0$ waves: $19.13\text{ dB}$ ($0.690\text{ SSIM}$)
-
-$$\Delta\text{PSNR} < 10^{-5}\text{ dB} \quad (\text{Defocus-Invariant Forward Modeling})$$
-
-### C. Uncertainty Calibration Metrics
-* **Expected Calibration Error (ECE):** $\mathbf{0.1011}$
-* **Area Under Error-Retention Curve (AURC):** $\mathbf{0.01143}$
 
 ---
 
@@ -188,20 +183,18 @@ The model adapts to unseen target surfaces using $K$ reference pairs without upd
 | **MVTec Tile** | $11.70\text{ dB}$ ($0.265$) | $11.71\text{ dB}$ ($0.266$) | $11.71\text{ dB}$ ($0.266$) | $11.71\text{ dB}$ ($0.266$) | $8.6\text{ ms}$ | **116 FPS** |
 | **MVTec Wood** | $16.31\text{ dB}$ ($0.437$) | $16.34\text{ dB}$ ($0.437$) | $16.34\text{ dB}$ ($0.437$) | $16.34\text{ dB}$ ($0.437$) | $7.2\text{ ms}$ | **138 FPS** |
 
-*Empirical metrics compiled in [`results/in_context_adaptation_benchmark.json`](results/in_context_adaptation_benchmark.json).*
-
 ---
 
 ## 8. Pretrained Model Zoo
 
 All 51 model checkpoints are stored in the [`checkpoints/`](checkpoints/) directory (~1.55 GB total). Each dataset is evaluated across three random optical seeds ($S \in \{42, 1337, 2026\}$):
 
-| Benchmark Group | Category / Name | Checkpoint Filename Pattern | Top Metric |
-|:---|:---|:---|:---:|
-| **Textile Weaves** | TILDA 400 | `ic_pinot_tilda_400_seed{seed}.pt` | $19.22\text{ dB} / 0.686$ |
-| **Weak-Contrast** | DAGM 2007 | `ic_pinot_dagm_2007_seed{seed}.pt` | $21.75\text{ dB} / 0.391$ |
-| **Surface Textures** | Carpet, Grid, Leather, Tile, Wood | `ic_pinot_mvtec-{cat}_seed{seed}.pt` | $24.29\text{ dB} / 0.499$ |
-| **Objects & Parts** | Capsule, Pill, Bottle, Hazelnut, ... | `ic_pinot_mvtec-{cat}_seed{seed}.pt` | $30.79\text{ dB} / 0.961$ |
+| Benchmark Group | Category / Name | Checkpoint Filename Pattern |
+|:---|:---|:---|
+| **Textile Weaves** | TILDA 400 | `ic_pinot_tilda_400_seed{seed}.pt` |
+| **Weak-Contrast** | DAGM 2007 | `ic_pinot_dagm_2007_seed{seed}.pt` |
+| **Surface Textures** | Carpet, Grid, Leather, Tile, Wood | `ic_pinot_mvtec-{cat}_seed{seed}.pt` |
+| **Objects & Parts** | Capsule, Pill, Bottle, Hazelnut, ... | `ic_pinot_mvtec-{cat}_seed{seed}.pt` |
 
 ---
 
@@ -214,16 +207,14 @@ from models.ic_pinot import ICPINOT
 
 # Initialize model and load trained weights
 model = ICPINOT(num_patterns=512, embed_dim=256, img_size=64)
-model.load_state_dict(torch.load("checkpoints/ic_pinot_tilda_400_seed1337.pt", map_location="cpu"))
+model.load_state_dict(torch.load("checkpoints/ic_pinot_tilda_400_seed1337.pt", map_location="cpu"), strict=False)
 model.eval()
 
-# Run single deterministic forward pass
+# Run single deterministic forward pass (blind evaluation)
 meas = torch.randn(1, 512)            # SPAD bucket measurement vector
-optics = torch.zeros(1, 11)           # Instantaneous Zernike state (a4=defocus)
-optics[:, 3] = 1.0                    # 1.0-wave defocus
 
 with torch.no_grad():
-    nig_outputs, _ = model(meas, optics, return_evidential=True)
+    nig_outputs, logits = model(meas, optical_params=None, return_evidential=True)
     recon = nig_outputs["gamma"]       # Mean reconstruction
     aleatoric = nig_outputs["aleatoric"] # Sensor shot noise map
     epistemic = nig_outputs["epistemic"] # Novelty defect map
@@ -240,114 +231,62 @@ cd pi-ghost-transformer
 pip install -r requirements.txt
 ```
 
-### Sanity Verification
+### Run Three Sanity Tests:
 ```bash
-python tests/smoke_test_ic_pinot.py
+python benchmarks/sanity_checks.py --checkpoint checkpoints/ic_pinot_tilda_400_seed42.pt
 ```
 
-### Reproduce Benchmark Pillars:
+### Run Equal-Photon Baseline Suite:
 ```bash
-# Pillar 2: Head-to-Head Baseline Suite
 python benchmarks/benchmark_baselines.py
-
-# Pillar 3: 3D Physical Stress Matrix
-python benchmarks/benchmark_stress_matrix.py
-
-# Pillar 4: Evidential Uncertainty Calibration
-python benchmarks/benchmark_uncertainty_calibration.py
-
-# Pillar 5: In-Context Zero-Gradient Adaptation
-python benchmarks/benchmark_in_context_adaptation.py
 ```
 
-### Fault-Tolerant Training Execution:
-```powershell
-# Windows PowerShell
-.\training\resume_campaign.ps1
+### Run Industrial Defect Metrics (MVTec AUROC/PRO & AITEX LOFO):
+```bash
+# MVTec AUROC and PRO
+python benchmarks/benchmark_mvtec_auroc_pro.py
 
-# Or batch script
-.\training\resume_campaign.bat
+# AITEX Leave-One-Fabric-Out Cross-Validation
+python benchmarks/benchmark_aitex_lofo.py
+```
+
+### Compile Academic Briefing PDF:
+```bash
+python docs/generate_professor_pdf.py
 ```
 
 ---
 
-## 11. Automated Publication Tooling
-
-### Compile All Camera-Ready LaTeX Tables:
-```bash
-python utils/generate_paper_tables.py
-```
-Outputs four publication-ready tables:
-- [`tables/table1_master_benchmarks.tex`](tables/table1_master_benchmarks.tex): Master 17-benchmark evaluation table.
-- [`tables/table2_baselines.tex`](tables/table2_baselines.tex): Competitor comparison table (DGI vs. Vanilla vs. IC-PINOT).
-- [`tables/table3_physical_stress.tex`](tables/table3_physical_stress.tex): Sub-Nyquist sampling matrix.
-- [`tables/table4_in_context_adaptation.tex`](tables/table4_in_context_adaptation.tex): Test-time adaptation latency table.
-
-### Render High-Resolution Evidential Figures:
-```bash
-python utils/visualize_evidential_results.py
-python utils/generate_architecture_diagram.py
-```
-Outputs 300 DPI vector PDFs and PNGs in [`figures/`](figures/):
-- `figures/fig_evidential_tilda_400.png` & `.pdf`
-- `figures/fig_evidential_dagm_2007.png` & `.pdf`
-- `figures/fig_evidential_mvtec_leather.png` & `.pdf`
-- `figures/architecture_diagram.png` & `.pdf`
-
-### Build Comprehensive PDF Report:
-```bash
-python utils/generate_results_pdf.py
-```
-Compiles [`results/IC_PINOT_Comprehensive_Results_Report.pdf`](results/IC_PINOT_Comprehensive_Results_Report.pdf).
-
----
-
-## 12. Repository Structure
+## 11. Repository Structure
 
 ```text
 .
-├── checkpoints/              # 51 trained PyTorch model checkpoints (~1.55 GB)
-├── data/                     # Benchmark dataset splits & loaders
-├── figures/                  # 300 DPI vector PDFs and PNG figures
-├── models/                   # Architecture modules (PCCA, Swin, NIG, FNO)
-│   ├── attention.py          # Physics-Conditioned Cross-Attention
-│   ├── evidential.py         # Normal-Inverse-Gamma evidential head
-│   ├── ic_pinot.py           # Core IC-PINOT architecture
-│   ├── in_context.py         # Zero-gradient prompt encoder
-│   ├── loss.py               # Flux-Normalized Poisson & NIG loss
-│   └── pighostformer.py      # Legacy transformer model
-├── physics/                  # Differentiable optical wave propagation
-│   ├── fno.py                # Continuous 2D Fourier Neural Operator
-│   ├── forward_model.py      # Single-pixel bucket simulator
-│   ├── noise.py              # SPAD dead-time and dark count noise
-│   └── psf.py                # Zernike wavefront point spread function
-├── benchmarks/               # Empirical evaluation suites (baselines, stress matrix, UQ, adaptation)
-├── checkpoints/              # 51 trained PyTorch model checkpoints
-├── data/                     # Data loaders and benchmark splits
-├── docs/                     # Briefing PDF, LaTeX source, PDF compilation script
-├── figures/                  # 300 DPI publication figures & architecture schematics
-├── logs/                     # Historical training and benchmark execution logs
-├── models/                   # Architecture modules (PCCA, Swin, NIG, FNO)
-├── physics/                  # Differentiable optical wave propagation
-├── results/                  # Empirical JSON metrics & compiled PDF report
-├── tables/                   # Ready-to-compile LaTeX tables
-├── tests/                    # Sanity checks and end-to-end smoke tests
-├── training/                 # Model training suites & 24/7 campaign orchestrator
-├── utils/                    # Automated publication tools
-├── .gitignore
-├── config.py                 # Central hyperparameter configuration
-├── LICENSE                   # MIT License
-├── README.md                 # Primary documentation
-└── requirements.txt          # Python dependencies
+├── benchmarks/               # Strict sanity checks, baseline suite, AUROC/PRO, and LOFO
+│   ├── sanity_checks.py      # Constant-mean, shuffled-measurement, and monotonicity tests
+│   ├── benchmark_baselines.py# TV-CS, Deep SPI, DGI, and Line-scan comparisons
+│   ├── benchmark_mvtec_auroc_pro.py # MVTec Image AUROC and Pixel PRO metrics
+│   └── benchmark_aitex_lofo.py # AITEX Leave-One-Fabric-Out cross validation
+├── checkpoints/              # Trained PyTorch model checkpoints & trained_patterns.pt
+├── data/                     # Benchmark dataset loaders (TILDA, DAGM, MVTec, AITEX)
+├── docs/                     # Briefing PDF, LaTeX source, and ReportLab compilation script
+│   ├── project_overview_professor.pdf # Academic 4-page technical briefing
+│   ├── project_overview_professor.tex # LaTeX source code
+│   └── generate_professor_pdf.py      # Deterministic 4-page PDF builder
+├── figures/                  # Publication figures and architecture diagrams
+├── models/                   # Architecture modules (PCCA, Swin, NIG, FNO, Adjoint)
+├── physics/                  # Differentiable optical wave propagation and noise models
+├── results/                  # Empirical JSON metrics & compiled reports
+├── tests/                    # Smoke tests and pipeline verification
+└── training/                 # Model training suites & campaign scripts
 ```
 
 ---
 
-## 13. Citation & References
+## 12. Citation & References
 
 ```bibtex
 @article{icpinot2026,
-  title={In-Context Physics-Informed Neural Operator Transformer for Defocus-Invariant Single-Photon Computational Imaging},
+  title={In-Context Physics-Informed Neural Operator Transformer for Single-Photon Computational Imaging},
   author={Dahima, Atharve and Research Team},
   journal={IEEE Transactions on Computational Imaging},
   year={2026},
@@ -382,6 +321,6 @@ Compiles [`results/IC_PINOT_Comprehensive_Results_Report.pdf`](results/IC_PINOT_
 
 ---
 
-## 14. License
+## 13. License
 
 This research codebase is licensed under the [MIT License](LICENSE).

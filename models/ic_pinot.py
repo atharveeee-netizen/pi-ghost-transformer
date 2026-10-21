@@ -7,6 +7,7 @@ Unified Flagship Architecture for Single-Photon Computational Ghost Imaging:
   4. Native Evidential Deep Learning (NIG) for Calibrated O(1) Uncertainty
 """
 
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -104,8 +105,15 @@ class ICPINOT(nn.Module):
     ):
         super().__init__()
         self.embed_dim = embed_dim
+        self.physics_dim = physics_dim
         
-        # 1. Measurement Encoder
+        self.img_size = img_size
+        
+        # 1. Physical Backprojection Adjoint Layer (Maps bucket measurements to 2D image)
+        self.backproj = nn.Linear(num_patterns, img_size * img_size, bias=False)
+        self._init_backprojection(num_patterns, img_size)
+
+        # 2. Measurement Encoder
         self.encoder = Encoder1D(
             in_features=num_patterns,
             embed_dim=embed_dim,
@@ -113,27 +121,27 @@ class ICPINOT(nn.Module):
             num_heads=encoder_heads
         )
         
-        # 2. In-Context Prompt Engine
+        # 3. In-Context Prompt Engine
         self.in_context_engine = InContextPromptEncoder(
             num_patterns=num_patterns,
             embed_dim=embed_dim,
             num_tokens=num_prompt_tokens
         )
         
-        # 3. Physics-Conditioned Cross-Attention (PCCA)
+        # 4. Physics-Conditioned Cross-Attention (PCCA)
         self.pcca = PhysicsConditionedCrossAttention(
             embed_dim=embed_dim,
             num_heads=encoder_heads,
             physics_dim=physics_dim
         )
         
-        # 4. Learned Query Grid (8x8 = 64 spatial tokens)
+        # 5. Learned Query Grid (8x8 = 64 spatial tokens)
         self.spatial_query_grid = nn.Parameter(torch.randn(1, 64, embed_dim) * 0.02)
         
-        # 5. Evidential Decoder
+        # 6. Evidential Decoder
         self.decoder = Decoder2D(embed_dim=embed_dim, img_size=img_size, out_channels=1)
         
-        # 6. Defect Classifier Head
+        # 7. Defect Classifier Head
         self.classifier = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Flatten(),
@@ -142,10 +150,24 @@ class ICPINOT(nn.Module):
             nn.Linear(128, num_classes)
         )
 
+    def _init_backprojection(self, num_patterns: int, img_size: int):
+        """Initializes the backprojection matrix using pseudo-inverse if pattern file exists."""
+        pattern_path = "checkpoints/trained_patterns.pt"
+        if os.path.exists(pattern_path):
+            try:
+                patterns = torch.load(pattern_path, map_location="cpu")
+                if patterns.shape == (num_patterns, img_size * img_size):
+                    pinv = torch.pinverse(patterns) # (img_size*img_size, num_patterns)
+                    self.backproj.weight.data.copy_(pinv)
+                    return
+            except Exception:
+                pass
+        nn.init.orthogonal_(self.backproj.weight)
+
     def forward(
         self,
         bucket_measurements: torch.Tensor,
-        optical_params: torch.Tensor,
+        optical_params: torch.Tensor = None,
         context_meas: torch.Tensor = None,
         context_imgs: torch.Tensor = None,
         return_evidential: bool = False
@@ -153,13 +175,20 @@ class ICPINOT(nn.Module):
         """
         Args:
             bucket_measurements: (B, num_patterns) query bucket vector y_q
-            optical_params: (B, physics_dim) optical state theta (e.g. Zernike defocus a_4)
+            optical_params: (B, physics_dim) optional optical state theta (if None, evaluated blindly)
             context_meas: (B, K, num_patterns) optional K reference measurements
             context_imgs: (B, K, 1, H, W) optional K reference images
             return_evidential: bool, whether to return the full NIG uncertainty dictionary
         """
         B = bucket_measurements.shape[0]
         
+        # If no optical parameters provided, evaluate blindly without oracle defocus knowledge
+        if optical_params is None:
+            optical_params = torch.zeros(B, self.physics_dim, device=bucket_measurements.device)
+            
+        # 0. Physical Backprojection from Bucket Measurements
+        x_back = self.backproj(bucket_measurements).view(B, 1, self.img_size, self.img_size)
+
         # 1. 1D Signal Encoding
         enc_tokens = self.encoder(bucket_measurements) # (B, M, embed_dim)
         
@@ -178,7 +207,10 @@ class ICPINOT(nn.Module):
         # 5. Defect Classification
         logits = self.classifier(pre_feats)
         
-        recon_mean = nig_outputs["gamma"]
+        # 6. Physical Adjoint Fusion: Blends physical backprojection with evidential spatial decoder
+        recon_mean = (0.7 * x_back + 0.3 * nig_outputs["gamma"]).clamp(0.0, 1.0)
+        nig_outputs["gamma"] = recon_mean
+        
         if return_evidential:
             return nig_outputs, logits
         return recon_mean, logits
