@@ -4,7 +4,7 @@
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Target: IEEE TCI](https://img.shields.io/badge/Target%20Venue-IEEE%20Trans.%20Comput.%20Imaging-blue.svg)](https://signalprocessingsociety.org/publications-resources/ieee-transactions-computational-imaging)
+[![Format: Technical Report](https://img.shields.io/badge/Format-Conference%20Preprint-blue.svg)](docs/project_overview_professor.tex)
 [![Report: LaTeX](https://img.shields.io/badge/Academic%20Briefing-LaTeX%20Source-brightgreen.svg)](docs/project_overview_professor.tex)
 [![Checkpoints: 51 Models](https://img.shields.io/badge/Model%20Zoo-51%20Trained%20Checkpoints-purple.svg)](checkpoints/)
 [![Calibration: ECE 0.10](https://img.shields.io/badge/UQ%20Calibration-ECE%200.1011-orange.svg)](results/uncertainty_calibration.json)
@@ -17,11 +17,11 @@
 
 ### Key Empirical Highlights
 
-- **Equal-Photon Supremacy over Line-Scan Cameras:** Outperforms simulated high-speed line-scan cameras under an identical photon budget ($N_{\text{total}} = 5120$ photons, $\approx 1.25$ photons/pixel) by $+13.5\text{ dB}$ ($19.73\text{ dB}$ vs $6.20\text{ dB}$), where CMOS read noise and motion blur overwhelm multi-pixel sensors.
-- **Rigorous Three-Fold Sanity Suite:** Verified against a constant-mean baseline floor, passes shuffled-measurement permutation collapse ($\Delta\text{PSNR} > 13\text{ dB}$), and exhibits monotonic degradation across photon flux and optical defocus sweeps.
+- **Low-Photon Benchmarking & Baseline Suite:** Evaluated against classical optics (DGI), convex optimization (TV-CS), deep SPI (ReconNet), simulated line-scan cameras (raw and denoised), and statistical baseline floors (flat-image mean and brightness-only DC scale).
+- **Rigorous Three-Fold Sanity Suite:** Verified against a constant-mean baseline floor, passes shuffled-measurement permutation collapse ($\Delta\text{PSNR} > 13\text{ dB}$), and exhibits monotonic degradation across optical defocus sweeps.
 - **Blind Optical Evaluation:** Inverts bucket measurements blindly without oracle knowledge of the true lens defocus parameter ($a_4$).
 - **Industrial Anomaly Detection:** Evaluated across MVTec-AD and 7 Leave-One-Fabric-Out (LOFO) cross-validation folds on AITEX.
-- **138 FPS Real-Time Evidential Inference:** Produces single-pass evidential uncertainty quantification with zero Monte Carlo sampling overhead.
+- **Throughput Profile:** GPU reconstruction latency is $7.2\text{ ms}$ per frame ($138\text{ FPS}$ compute throughput); end-to-end frame rate is governed by spatial light modulator pattern refresh speed.
 - **Zero-Gradient Test-Time Adaptation:** Adapts to novel surface materials in under 15 ms without backpropagation.
 
 ---
@@ -121,16 +121,19 @@ python benchmarks/sanity_checks.py --checkpoint checkpoints/ic_pinot_tilda_400_s
 
 ## 5. Equal-Photon Baseline Suite & Industrial Metrics
 
-### A. Equal Photon Budget Comparison ($N_{\text{total}} = 5120$ photons)
-All methods evaluated under an exact equal photon budget ($5120$ total photons across $4096$ pixels, $\approx 1.25$ photons/pixel):
+### A. Equal Photon Budget Comparison ($N_{\text{total}} = 5120$ photons per frame)
+All methods evaluated under matched nominal photon budgets, reported directly from [`results/baseline_suite_results.json`](results/baseline_suite_results.json):
 
 | Method | TILDA 400 (Textile) | DAGM 2007 (Metal) | MVTec Carpet (Texture) |
 |:---|:---:|:---:|:---:|
-| **Line-Scan Camera (Equal Photons)** | $6.20\text{ dB}$ / $0.127$ | $6.40\text{ dB}$ / $0.127$ | $6.28\text{ dB}$ / $0.091$ |
-| **DGI (Classical SPI)** | $11.66\text{ dB}$ / $0.250$ | $13.00\text{ dB}$ / $0.277$ | $12.48\text{ dB}$ / $0.365$ |
-| **TV-CS (L1 Optimization)** | $17.70\text{ dB}$ / $0.312$ | $16.62\text{ dB}$ / $0.324$ | $16.36\text{ dB}$ / $0.403$ |
-| **Deep SPI (ReconNet)** | $17.54\text{ dB}$ / $0.312$ | $15.59\text{ dB}$ / $0.315$ | $16.23\text{ dB}$ / $0.398$ |
-| **IC-PINOT (Blind Inversion)** | $\mathbf{19.73\text{ dB}}$ / $\mathbf{0.352}$ | $\mathbf{18.52\text{ dB}}$ / $\mathbf{0.353}$ | $\mathbf{16.99\text{ dB}}$ / $\mathbf{0.390}$ |
+| **Flat-Image (Dataset Mean)** | $19.93\text{ dB}$ / $0.686$ | $21.34\text{ dB}$ / $0.379$ | $17.41\text{ dB}$ / $0.259$ |
+| **Brightness-Only (Image Mean)** | $29.22\text{ dB}$ / $0.697$ | $21.47\text{ dB}$ / $0.379$ | $17.42\text{ dB}$ / $0.259$ |
+| **Raw Line-Scan Camera** | $6.21\text{ dB}$ / $0.128$ | $6.41\text{ dB}$ / $0.126$ | $6.29\text{ dB}$ / $0.093$ |
+| **Denoised Line-Scan (Gaussian)** | $13.63\text{ dB}$ / $0.321$ | $14.97\text{ dB}$ / $0.293$ | $14.60\text{ dB}$ / $0.244$ |
+| **DGI (Classical SPI)** | $12.65\text{ dB}$ / $0.243$ | $12.15\text{ dB}$ / $0.253$ | $13.19\text{ dB}$ / $0.345$ |
+| **TV-CS (L1 Optimization)** | $17.73\text{ dB}$ / $0.311$ | $16.62\text{ dB}$ / $0.322$ | $16.38\text{ dB}$ / $0.405$ |
+| **Deep SPI (ReconNet)** | $16.97\text{ dB}$ / $0.306$ | $15.93\text{ dB}$ / $0.317$ | $16.05\text{ dB}$ / $0.395$ |
+| **IC-PINOT (Blind Inversion)** | $19.78\text{ dB}$ / $0.352$ | $18.52\text{ dB}$ / $0.352$ | $17.01\text{ dB}$ / $0.392$ |
 
 *Compiled via [`benchmarks/benchmark_baselines.py`](benchmarks/benchmark_baselines.py).*
 
@@ -149,25 +152,25 @@ All methods evaluated under an exact equal photon budget ($5120$ total photons a
 
 Evaluated under a 300-epoch SGDR Cosine Annealing protocol across three independent optical seeds ($S \in \{42, 1337, 2026\}$):
 
-| Benchmark Dataset | Domain Category | PSNR (dB) $\uparrow$ | SSIM $\uparrow$ | Defect Acc (\%) $\uparrow$ | Epistemic UQ $\sigma^2_e$ | Aleatoric UQ $\sigma^2_a$ |
-|:---|:---|:---:|:---:|:---:|:---:|:---:|
-| **TILDA 400** | Textile Weave Patches | $\mathbf{19.73 \pm 0.12}$ | $\mathbf{0.352 \pm 0.005}$ | **90.8%** | $0.0101$ | $0.0062$ |
-| **DAGM 2007** | Weak-Contrast Metallic Surfaces | $\mathbf{18.52 \pm 0.03}$ | $\mathbf{0.353 \pm 0.002}$ | **87.0%** | $0.0039$ | $0.0041$ |
-| **MVTec Carpet** | Woven Fiber Pile | $\mathbf{16.99 \pm 0.17}$ | $\mathbf{0.390 \pm 0.004}$ | 23.9% | $0.0381$ | $0.0299$ |
-| **MVTec Grid** | Interlocking Wire Mesh | $\mathbf{16.59 \pm 0.00}$ | $\mathbf{0.268 \pm 0.000}$ | 26.9% | $0.0256$ | $0.0056$ |
-| **MVTec Leather** | Natural Hide Texture | $\mathbf{24.29 \pm 0.14}$ | $\mathbf{0.499 \pm 0.004}$ | 25.8% | $0.0015$ | $0.0028$ |
-| **MVTec Tile** | Ceramic Surface Imperfections | $\mathbf{18.15 \pm 0.00}$ | $\mathbf{0.297 \pm 0.000}$ | 28.2% | $0.0125$ | $0.0055$ |
-| **MVTec Wood** | Grain & Knot Flaws | $\mathbf{23.25 \pm 0.00}$ | $\mathbf{0.457 \pm 0.000}$ | 24.1% | $0.0036$ | $0.0011$ |
-| **MVTec Bottle** | Translucent Container Body | $\mathbf{23.86 \pm 0.14}$ | $\mathbf{0.856 \pm 0.005}$ | 24.1% | $0.0243$ | $0.0182$ |
-| **MVTec Cable** | Insulated Multi-Conductor Wire | $\mathbf{18.05 \pm 0.00}$ | $\mathbf{0.689 \pm 0.001}$ | 38.7% | $0.0160$ | $0.0012$ |
-| **MVTec Capsule** | High-Gloss Pharmaceutical Shell | $\mathbf{30.79 \pm 0.08}$ | $\mathbf{0.961 \pm 0.000}$ | 17.4% | $0.0006$ | $0.0006$ |
-| **MVTec Hazelnut** | Organic Shell Specimen | $\mathbf{25.84 \pm 0.05}$ | $\mathbf{0.803 \pm 0.002}$ | 36.4% | $0.0025$ | $0.0015$ |
-| **MVTec Metal Nut** | Threaded Hexagonal Hardware | $\mathbf{18.37 \pm 0.07}$ | $\mathbf{0.523 \pm 0.007}$ | 19.1% | $0.0338$ | $0.0616$ |
-| **MVTec Pill** | Imprinted Solid Dosage Form | $\mathbf{28.27 \pm 0.05}$ | $\mathbf{0.779 \pm 0.004}$ | 15.6% | $0.0015$ | $0.0004$ |
-| **MVTec Screw** | Precision Thread Contour | $\mathbf{18.60 \pm 0.05}$ | $\mathbf{0.691 \pm 0.001}$ | 25.6% | $0.0175$ | $0.0132$ |
-| **MVTec Toothbrush**| Synthetic Bristle Array | $\mathbf{23.05 \pm 0.38}$ | $\mathbf{0.685 \pm 0.012}$ | 28.6% | $0.0036$ | $0.0021$ |
-| **MVTec Transistor**| Microelectronic SMD Lead | $\mathbf{20.11 \pm 0.03}$ | $\mathbf{0.743 \pm 0.001}$ | 60.0% | $0.0140$ | $0.0030$ |
-| **MVTec Zipper** | Interlocking Teeth Track | $\mathbf{21.18 \pm 0.03}$ | $\mathbf{0.612 \pm 0.004}$ | 21.2% | $0.0473$ | $0.0624$ |
+| Benchmark Dataset | Domain Category | PSNR (dB) $\uparrow$ | SSIM $\uparrow$ | Epistemic UQ $\sigma^2_e$ | Aleatoric UQ $\sigma^2_a$ |
+|:---|:---|:---:|:---:|:---:|:---:|
+| **TILDA 400** | Textile Weave Patches | $\mathbf{19.73 \pm 0.12}$ | $\mathbf{0.352 \pm 0.005}$ | $0.0101$ | $0.0062$ |
+| **DAGM 2007** | Weak-Contrast Metallic Surfaces | $\mathbf{18.52 \pm 0.03}$ | $\mathbf{0.353 \pm 0.002}$ | $0.0039$ | $0.0041$ |
+| **MVTec Carpet** | Woven Fiber Pile | $\mathbf{16.99 \pm 0.17}$ | $\mathbf{0.390 \pm 0.004}$ | $0.0381$ | $0.0299$ |
+| **MVTec Grid** | Interlocking Wire Mesh | $\mathbf{16.59 \pm 0.00}$ | $\mathbf{0.268 \pm 0.000}$ | $0.0256$ | $0.0056$ |
+| **MVTec Leather** | Natural Hide Texture | $\mathbf{24.29 \pm 0.14}$ | $\mathbf{0.499 \pm 0.004}$ | $0.0015$ | $0.0028$ |
+| **MVTec Tile** | Ceramic Surface Imperfections | $\mathbf{18.15 \pm 0.00}$ | $\mathbf{0.297 \pm 0.000}$ | $0.0125$ | $0.0055$ |
+| **MVTec Wood** | Grain & Knot Flaws | $\mathbf{23.25 \pm 0.00}$ | $\mathbf{0.457 \pm 0.000}$ | $0.0036$ | $0.0011$ |
+| **MVTec Bottle** | Translucent Container Body | $\mathbf{23.86 \pm 0.14}$ | $\mathbf{0.856 \pm 0.005}$ | $0.0243$ | $0.0182$ |
+| **MVTec Cable** | Insulated Multi-Conductor Wire | $\mathbf{18.05 \pm 0.00}$ | $\mathbf{0.689 \pm 0.001}$ | $0.0160$ | $0.0012$ |
+| **MVTec Capsule** | High-Gloss Pharmaceutical Shell | $\mathbf{30.79 \pm 0.08}$ | $\mathbf{0.961 \pm 0.000}$ | $0.0006$ | $0.0006$ |
+| **MVTec Hazelnut** | Organic Shell Specimen | $\mathbf{25.84 \pm 0.05}$ | $\mathbf{0.803 \pm 0.002}$ | $0.0025$ | $0.0015$ |
+| **MVTec Metal Nut** | Threaded Hexagonal Hardware | $\mathbf{18.37 \pm 0.07}$ | $\mathbf{0.523 \pm 0.007}$ | $0.0338$ | $0.0616$ |
+| **MVTec Pill** | Imprinted Solid Dosage Form | $\mathbf{28.27 \pm 0.05}$ | $\mathbf{0.779 \pm 0.004}$ | $0.0015$ | $0.0004$ |
+| **MVTec Screw** | Precision Thread Contour | $\mathbf{18.60 \pm 0.05}$ | $\mathbf{0.691 \pm 0.001}$ | $0.0175$ | $0.0132$ |
+| **MVTec Toothbrush**| Synthetic Bristle Array | $\mathbf{23.05 \pm 0.38}$ | $\mathbf{0.685 \pm 0.012}$ | $0.0036$ | $0.0021$ |
+| **MVTec Transistor**| Microelectronic SMD Lead | $\mathbf{20.11 \pm 0.03}$ | $\mathbf{0.743 \pm 0.001}$ | $0.0140$ | $0.0030$ |
+| **MVTec Zipper** | Interlocking Teeth Track | $\mathbf{21.18 \pm 0.03}$ | $\mathbf{0.612 \pm 0.004}$ | $0.0473$ | $0.0624$ |
 
 ---
 
@@ -284,22 +287,22 @@ python docs/generate_professor_pdf.py
 ## 12. Citation & References
 
 ```bibtex
-@article{icpinot2026,
-  title={In-Context Physics-Informed Neural Operator Transformer for Single-Photon Computational Imaging},
+@misc{icpinot2026,
+  title={Physics-Informed Ghost Imaging Transformer for Low-Photon Surface Inspection},
   author={Dahima, Atharve and Research Team},
-  journal={IEEE Transactions on Computational Imaging},
   year={2026},
-  note={Under Review}
+  howpublished={Preprint / Technical Report}
 }
 
-@article{silvestre2014aitex,
-  title={A Public Fabric Database for Defect Detection Methods and Results Evaluation},
-  author={Silvestre-Blanes, Javier and Albero-Albero, Teresa and Miralles, Ignacio and P{\'e}rez-Llorens, Roberto and Moreno, Jorge},
-  journal={Autex Research Journal},
-  volume={14},
+@article{silvestre2019aitex,
+  title={A Public Fabric Database for Defect Detection Methods and Results},
+  author={Silvestre-Blanes, Javier and Albero-Albero, Teresa and Miralles, Ignacio and P{\'e}rez-Llorens, Rub{\'e}n and Moreno, Jorge},
+  journal={AUTEX Research Journal},
+  volume={19},
   number={4},
-  pages={304--313},
-  year={2014}
+  pages={363--374},
+  year={2019},
+  doi={10.2478/aut-2019-0035}
 }
 
 @techreport{schulz1999tilda,

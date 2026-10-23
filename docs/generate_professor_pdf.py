@@ -322,38 +322,42 @@ def build_pdf():
     t2_rows = [
         [
             Paragraph("Benchmark Dataset", th_style),
-            Paragraph("Line-Scan Camera<br/>(Equal Photons)", th_style),
-            Paragraph("DGI<br/>(Classical SPI)", th_style),
+            Paragraph("Flat-Image<br/>(Dataset Mean)", th_style),
+            Paragraph("Raw Line-Scan<br/>(Equal Photons)", th_style),
+            Paragraph("Denoised Line-Scan<br/>(Gaussian)", th_style),
             Paragraph("TV-CS<br/>(L1 Optimization)", th_style),
             Paragraph("Deep SPI<br/>(ReconNet)", th_style),
-            Paragraph("IC-PINOT<br/>(Blind Ours)", th_style)
+            Paragraph("IC-PINOT<br/>(Blind Inversion)", th_style)
         ],
         [
             Paragraph("<b>TILDA 400 (Textile)</b>", td_bold),
-            Paragraph("6.20 dB / 0.127", td_style),
-            Paragraph("11.66 dB / 0.250", td_style),
-            Paragraph("17.70 dB / 0.312", td_style),
-            Paragraph("17.54 dB / 0.312", td_style),
-            Paragraph("<b>19.73 dB / 0.352</b>", td_bold)
+            Paragraph("19.93 dB / 0.686", td_style),
+            Paragraph("6.21 dB / 0.128", td_style),
+            Paragraph("13.63 dB / 0.321", td_style),
+            Paragraph("17.73 dB / 0.311", td_style),
+            Paragraph("16.97 dB / 0.306", td_style),
+            Paragraph("19.78 dB / 0.352", td_style)
         ],
         [
             Paragraph("<b>DAGM 2007 (Metal)</b>", td_bold),
-            Paragraph("6.40 dB / 0.127", td_style),
-            Paragraph("13.00 dB / 0.277", td_style),
-            Paragraph("16.62 dB / 0.324", td_style),
-            Paragraph("15.59 dB / 0.315", td_style),
-            Paragraph("<b>18.52 dB / 0.353</b>", td_bold)
+            Paragraph("21.34 dB / 0.379", td_style),
+            Paragraph("6.41 dB / 0.126", td_style),
+            Paragraph("14.97 dB / 0.293", td_style),
+            Paragraph("16.62 dB / 0.322", td_style),
+            Paragraph("15.93 dB / 0.317", td_style),
+            Paragraph("18.52 dB / 0.352", td_style)
         ],
         [
             Paragraph("<b>MVTec Carpet (Texture)</b>", td_bold),
-            Paragraph("6.28 dB / 0.091", td_style),
-            Paragraph("12.48 dB / 0.365", td_style),
-            Paragraph("16.36 dB / 0.403", td_style),
-            Paragraph("16.23 dB / 0.398", td_style),
-            Paragraph("<b>16.99 dB / 0.390</b>", td_bold)
+            Paragraph("17.41 dB / 0.259", td_style),
+            Paragraph("6.29 dB / 0.093", td_style),
+            Paragraph("14.60 dB / 0.244", td_style),
+            Paragraph("16.38 dB / 0.405", td_style),
+            Paragraph("16.05 dB / 0.395", td_style),
+            Paragraph("17.01 dB / 0.392", td_style)
         ]
     ]
-    t2 = Table(t2_rows, colWidths=[106, 82, 82, 82, 82, 82])
+    t2 = Table(t2_rows, colWidths=[102, 68, 68, 74, 68, 68, 68])
     t2.setStyle(TableStyle([
         ('LINEABOVE', (0,0), (-1,0), 1.2, colors.black),
         ('LINEBELOW', (0,0), (-1,0), 0.6, colors.black),

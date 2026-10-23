@@ -106,17 +106,22 @@ class DeepSPI(nn.Module):
 # -----------------------------------------------------------------------------
 # 3. Simulated Line-Scan Camera (Equal Photon Budget)
 # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# 3. Simulated Line-Scan Camera (Equal Photon Budget)
+# -----------------------------------------------------------------------------
 def simulate_linescan_camera(
     images: torch.Tensor,
     total_photons: float = 5120.0,
     motion_blur_len: int = 7,
-    read_noise_std: float = 2.0
+    read_noise_std: float = 2.0,
+    denoise: bool = False
 ) -> torch.Tensor:
     """
     Simulates a high-speed industrial line-scan camera under the exact same total photon budget.
     - Total Photons = 5120 across 4096 pixels -> lambda ~ 1.25 photons/pixel
     - 1D Conveyor Motion Blur (kernel length L=7 along transport direction)
     - CMOS Readout Noise (Gaussian sigma_read = 2.0 e- RMS)
+    - Optional Gaussian denoising filter to simulate post-processing.
     """
     B, C, H, W = images.shape
     flux_per_pixel = total_photons / float(H * W)
@@ -136,6 +141,16 @@ def simulate_linescan_camera(
     
     # 4. Normalized intensity reconstruction
     recon = (measured_counts / flux_per_pixel).clamp(0.0, 1.0)
+    
+    if denoise:
+        k_size = 7
+        sigma = 1.5
+        grid = torch.arange(k_size, device=images.device) - k_size // 2
+        gauss = torch.exp(-grid.pow(2) / (2 * sigma ** 2))
+        kernel_2d = gauss.outer(gauss)
+        kernel_2d = (kernel_2d / kernel_2d.sum()).view(1, 1, k_size, k_size)
+        recon = F.conv2d(recon, kernel_2d, padding=k_size // 2).clamp(0.0, 1.0)
+        
     return recon
 
 
@@ -144,7 +159,7 @@ def simulate_linescan_camera(
 # -----------------------------------------------------------------------------
 def run_dgi_reconstruction(noisy_meas: torch.Tensor, patterns: torch.Tensor) -> torch.Tensor:
     """
-    Classical Differential Ghost Imaging (DGI).
+    Classical Differential Ghost Imaging (DGI) with physical DC offset restoration.
     """
     B, M = noisy_meas.shape
     H, W = patterns.shape[1], patterns.shape[2]
@@ -159,7 +174,8 @@ def run_dgi_reconstruction(noisy_meas: torch.Tensor, patterns: torch.Tensor) -> 
         y_b = noisy_meas[b]
         coeff = y_b - (mean_y[b] / (mean_s + 1e-8)) * s_m
         recon_b = torch.matmul(coeff, patterns_flat).view(1, H, W) / M
-        recon_norm = (recon_b - recon_b.min()) / (recon_b.max() - recon_b.min() + 1e-8)
+        dc_level = mean_y[b] / (mean_s + 1e-8)
+        recon_norm = (recon_b + dc_level).clamp(0.0, 1.0)
         recons.append(recon_norm)
     return torch.stack(recons, dim=0)
 
@@ -204,7 +220,10 @@ def run_baseline_benchmark(
     loader = DataLoader(sub_ds, batch_size=16, shuffle=False)
     
     results = {
-        "Line-Scan Camera (Equal Photons)": {"psnr": [], "ssim": []},
+        "Flat-Image (Dataset Mean)": {"psnr": [], "ssim": []},
+        "Brightness-Only (Image Mean)": {"psnr": [], "ssim": []},
+        "Raw Line-Scan Camera (Equal Photons)": {"psnr": [], "ssim": []},
+        "Denoised Line-Scan (Gaussian Filter)": {"psnr": [], "ssim": []},
         "DGI (Classical SPI)": {"psnr": [], "ssim": []},
         "TV-CS (L1 Optimization)": {"psnr": [], "ssim": []},
         "Deep SPI (ReconNet)": {"psnr": [], "ssim": []},
@@ -219,10 +238,25 @@ def run_baseline_benchmark(
             # Forward SPI measurements under nominal flux (N_total = 5120 photons)
             y, _ = fwd.forward_sample(images, torch.zeros(B, 11, device=dev))
             
-            # 1. Line-Scan Camera
-            rec_line = simulate_linescan_camera(images, total_photons=5120.0, motion_blur_len=7, read_noise_std=2.0)
-            results["Line-Scan Camera (Equal Photons)"]["psnr"].append(calculate_psnr(images, rec_line))
-            results["Line-Scan Camera (Equal Photons)"]["ssim"].append(calculate_ssim(images, rec_line))
+            # 0A. Flat-Image (Dataset Mean)
+            rec_flat = torch.full_like(images, float(images.mean()))
+            results["Flat-Image (Dataset Mean)"]["psnr"].append(calculate_psnr(images, rec_flat))
+            results["Flat-Image (Dataset Mean)"]["ssim"].append(calculate_ssim(images, rec_flat))
+
+            # 0B. Brightness-Only (Image Mean / DC Scale)
+            rec_bright = images.mean(dim=(-1, -2), keepdim=True).expand_as(images)
+            results["Brightness-Only (Image Mean)"]["psnr"].append(calculate_psnr(images, rec_bright))
+            results["Brightness-Only (Image Mean)"]["ssim"].append(calculate_ssim(images, rec_bright))
+
+            # 1A. Raw Line-Scan Camera
+            rec_line_raw = simulate_linescan_camera(images, total_photons=5120.0, motion_blur_len=7, read_noise_std=2.0, denoise=False)
+            results["Raw Line-Scan Camera (Equal Photons)"]["psnr"].append(calculate_psnr(images, rec_line_raw))
+            results["Raw Line-Scan Camera (Equal Photons)"]["ssim"].append(calculate_ssim(images, rec_line_raw))
+
+            # 1B. Denoised Line-Scan Camera
+            rec_line_den = simulate_linescan_camera(images, total_photons=5120.0, motion_blur_len=7, read_noise_std=2.0, denoise=True)
+            results["Denoised Line-Scan (Gaussian Filter)"]["psnr"].append(calculate_psnr(images, rec_line_den))
+            results["Denoised Line-Scan (Gaussian Filter)"]["ssim"].append(calculate_ssim(images, rec_line_den))
             
             # 2. DGI
             rec_dgi = run_dgi_reconstruction(y, patterns_2d)

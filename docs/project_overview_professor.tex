@@ -132,13 +132,13 @@ We evaluated all methods under a strict equal photon budget ($N_{\text{total}} =
 \small
 \caption{\textbf{Direct Head-to-Head Comparison under Equal Photon Budget ($N_{\text{total}} = 5120$ photons)}}
 \label{tab:baselines}
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-\textbf{Benchmark Dataset} & \textbf{Line-Scan Camera} & \textbf{DGI (Classical)} & \textbf{TV-CS (L1 Norm)} & \textbf{Deep SPI (ReconNet)} & \textbf{IC-PINOT (Blind Ours)} \\
+\textbf{Benchmark Dataset} & \textbf{Flat-Image} & \textbf{Raw Line-Scan} & \textbf{Denoised Line-Scan} & \textbf{TV-CS ($L_1$)} & \textbf{Deep SPI} & \textbf{IC-PINOT (Blind)} \\
 \midrule
-\textbf{TILDA 400 (Textile)} & 6.20 dB / 0.127 & 11.66 dB / 0.250 & 17.70 dB / 0.312 & 17.54 dB / 0.312 & \textbf{19.73 dB / 0.352} \\
-\textbf{DAGM 2007 (Metal)}   & 6.40 dB / 0.127 & 13.00 dB / 0.277 & 16.62 dB / 0.324 & 15.59 dB / 0.315 & \textbf{18.52 dB / 0.353} \\
-\textbf{MVTec Carpet (Texture)} & 6.28 dB / 0.091 & 12.48 dB / 0.365 & 16.36 dB / 0.403 & 16.23 dB / 0.398 & \textbf{16.99 dB / 0.390} \\
+\textbf{TILDA 400 (Textile)} & 19.93 dB / 0.686 & 6.21 dB / 0.128 & 13.63 dB / 0.321 & 17.73 dB / 0.311 & 16.97 dB / 0.306 & 19.78 dB / 0.352 \\
+\textbf{DAGM 2007 (Metal)}   & 21.34 dB / 0.379 & 6.41 dB / 0.126 & 14.97 dB / 0.293 & 16.62 dB / 0.322 & 15.93 dB / 0.317 & 18.52 dB / 0.352 \\
+\textbf{MVTec Carpet (Texture)} & 17.41 dB / 0.259 & 6.29 dB / 0.093 & 14.60 dB / 0.244 & 16.38 dB / 0.405 & 16.05 dB / 0.395 & 17.01 dB / 0.392 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -166,7 +166,7 @@ We evaluated all methods under a strict equal photon budget ($N_{\text{total}} =
     \item[{[1]}] J. H. Shapiro, ``Computational ghost imaging,'' \textit{Physical Review A}, vol. 78, no. 6, p. 061802, 2008.
     \item[{[2]}] P. Bergmann, M. Fauser, D. Sattlegger, and C. Steger, ``MVTec AD: A comprehensive real-world dataset for unsupervised anomaly detection,'' in \textit{IEEE/CVF CVPR}, 2019, pp. 9592-9600.
     \item[{[3]}] H. Schulz-Mirbach, ``TILDA: A database for the inspection of textile surfaces,'' University of Freiburg Technical Report, 1999.
-    \item[{[4]}] J. Silvestre-Blanes et al., ``A public fabric database for defect detection methods and results,'' \textit{Autex Research Journal}, vol. 14, no. 4, pp. 363-374, 2014.
+    \item[{[4]}] J. Silvestre-Blanes, T. Albero-Albero, I. Miralles, R. P{\'e}rez-Llorens, and J. Moreno, ``A public fabric database for defect detection methods and results,'' \textit{AUTEX Research Journal}, vol. 19, no. 4, pp. 363-374, 2019.
     \item[{[5]}] Z. Li, N. Kovachki, K. Azizzadenesheli, et al., ``Fourier neural operator for parametric partial differential equations,'' in \textit{ICLR}, 2021.
     \item[{[6]}] A. Amini, W. Schwarting, A. Soleimany, and D. Rus, ``Deep evidential regression,'' in \textit{Advances in Neural Information Processing Systems (NeurIPS)}, vol. 33, pp. 14927-14937, 2020.
     \item[{[7]}] A. Gnanasambandam and S. H. Chan, ``Image formation and exposure control for single-photon cameras,'' \textit{IEEE TPAMI}, vol. 44, no. 12, pp. 9540-9554, 2020.
