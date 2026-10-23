@@ -1,0 +1,156 @@
+{
+    "correlation_analysis": {
+        "s1_l1": {
+            "name": "S1: Standardized L1 Residual",
+            "pearson_r": 0.13410741577172747,
+            "spearman_rho": 0.142321506448629,
+            "shift_delta": 0.05872906088829044
+        },
+        "s2_l2": {
+            "name": "S2: Standardized L2 Residual",
+            "pearson_r": 0.13368603168952575,
+            "spearman_rho": 0.14242545118180883,
+            "shift_delta": 0.05888575255870787
+        },
+        "s3_nll": {
+            "name": "S3: Poisson NLL Residual",
+            "pearson_r": -0.6261411760092647,
+            "spearman_rho": -0.6927345353737092,
+            "shift_delta": -1.1553678385407693
+        },
+        "s4_raw": {
+            "name": "S4: Raw Unnormalized Norm",
+            "pearson_r": 0.22871359784610898,
+            "spearman_rho": 0.23034252872924646,
+            "shift_delta": 0.7060218222936001
+        },
+        "unc_tot": {
+            "name": "U_tot: Evidential Total Unc",
+            "pearson_r": -0.003945319370140145,
+            "spearman_rho": 0.0007781255705795373,
+            "shift_delta": 1.3038516048086146e-09
+        },
+        "unc_epi": {
+            "name": "U_epi: Evidential Epistemic",
+            "pearson_r": -0.0043259839682187745,
+            "spearman_rho": -2.3568314341845283e-05,
+            "shift_delta": 1.1610488091784443e-09
+        },
+        "unc_ale": {
+            "name": "U_ale: Evidential Aleatoric",
+            "pearson_r": -0.013607977769456096,
+            "spearman_rho": -0.00766692883982653,
+            "shift_delta": 1.317433392196074e-10
+        }
+    },
+    "matched_coverage_policies": {
+        "coverage_50": {
+            "Always Accept": {
+                "accepted_psnr": 19.83193119049072,
+                "accepted_mae": 0.08078791471819083,
+                "shifted_samples_rejected_pct": 0.0
+            },
+            "Random Rejection": {
+                "accepted_psnr": 19.851824900309246,
+                "accepted_mae": 0.0806075993180275,
+                "shifted_samples_rejected_pct": 49.0
+            },
+            "Evidential Uncertainty Alone": {
+                "accepted_psnr": 19.823858114878337,
+                "accepted_mae": 0.08095229546229045,
+                "shifted_samples_rejected_pct": 53.0
+            },
+            "Measurement Residual Alone (S2)": {
+                "accepted_psnr": 19.882977403004965,
+                "accepted_mae": 0.07995960916082065,
+                "shifted_samples_rejected_pct": 52.0
+            },
+            "Composite Risk Policy (S2 + Unc)": {
+                "accepted_psnr": 19.881943143208822,
+                "accepted_mae": 0.080096262494723,
+                "shifted_samples_rejected_pct": 52.0
+            }
+        },
+        "coverage_70": {
+            "Always Accept": {
+                "accepted_psnr": 19.83193119049072,
+                "accepted_mae": 0.08078791471819083,
+                "shifted_samples_rejected_pct": 0.0
+            },
+            "Random Rejection": {
+                "accepted_psnr": 19.837631965818858,
+                "accepted_mae": 0.08077343588783628,
+                "shifted_samples_rejected_pct": 28.666666666666668
+            },
+            "Evidential Uncertainty Alone": {
+                "accepted_psnr": 19.847754342215403,
+                "accepted_mae": 0.08070721291005611,
+                "shifted_samples_rejected_pct": 32.33333333333333
+            },
+            "Measurement Residual Alone (S2)": {
+                "accepted_psnr": 19.806956322987876,
+                "accepted_mae": 0.08086527594853016,
+                "shifted_samples_rejected_pct": 31.0
+            },
+            "Composite Risk Policy (S2 + Unc)": {
+                "accepted_psnr": 19.803000427427747,
+                "accepted_mae": 0.08094446075459322,
+                "shifted_samples_rejected_pct": 32.666666666666664
+            }
+        },
+        "coverage_85": {
+            "Always Accept": {
+                "accepted_psnr": 19.83193119049072,
+                "accepted_mae": 0.08078791471819083,
+                "shifted_samples_rejected_pct": 0.0
+            },
+            "Random Rejection": {
+                "accepted_psnr": 19.849807810315898,
+                "accepted_mae": 0.08064087008436521,
+                "shifted_samples_rejected_pct": 13.333333333333334
+            },
+            "Evidential Uncertainty Alone": {
+                "accepted_psnr": 19.833932229584338,
+                "accepted_mae": 0.08080169187456954,
+                "shifted_samples_rejected_pct": 16.666666666666664
+            },
+            "Measurement Residual Alone (S2)": {
+                "accepted_psnr": 19.80557066973518,
+                "accepted_mae": 0.08096638625743342,
+                "shifted_samples_rejected_pct": 15.333333333333332
+            },
+            "Composite Risk Policy (S2 + Unc)": {
+                "accepted_psnr": 19.80946958205279,
+                "accepted_mae": 0.08093323619926678,
+                "shifted_samples_rejected_pct": 16.0
+            }
+        },
+        "coverage_95": {
+            "Always Accept": {
+                "accepted_psnr": 19.83193119049072,
+                "accepted_mae": 0.08078791471819083,
+                "shifted_samples_rejected_pct": 0.0
+            },
+            "Random Rejection": {
+                "accepted_psnr": 19.846381545485112,
+                "accepted_mae": 0.08066194683574794,
+                "shifted_samples_rejected_pct": 3.3333333333333335
+            },
+            "Evidential Uncertainty Alone": {
+                "accepted_psnr": 19.8293326294213,
+                "accepted_mae": 0.08082371641669357,
+                "shifted_samples_rejected_pct": 6.0
+            },
+            "Measurement Residual Alone (S2)": {
+                "accepted_psnr": 19.836788789849532,
+                "accepted_mae": 0.08069592638496767,
+                "shifted_samples_rejected_pct": 5.0
+            },
+            "Composite Risk Policy (S2 + Unc)": {
+                "accepted_psnr": 19.840435991789164,
+                "accepted_mae": 0.08066764130142696,
+                "shifted_samples_rejected_pct": 4.666666666666667
+            }
+        }
+    }
+}

@@ -1,0 +1,188 @@
+{
+    "TILDA 400": {
+        "dataset": "TILDA 400",
+        "total_samples": 300,
+        "prevalence": 0.09333333333333334,
+        "all_in": {
+            "auroc": 0.5902704831932774,
+            "auprc": 0.11408916434697092,
+            "recall": 0.0,
+            "precision": 0.0,
+            "fnr": 1.0
+        },
+        "selective_coverage_sweep": {
+            "cov_100": {
+                "coverage": 1.0,
+                "policy_auroc": 0.5902704831932774,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5902704831932774,
+                "random_fnr": 1.0
+            },
+            "cov_90": {
+                "coverage": 0.9,
+                "policy_auroc": 0.5779132791327913,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5949886274998731,
+                "random_fnr": 1.0
+            },
+            "cov_80": {
+                "coverage": 0.8,
+                "policy_auroc": 0.6331269349845202,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.6049797811331445,
+                "random_fnr": 1.0
+            },
+            "cov_70": {
+                "coverage": 0.7,
+                "policy_auroc": 0.626610824742268,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.6096167447669001,
+                "random_fnr": 1.0
+            },
+            "cov_60": {
+                "coverage": 0.6,
+                "policy_auroc": 0.62989898989899,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.6080371236409168,
+                "random_fnr": 1.0
+            },
+            "cov_50": {
+                "coverage": 0.5,
+                "policy_auroc": 0.6077898550724639,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.6227159018144581,
+                "random_fnr": 1.0
+            }
+        }
+    },
+    "DAGM 2007": {
+        "dataset": "DAGM 2007",
+        "total_samples": 300,
+        "prevalence": 0.11,
+        "all_in": {
+            "auroc": 0.5365452275564635,
+            "auprc": 0.14650262626046223,
+            "recall": 0.0,
+            "precision": 0.0,
+            "fnr": 1.0
+        },
+        "selective_coverage_sweep": {
+            "cov_100": {
+                "coverage": 1.0,
+                "policy_auroc": 0.5365452275564635,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5365452275564635,
+                "random_fnr": 1.0
+            },
+            "cov_90": {
+                "coverage": 0.9,
+                "policy_auroc": 0.5393475461439405,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5240827923648982,
+                "random_fnr": 1.0
+            },
+            "cov_80": {
+                "coverage": 0.8,
+                "policy_auroc": 0.4703196347031964,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5165197840856023,
+                "random_fnr": 1.0
+            },
+            "cov_70": {
+                "coverage": 0.7,
+                "policy_auroc": 0.46182345360824745,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5054215094356641,
+                "random_fnr": 1.0
+            },
+            "cov_60": {
+                "coverage": 0.6,
+                "policy_auroc": 0.407487091222031,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.4882408014462693,
+                "random_fnr": 1.0
+            },
+            "cov_50": {
+                "coverage": 0.5,
+                "policy_auroc": 0.3780193236714976,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5005559455852555,
+                "random_fnr": 1.0
+            }
+        }
+    },
+    "AITEX Cross-Fabric": {
+        "dataset": "AITEX Cross-Fabric (Zero-Shot)",
+        "total_samples": 247,
+        "prevalence": 0.4291497975708502,
+        "all_in": {
+            "auroc": 0.5424528301886793,
+            "auprc": 0.4670188673891298,
+            "recall": 0.0,
+            "precision": 0.0,
+            "fnr": 1.0
+        },
+        "selective_coverage_sweep": {
+            "cov_100": {
+                "coverage": 1.0,
+                "policy_auroc": 0.5424528301886793,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5424528301886793,
+                "random_fnr": 1.0
+            },
+            "cov_90": {
+                "coverage": 0.9,
+                "policy_auroc": 0.5490739985314514,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5379670309639177,
+                "random_fnr": 1.0
+            },
+            "cov_80": {
+                "coverage": 0.8,
+                "policy_auroc": 0.5533381712626996,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5360328312464224,
+                "random_fnr": 1.0
+            },
+            "cov_70": {
+                "coverage": 0.7,
+                "policy_auroc": 0.5380427385327345,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5131739476115468,
+                "random_fnr": 1.0
+            },
+            "cov_60": {
+                "coverage": 0.6,
+                "policy_auroc": 0.536641081871345,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5117267674238305,
+                "random_fnr": 1.0
+            },
+            "cov_50": {
+                "coverage": 0.5,
+                "policy_auroc": 0.5555555555555555,
+                "policy_fnr": 1.0,
+                "policy_recall": 0.0,
+                "random_auroc": 0.5107525176960162,
+                "random_fnr": 1.0
+            }
+        }
+    }
+}
