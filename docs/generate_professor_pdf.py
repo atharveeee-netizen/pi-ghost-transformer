@@ -55,7 +55,7 @@ class AcademicBriefingCanvas(canvas.Canvas):
         # Bottom Footer
         self.line(48, 40, 564, 40)
         self.setFont("Arial", 8.0)
-        self.drawString(48, 28, "IC-PINOT: In-Context Physics-Informed Neural Operator Transformer")
+        self.drawString(48, 28, "IC-PINOT: In-Context Physics-Informed Neural Optical Transformer")
         self.drawRightString(564, 28, f"Page {self._pageNumber} of {page_count}")
         self.restoreState()
 
@@ -176,8 +176,8 @@ def build_pdf():
     # =========================================================================
     # PAGE 1: THE PROBLEM & PHYSICAL JUSTIFICATION FOR SPI (TABULAR COMPARISON)
     # =========================================================================
-    story.append(Paragraph("IC-PINOT: In-Context Physics-Informed Neural Operator Transformer", title_style))
-    story.append(Paragraph("A Physics-Based Simulation Study of Single-Photon Computational Imaging for Low-Photon Industrial Inspection", subtitle_style))
+    story.append(Paragraph("IC-PINOT: In-Context Physics-Informed Neural Optical Transformer", title_style))
+    story.append(Paragraph("A Rigorous Simulation Study of Single-Photon Computational Imaging for Low-Photon Industrial Inspection", subtitle_style))
     story.append(Paragraph("Open-Source Code and Checkpoints: <a href='https://github.com/atharveeee-netizen/pi-ghost-transformer'><u>https://github.com/atharveeee-netizen/pi-ghost-transformer</u></a>", repo_banner_style))
     story.append(HRFlowable(width="100%", thickness=0.6, color=colors.black, spaceAfter=3))
 

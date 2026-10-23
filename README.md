@@ -1,6 +1,6 @@
-# IC-PINOT: In-Context Physics-Informed Neural Operator Transformer
+# IC-PINOT: In-Context Physics-Informed Neural Optical Transformer
 
-### A Physics-Based Simulation Study of Single-Photon Computational Imaging for Low-Photon Industrial Inspection
+### A Rigorous Simulation Study of Single-Photon Computational Imaging for Low-Photon Industrial Inspection
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -21,8 +21,8 @@
 - **Rigorous Three-Fold Sanity Suite:** Verified against a constant-mean baseline floor, passes shuffled-measurement permutation collapse ($\Delta\text{PSNR} > 13\text{ dB}$), and exhibits monotonic degradation across optical defocus sweeps.
 - **Blind Optical Evaluation:** Inverts bucket measurements blindly without oracle knowledge of the true lens defocus parameter ($a_4$).
 - **Industrial Anomaly Detection:** Evaluated across MVTec-AD and 7 Leave-One-Fabric-Out (LOFO) cross-validation folds on AITEX.
-- **Throughput Profile:** GPU reconstruction latency is $7.2\text{ ms}$ per frame ($138\text{ FPS}$ compute throughput); end-to-end frame rate is governed by spatial light modulator pattern refresh speed.
-- **Zero-Gradient Test-Time Adaptation:** Adapts to novel surface materials in under 15 ms without backpropagation.
+- **Throughput Profile:** GPU reconstruction latency is $7.2\text{ ms}$ per frame ($138\text{ FPS}$ compute throughput); end-to-end frame rate is $31.3\text{ FPS}$ governed by spatial light modulator pattern refresh speed ($22.2\text{ kHz}$ binary DMD).
+- **Zero-Gradient Test-Time Adaptation:** Conditions spatial cross-attention using reference exemplar pairs of new fabric rolls without backpropagation.
 
 ---
 
@@ -58,20 +58,20 @@ In continuous manufacturing (such as textile weaving looms and metallic roll pro
    In SWIR wavebands ($1.0 - 2.5\,\mu\text{m}$), where fabric moisture, synthetic blends, and subsurface defects exhibit high optical contrast, 2D InGaAs focal plane arrays cost $>\$30,000$. Conversely, a single-pixel InGaAs photodiode or SPAD detector costs $<\$500$.
 2. **Zero Readout Noise under Photon Starvation:**
    At microsecond exposure times, line-scan cameras dividing light across thousands of pixels receive only $\approx 1.25$ photons/pixel. Typical CMOS readout noise ($2.0\text{ e}^-$ RMS) completely swamps the optical signal (yielding $\approx 6.2\text{ dB}$ PSNR). In contrast, SPAD single-pixel detectors operate in single-photon counting mode with zero readout noise.
-3. **Motion Blur Freezing via Structured Modulation:**
-   Fast conveyor travel induces 1D motion smear across camera sensor arrays. By employing high-speed structured modulation with pulsed illumination, target features are optically encoded prior to single-bucket detection, mitigating motion blur.
+3. **Motion Modeling & Hardware Refresh Bounds:**
+   A 512-pattern binary sequence on a 22.2 kHz DMD takes 23.0 ms. At conveyor velocities of 1 to 2 m/s, intra-frame motion produces 23 to 46 mm of translation. We evaluate single-pixel imaging under stroboscopic pulsed illumination for stationary inspection segments.
 
 ---
 
 ## 2. System Architecture
 
 ![IC-PINOT Architectural Pipeline](figures/architecture_diagram.png)
-*Figure 2: Complete 4-stage pipeline of the IC-PINOT framework, comprising (1) Physical Optical Stage with structured illumination and single-pixel SPAD detection, (2) Operator and Context Encoding via continuous Fourier Neural Operator (FNO) and In-Context prompt engine, (3) Physics-Conditioned Cross-Attention (PCCA) and hierarchical Swin-UNet spatial decoder, and (4) Evidential Normal-Inverse-Gamma (NIG) output head delivering single-pass defect novelty, mean reconstruction, and sensor noise at 138 FPS.*
+*Figure 2: Complete 4-stage pipeline of the IC-PINOT framework, comprising (1) Physical Optical Stage with structured illumination and single-pixel SPAD detection, (2) Physical Adjoint Backprojection and 1D transformer encoding, (3) Physics-Conditioned Cross-Attention (PCCA) and hierarchical Swin-UNet spatial decoder, and (4) Evidential Normal-Inverse-Gamma (NIG) output head delivering single-pass defect novelty, mean reconstruction, and sensor noise.*
 
 ### Architectural Subsystem Breakdown:
 1. **Physical Adjoint Backprojection:** Projects 512 bucket measurements into image space via a linear backprojection layer initialized with the pseudoinverse of the measurement matrix, grounding feature representation directly in measurement physics.
-2. **Continuous 2D Fourier Neural Operator (FNO):** Computes complex spectral convolutions in continuous frequency space, learning robust deconvolution across continuous optical defocus wavefronts.
-3. **In-Context Prompt Adaptation Engine:** Encodes $K \in \{1, 3, 5\}$ exemplar pairs $(y_k, x_k)$ into condition tokens $\mathbf{Z}_{\text{Prompt}} \in \mathbb{R}^{K \times 256}$, providing 7.2 ms zero-gradient adaptation across novel fabric weaves without test-time backpropagation.
+2. **Measurement Signal Encoding:** A Conv1D stem and 1D transformer encoder compress 512-element bucket vectors into multi-scale latent feature tokens.
+3. **In-Context Prompt Adaptation Engine:** Encodes exemplar pairs $(y_k, x_k)$ into condition tokens $\mathbf{Z}_{\text{Prompt}}$, providing adaptation across novel fabric weaves without test-time backpropagation.
 4. **Physics-Conditioned Cross-Attention (PCCA):** Dynamically modulates transformer queries, keys, and values, supporting blind evaluation when optical parameters are unmonitored.
 5. **Hierarchical Swin-UNet Spatial Decoder:** Expands latent feature tokens through multi-scale shifted-window self-attention ($16 \to 32 \to 64 \times 64$), capturing micro-yarn thread textures without spatial checkerboard artifacts.
 6. **Evidential Normal-Inverse-Gamma (NIG) Head:** Predicts 4 parameter maps $[\gamma, v, \alpha, \beta]$ in a single forward pass, decomposing predictions into mean image $\hat{x} = \gamma$, sensor shot noise $\sigma^2_a = \beta/(\alpha - 1)$, and structural defect novelty $\sigma^2_e = \beta/[v(\alpha - 1)]$.
@@ -80,12 +80,12 @@ In continuous manufacturing (such as textile weaving looms and metallic roll pro
 
 ## 3. Theoretical Formulation
 
-### A. Continuous Wavefield Propagation via Fourier Neural Operator
-Optical propagation across turbulent media follows continuous wavefield mechanics:
+### A. Measurement Formation and Physical Backprojection Adjoint
+Single-pixel measurement formation follows bucket integration:
 
-$$\mathcal{K}_{\text{opt}}(v)(x) = \mathcal{F}^{-1} \left( R_\phi \cdot \mathcal{F}(v) \right)(x)$$
+$$y_m = \sum_{i=1}^{N^2} H_{m, i} \cdot (\text{PSF} \ast x)_i + \eta_{\text{Poisson}}$$
 
-where $R_\phi \in \mathbb{C}^{k_{\max} \times k_{\max} \times d_{\text{in}} \times d_{\text{out}}}$ filters non-physical high-frequency modes.
+The physical adjoint maps 1D measurements back to 2D image space via the pseudoinverse $x_0 = H^\dagger y$, which provides a grounded baseline prior to nonlinear transformer refinement.
 
 ### B. Evidential Normal-Inverse-Gamma (NIG) Formulation
 The decoder outputs four parameters per pixel: mean $\gamma$, virtual evidence $v > 0$, shape $\alpha > 1$, and scale $\beta > 0$:
@@ -136,6 +136,9 @@ All methods evaluated under matched nominal photon budgets, reported directly fr
 | **IC-PINOT (Blind Inversion)** | $19.78\text{ dB}$ / $0.352$ | $18.52\text{ dB}$ / $0.352$ | $17.01\text{ dB}$ / $0.392$ |
 
 *Compiled via [`benchmarks/benchmark_baselines.py`](benchmarks/benchmark_baselines.py).*
+
+**Statistical Baseline Analysis:**
+Low-variance industrial surfaces exhibit high nominal PSNR under flat or brightness-only predictors. Setting all pixels to the measured mean intensity achieves $29.22\text{ dB}$ on TILDA. However, flat scalar predictors provide zero spatial resolution and cannot detect structural anomalies. IC-PINOT restores high-frequency defect boundaries and micro-weave structures, which are essential for quality control.
 
 ### B. Industrial Defect Detection Metrics
 
