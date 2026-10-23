@@ -1,0 +1,73 @@
+{
+    "metadata": {
+        "version": "2.0.0",
+        "evaluation_budget_photons": 5120.0,
+        "measurement_count": 512,
+        "image_resolution": [
+            64,
+            64
+        ],
+        "strict_integrity": true
+    },
+    "baselines": {
+        "Flat-Image (Training Set Mean)": {
+            "category": "Trivial Baseline",
+            "trainable": false,
+            "oracle_knowledge": "None (uses empirical mean of training set)",
+            "description": "Predicts constant scalar training mean for all pixels."
+        },
+        "Oracle Image Mean (DC-Only)": {
+            "category": "Trivial Oracle Upper-Bound",
+            "trainable": false,
+            "oracle_knowledge": "Exact per-image ground truth mean",
+            "description": "Upper bound on any spatial DC-only flat reconstruction."
+        },
+        "Linear Pseudoinverse (Pinv SPI)": {
+            "category": "Linear Least Squares",
+            "trainable": false,
+            "oracle_knowledge": "None (uses Moore-Penrose pseudoinverse H_pinv)",
+            "description": "Exact minimum-norm solution x = H^dagger y under unregularized pseudo-inverse."
+        },
+        "DGI (Classical SPI)": {
+            "category": "Statistical Correlation",
+            "trainable": false,
+            "oracle_knowledge": "None",
+            "description": "Classical Differential Ghost Imaging with physical DC-offset restoration."
+        },
+        "TV-CS (L1 Optimization)": {
+            "category": "Convex Optimization",
+            "trainable": false,
+            "oracle_knowledge": "None",
+            "optimizer": "Adam (40 steps, lr=0.05, lambda_tv=0.01)",
+            "description": "Total Variation regularized compressive sensing solver."
+        },
+        "Raw Line-Scan Camera": {
+            "category": "Alternative Modality",
+            "trainable": false,
+            "photon_budget": "Strictly equal (5120 photons total across 4096 pixels, ~1.25 phot/pix)",
+            "sensor_noise": "Poisson shot noise + CMOS Gaussian readout noise (sigma=2.0 e-)",
+            "motion_blur": "1D conveyor transport blur kernel (length L=7)",
+            "description": "Industrial line-scan camera without post-processing."
+        },
+        "Denoised Line-Scan": {
+            "category": "Alternative Modality (Post-Processed)",
+            "trainable": false,
+            "photon_budget": "Strictly equal (5120 photons total)",
+            "filter": "2D Gaussian spatial smoothing filter (kernel=7x7, sigma=1.5)",
+            "description": "Industrial line-scan camera with spatial smoothing post-processing."
+        },
+        "Deep SPI (ReconNet)": {
+            "category": "Deep Learning SPI",
+            "trainable": true,
+            "architecture": "Linear Projection (Pinv init) + 2 Residual Conv Blocks",
+            "description": "Standard feedforward deep compressive sensing benchmark."
+        },
+        "IC-PINOT (Blind Inversion)": {
+            "category": "Proposed Framework (Reconstruction Component)",
+            "trainable": true,
+            "oracle_defocus": false,
+            "architecture": "FNO-Guided In-Context Transformer with Evidential Head and Backprojection Fusion",
+            "description": "Proposed SPI reconstructor evaluated blindly without ground-truth optical parameters."
+        }
+    }
+}

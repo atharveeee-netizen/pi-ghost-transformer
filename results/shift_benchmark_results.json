@@ -1,0 +1,133 @@
+{
+    "metadata": {
+        "title": "Risk-Calibrated SPI Inspection Under Joint Shift",
+        "device": "cuda",
+        "patterns": "checkpoints/trained_patterns.pt",
+        "checkpoint": "checkpoints/ic_pinot_tilda_400_seed42.pt"
+    },
+    "optical_shift_sweep": [
+        {
+            "defocus_a4": 0.0,
+            "psnr_all_mean": 19.83751862049103,
+            "psnr_accepted_mean": 19.97396619546981,
+            "mc_residual_mean": 5.194597871303558,
+            "pct_accept": 42.0,
+            "pct_remeasure": 48.0,
+            "pct_refer": 10.0
+        },
+        {
+            "defocus_a4": 0.5,
+            "psnr_all_mean": 19.86806274652481,
+            "psnr_accepted_mean": 19.958185837382363,
+            "mc_residual_mean": 5.008320615291596,
+            "pct_accept": 42.0,
+            "pct_remeasure": 46.0,
+            "pct_refer": 12.0
+        },
+        {
+            "defocus_a4": 1.0,
+            "psnr_all_mean": 19.826703453063963,
+            "psnr_accepted_mean": 19.88529332478841,
+            "mc_residual_mean": 5.16476942628622,
+            "pct_accept": 45.0,
+            "pct_remeasure": 45.0,
+            "pct_refer": 10.0
+        },
+        {
+            "defocus_a4": 1.5,
+            "psnr_all_mean": 19.79949163198471,
+            "psnr_accepted_mean": 19.862009224138763,
+            "mc_residual_mean": 5.162704299092293,
+            "pct_accept": 38.0,
+            "pct_remeasure": 51.0,
+            "pct_refer": 11.0
+        },
+        {
+            "defocus_a4": 2.0,
+            "psnr_all_mean": 19.882979941368102,
+            "psnr_accepted_mean": 20.033620071411132,
+            "mc_residual_mean": 5.116616839170456,
+            "pct_accept": 50.0,
+            "pct_remeasure": 39.0,
+            "pct_refer": 11.0
+        },
+        {
+            "defocus_a4": 2.5,
+            "psnr_all_mean": 19.79810663461685,
+            "psnr_accepted_mean": 19.891102469485737,
+            "mc_residual_mean": 5.191133801937103,
+            "pct_accept": 46.0,
+            "pct_remeasure": 41.0,
+            "pct_refer": 13.0
+        },
+        {
+            "defocus_a4": 3.0,
+            "psnr_all_mean": 19.80865523815155,
+            "psnr_accepted_mean": 19.89345621604186,
+            "mc_residual_mean": 5.078229747116565,
+            "pct_accept": 52.0,
+            "pct_remeasure": 39.0,
+            "pct_refer": 9.0
+        }
+    ],
+    "photon_budget_sweep": [
+        {
+            "n_total_photons": 1024,
+            "photons_per_pattern": 2.0,
+            "psnr_mean": 14.215740835666656,
+            "mc_residual_mean": 2.617003360390663,
+            "pct_accept": 82.0,
+            "pct_remeasure": 18.0,
+            "pct_refer": 0.0
+        },
+        {
+            "n_total_photons": 2560,
+            "photons_per_pattern": 5.0,
+            "psnr_mean": 17.351588714122773,
+            "mc_residual_mean": 3.8002965199947356,
+            "pct_accept": 66.0,
+            "pct_remeasure": 31.0,
+            "pct_refer": 3.0
+        },
+        {
+            "n_total_photons": 5120,
+            "photons_per_pattern": 10.0,
+            "psnr_mean": 19.832554149627686,
+            "mc_residual_mean": 5.018475316166878,
+            "pct_accept": 50.0,
+            "pct_remeasure": 38.0,
+            "pct_refer": 12.0
+        },
+        {
+            "n_total_photons": 10240,
+            "photons_per_pattern": 20.0,
+            "psnr_mean": 22.070711255073547,
+            "mc_residual_mean": 7.14891615986824,
+            "pct_accept": 26.0,
+            "pct_remeasure": 45.0,
+            "pct_refer": 28.999999999999996
+        },
+        {
+            "n_total_photons": 25600,
+            "photons_per_pattern": 50.0,
+            "psnr_mean": 24.308667171001435,
+            "mc_residual_mean": 11.400392220020294,
+            "pct_accept": 5.0,
+            "pct_remeasure": 25.0,
+            "pct_refer": 70.0
+        }
+    ],
+    "cross_fabric_selective_inspection": {
+        "dataset": "AITEX Cross-Fabric",
+        "total_samples": 247,
+        "accept_count": 1,
+        "remeasure_count": 40,
+        "refer_count": 206,
+        "auroc_uncalibrated_all": 0.49611936304027837,
+        "auroc_selective_accepted": 0.49611936304027837,
+        "auroc_selective_non_referred": 0.45375,
+        "psnr_baseline_mean": 18.084850287147862,
+        "psnr_adaptive_remeas_mean": 18.232279687757917,
+        "psnr_remeas_gain_dB": 0.14742940061005427
+    }
+}

@@ -1,0 +1,46 @@
+{
+    "TILDA 400": {
+        "dataset": "TILDA 400",
+        "samples_evaluated": 50,
+        "psnr_mean": 20.17508774995804,
+        "psnr_std": 0.566638970370671,
+        "ssim_mean": 0.3570181280374527,
+        "ssim_std": 0.004784368561644524,
+        "l1_mean": 0.07734310999512672,
+        "l1_std": 0.004432655979623887,
+        "latency_ms_per_frame": 12.616867184988223
+    },
+    "DAGM 2007": {
+        "dataset": "DAGM 2007",
+        "samples_evaluated": 50,
+        "psnr_mean": 18.540801107883453,
+        "psnr_std": 0.03071323804461833,
+        "ssim_mean": 0.3497396484017372,
+        "ssim_std": 0.0027728557009512097,
+        "l1_mean": 0.09318989142775536,
+        "l1_std": 0.00037065502270565215,
+        "latency_ms_per_frame": 2.0247015590939554
+    },
+    "MVTec Carpet": {
+        "dataset": "MVTec Carpet",
+        "samples_evaluated": 50,
+        "psnr_mean": 16.997268497943878,
+        "psnr_std": 0.09791684924413747,
+        "ssim_mean": 0.41227274388074875,
+        "ssim_std": 0.015951983073098742,
+        "l1_mean": 0.11313949897885323,
+        "l1_std": 0.0014198626672193614,
+        "latency_ms_per_frame": 1.9554515629351954
+    },
+    "AITEX": {
+        "dataset": "AITEX",
+        "samples_evaluated": 50,
+        "psnr_mean": 18.895212411880493,
+        "psnr_std": 0.1991949674348923,
+        "ssim_mean": 0.37924183905124664,
+        "ssim_std": 0.0065396008401478346,
+        "l1_mean": 0.0909942239522934,
+        "l1_std": 0.0024483001820534275,
+        "latency_ms_per_frame": 2.0430703125384753
+    }
+}

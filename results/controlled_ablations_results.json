@@ -1,0 +1,46 @@
+{
+    "TILDA 400": {
+        "Ablation 1: Linear Backprojection Only (Pinv)": {
+            "psnr_mean": 17.797833383083344,
+            "psnr_std": 0.30230483686068466,
+            "ssim_mean": 0.30936308950185776
+        },
+        "Ablation 2: Neural Decoder Only (No Fusion)": {
+            "psnr_mean": 19.456738531589508,
+            "psnr_std": 0.881877230620623,
+            "ssim_mean": 0.7156867831945419
+        },
+        "Ablation 3: Fused Reconstructor (IC-PINOT 70/30)": {
+            "psnr_mean": 20.077005922794342,
+            "psnr_std": 0.4558499498528224,
+            "ssim_mean": 0.354218564927578
+        },
+        "Ablation 4: In-Context Prompting (K=3 Adaptation)": {
+            "psnr_mean": 20.077453553676605,
+            "psnr_std": 0.45652316952127253,
+            "ssim_mean": 0.3542027547955513
+        }
+    },
+    "DAGM 2007": {
+        "Ablation 1: Linear Backprojection Only (Pinv)": {
+            "psnr_mean": 16.546086370944977,
+            "psnr_std": 0.03523056476164062,
+            "ssim_mean": 0.32325803488492966
+        },
+        "Ablation 2: Neural Decoder Only (No Fusion)": {
+            "psnr_mean": 21.50966167449951,
+            "psnr_std": 0.04631927993052791,
+            "ssim_mean": 0.38396649807691574
+        },
+        "Ablation 3: Fused Reconstructor (IC-PINOT 70/30)": {
+            "psnr_mean": 18.491223454475403,
+            "psnr_std": 0.034399980690359454,
+            "ssim_mean": 0.35323648154735565
+        },
+        "Ablation 4: In-Context Prompting (K=3 Adaptation)": {
+            "psnr_mean": 18.491093516349792,
+            "psnr_std": 0.034371237881051626,
+            "ssim_mean": 0.35322946310043335
+        }
+    }
+}

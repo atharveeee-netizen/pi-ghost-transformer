@@ -182,8 +182,18 @@ class ICPINOT(nn.Module):
         """
         B = bucket_measurements.shape[0]
         
-        # If no optical parameters provided, evaluate blindly without oracle defocus knowledge
-        if optical_params is None:
+        # Input validation for numerical safety
+        if torch.isnan(bucket_measurements).any() or torch.isinf(bucket_measurements).any():
+            raise ValueError("Input bucket_measurements contains NaN or Inf values.")
+            
+        # Optical parameter validation & operating mode handling
+        if optical_params is not None:
+            if torch.isnan(optical_params).any() or torch.isinf(optical_params).any():
+                raise ValueError("Input optical_params contains NaN or Inf values.")
+            if optical_params.shape[-1] != self.physics_dim:
+                raise ValueError(f"optical_params dimension mismatch: expected {self.physics_dim}, got {optical_params.shape[-1]}")
+        else:
+            # Mode C: Unknown / Blind parameter setting (defaults to nominal reference state)
             optical_params = torch.zeros(B, self.physics_dim, device=bucket_measurements.device)
             
         # 0. Physical Backprojection from Bucket Measurements
@@ -208,8 +218,14 @@ class ICPINOT(nn.Module):
         logits = self.classifier(pre_feats)
         
         # 6. Physical Adjoint Fusion: Blends physical backprojection with evidential spatial decoder
-        recon_mean = (0.7 * x_back + 0.3 * nig_outputs["gamma"]).clamp(0.0, 1.0)
-        nig_outputs["gamma"] = recon_mean
+        raw_dec_mean = nig_outputs["gamma"]
+        recon_mean = (0.7 * x_back + 0.3 * raw_dec_mean).clamp(0.0, 1.0)
+        
+        # Transparent decomposition: preserve raw decoder mean alongside fused mean
+        nig_outputs["decoder_mean"] = raw_dec_mean
+        nig_outputs["backprojection"] = x_back
+        nig_outputs["fused_mean"] = recon_mean
+        nig_outputs["gamma"] = recon_mean # Backward-compatible default
         
         if return_evidential:
             return nig_outputs, logits

@@ -47,18 +47,29 @@ class TILDADataset(Dataset):
             
         self.samples = [self.samples[i] for i in selected_idx]
 
+        if len(self.samples) == 0:
+            raise ValueError(f"No valid image files found for TILDA in '{root_dir}' under split '{split}'")
+
     def __len__(self):
         return len(self.samples)
+
+    def get_dataset_mean(self, max_samples: int = 500) -> float:
+        """Computes and returns the mean pixel value across the dataset split."""
+        n_samples = min(len(self.samples), max_samples)
+        vals = []
+        for i in range(n_samples):
+            img, _ = self.__getitem__(i)
+            vals.append(img.mean().item())
+        return float(np.mean(vals))
 
     def __getitem__(self, idx):
         path, label = self.samples[idx]
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         if img is None:
-            img = np.zeros((self.image_size, self.image_size), dtype=np.float32)
-        else:
-            if img.shape[0] != self.image_size or img.shape[1] != self.image_size:
-                img = cv2.resize(img, (self.image_size, self.image_size))
-            img = img.astype(np.float32) / 255.0
+            raise FileNotFoundError(f"Failed to read image from path '{path}'. File may be missing or corrupted.")
+        if img.shape[0] != self.image_size or img.shape[1] != self.image_size:
+            img = cv2.resize(img, (self.image_size, self.image_size))
+        img = img.astype(np.float32) / 255.0
 
         return torch.tensor(img).unsqueeze(0).float(), torch.tensor(label).long()
 
@@ -84,17 +95,28 @@ class DAGMDataset(Dataset):
                 is_defect = 1
             self.samples.append((f, is_defect))
 
+        if len(self.samples) == 0:
+            raise ValueError(f"No valid image files found for DAGM in '{root_dir}' under split '{split}'")
+
     def __len__(self):
         return len(self.samples)
+
+    def get_dataset_mean(self, max_samples: int = 500) -> float:
+        """Computes and returns the mean pixel value across the dataset split."""
+        n_samples = min(len(self.samples), max_samples)
+        vals = []
+        for i in range(n_samples):
+            img, _ = self.__getitem__(i)
+            vals.append(img.mean().item())
+        return float(np.mean(vals))
 
     def __getitem__(self, idx):
         path, label = self.samples[idx]
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         if img is None:
-            img = np.zeros((self.image_size, self.image_size), dtype=np.float32)
-        else:
-            img = cv2.resize(img, (self.image_size, self.image_size))
-            img = img.astype(np.float32) / 255.0
+            raise FileNotFoundError(f"Failed to read image from path '{path}'. File may be missing or corrupted.")
+        img = cv2.resize(img, (self.image_size, self.image_size))
+        img = img.astype(np.float32) / 255.0
 
         return torch.tensor(img).unsqueeze(0).float(), torch.tensor(label).long()
 
@@ -123,16 +145,27 @@ class MVTecTextureDataset(Dataset):
                         for f in glob.glob(os.path.join(sub_path, "*.png")):
                             self.samples.append((f, is_defect))
 
+        if len(self.samples) == 0:
+            raise ValueError(f"No valid image files found for MVTec category '{category}' split '{split}' in '{root_dir}'")
+
     def __len__(self):
         return len(self.samples)
+
+    def get_dataset_mean(self, max_samples: int = 500) -> float:
+        """Computes and returns the mean pixel value across the dataset split."""
+        n_samples = min(len(self.samples), max_samples)
+        vals = []
+        for i in range(n_samples):
+            img, _ = self.__getitem__(i)
+            vals.append(img.mean().item())
+        return float(np.mean(vals))
 
     def __getitem__(self, idx):
         path, label = self.samples[idx]
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         if img is None:
-            img = np.zeros((self.image_size, self.image_size), dtype=np.float32)
-        else:
-            img = cv2.resize(img, (self.image_size, self.image_size))
-            img = img.astype(np.float32) / 255.0
+            raise FileNotFoundError(f"Failed to read image from path '{path}'. File may be missing or corrupted.")
+        img = cv2.resize(img, (self.image_size, self.image_size))
+        img = img.astype(np.float32) / 255.0
 
         return torch.tensor(img).unsqueeze(0).float(), torch.tensor(label).long()
